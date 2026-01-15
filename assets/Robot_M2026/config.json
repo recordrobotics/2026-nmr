@@ -1,0 +1,131 @@
+{
+    "name": "M2026",
+    "rotations": [
+        {
+            "axis": "y",
+            "degrees": 180
+        }
+    ],
+    "position": [
+        0,
+        0,
+        0.103226
+    ],
+    "cameras": [],
+    "rsl": [
+        "Robot_Signal_Light_(RSL)_(Werma)"
+    ],
+    "bumper": {
+        "name": [
+            "foam",
+            "wood_1",
+            "wood_2",
+            "wood_3",
+            "wood_4"
+        ],
+        "redColor": "#9e1616ff"
+    },
+    "led": {
+        "name": [
+            "led_strip"
+        ],
+        "count": 30.303030303,
+        "aspectRatio": 1.65
+    },
+    "components": [
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "y",
+                    "degrees": 180
+                },
+                {
+                    "axis": "y",
+                    "degrees": -137
+                }
+            ],
+            "zeroedPosition": [
+                -0.3779,
+                0,
+                0.5948
+            ]
+        },
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "y",
+                    "degrees": 180
+                }
+            ],
+            "zeroedPosition": [
+                0,
+                0,
+                0.103226
+            ]
+        },
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "y",
+                    "degrees": 180
+                },
+                {
+                    "axis": "z",
+                    "degrees": -90
+                }
+            ],
+            "zeroedPosition": [
+                0,
+                0.254,
+                0.103226
+            ]
+        },
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "y",
+                    "degrees": 180
+                },
+                {
+                    "axis": "z",
+                    "degrees": -90
+                },
+                {
+                    "axis": "y",
+                    "degrees": 69
+                }
+            ],
+            "zeroedPosition": [
+                -0.1939,
+                0.254,
+                0.525926
+            ]
+        },
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "y",
+                    "degrees": 180
+                }
+            ],
+            "zeroedPosition": [
+                0,
+                0,
+                0.103226
+            ]
+        },
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "y",
+                    "degrees": 90
+                }
+            ],
+            "zeroedPosition": [
+                0.6942,
+                0,
+                0.2143
+            ]
+        }
+    ]
+}

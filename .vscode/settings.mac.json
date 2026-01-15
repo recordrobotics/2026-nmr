@@ -1,0 +1,268 @@
+{
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.server.launchMode": "Standard",
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.DS_Store": true,
+    "**/.factorypath": true,
+    "**/.git": false,
+    "**/.hg": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.svn": true,
+    "**/*~": true,
+    "**/CVS": true,
+    "bin/": true
+  },
+  "java.test.config": [
+    {
+      "name": "WPIlibUnitTests",
+      "workingDirectory": "${workspaceFolder}/build/jni/release",
+      "vmargs": [
+        "-Djava.library.path=${workspaceFolder}/build/jni/release"
+      ],
+      "env": {
+        "LD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release",
+        "DYLD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release"
+      }
+    }
+  ],
+  "java.test.defaultConfig": "WPIlibUnitTests",
+  "java.import.gradle.annotationProcessing.enabled": false,
+  "java.completion.favoriteStaticMembers": [
+    "org.junit.jupiter.api.Assertions.*",
+    "org.junit.jupiter.api.Assumptions.*",
+    "org.junit.jupiter.api.DynamicContainer.*",
+    "org.junit.jupiter.api.DynamicTest.*",
+    "org.mockito.Mockito.*",
+    "org.mockito.ArgumentMatchers.*",
+    "org.mockito.Answers.*",
+    "edu.wpi.first.units.Units.*"
+  ],
+  "java.completion.filteredTypes": [
+    "java.awt.*",
+    "com.sun.*",
+    "sun.*",
+    "jdk.*",
+    "org.graalvm.*",
+    "io.micrometer.shaded.*",
+    "java.beans.*",
+    "java.util.Base64.*",
+    "java.util.Timer",
+    "java.sql.*",
+    "javax.swing.*",
+    "javax.management.*",
+    "javax.smartcardio.*",
+    "edu.wpi.first.math.proto.*",
+    "edu.wpi.first.math.**.proto.*",
+    "edu.wpi.first.math.**.struct.*"
+  ],
+  "restructuredtext.linter.doc8.extraArgs": [
+    "--config",
+    "${workspaceFolder}/docs/doc8.ini"
+  ],
+  "esbonio.sphinx.numJobs": 0,
+  "esbonio.sphinx.buildDir": "${workspaceFolder}\\docs\\build",
+  "esbonio.sphinx.confDir": "${workspaceFolder}\\docs\\source",
+  "filewatcher.commands": [
+    {
+      "event": "onFileChange",
+      "match": "\\.rst*",
+      "cmd": "\"${workspaceRoot}/docs/make.sh\" html"
+    }
+  ],
+  "livePreview.defaultPreviewPath": "/docs/build/html/index.html",
+  "livePreview.previewDebounceDelay": 3000,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "iis.configDir": "",
+  "java.debug.settings.onBuildFailureProceed": true,
+  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms100m -Xlog:disable",
+  "wpilib.skipTests": true,
+  "cSpell.enabled": true,
+  "cSpell.diagnosticLevel": "Error",
+  "cSpell.enabledFileTypes": {
+    "json": true,
+    "jsonc": true,
+    "yaml": true,
+    "yml": true,
+    "markdown": true,
+    "plaintext": true,
+    "python": true,
+    "java": true,
+    "html": true,
+    "htm": true,
+    "xml": true,
+    "ignore": false
+  },
+  "cSpell.allowCompoundWords": true,
+  "sonarlint.rules": {
+    "java:S2925": {
+      "level": "off"
+    },
+    "java:S1698": {
+      "level": "on"
+    },
+    "java:S2156": {
+      "level": "on"
+    },
+    "java:S2165": {
+      "level": "on"
+    },
+    "java:S1194": {
+      "level": "on"
+    },
+    "java:S2096": {
+      "level": "on"
+    },
+    "java:S3553": {
+      "level": "on"
+    },
+    "java:S2325": {
+      "level": "on"
+    },
+    "java:S2057": {
+      "level": "on"
+    },
+    "java:S4266": {
+      "level": "on"
+    },
+    "java:S1114": {
+      "level": "on"
+    },
+    "java:S1151": {
+      "level": "on"
+    },
+    "java:S1821": {
+      "level": "on"
+    },
+    "java:S1610": {
+      "level": "on"
+    },
+    "java:S1694": {
+      "level": "on"
+    },
+    "java:S1943": {
+      "level": "on"
+    },
+    "java:S2141": {
+      "level": "on"
+    },
+    "java:S2974": {
+      "level": "on"
+    },
+    "java:S2063": {
+      "level": "on"
+    },
+    "java:S1699": {
+      "level": "on"
+    },
+    "java:S6211": {
+      "level": "on"
+    },
+    "java:S3254": {
+      "level": "on"
+    },
+    "java:S4551": {
+      "level": "on"
+    },
+    "java:S888": {
+      "level": "on"
+    },
+    "java:S1939": {
+      "level": "on"
+    },
+    "java:S1244": {
+      "level": "on"
+    },
+    "java:S3725": {
+      "level": "on"
+    },
+    "java:S2444": {
+      "level": "on"
+    },
+    "java:S2701": {
+      "level": "on"
+    },
+    "java:S109": {
+      "level": "on",
+      "parameters": {
+        "authorizedNumbers": "-1,0,1,2,0.5,90,-90,180,-180,360,-360,45,-45,270"
+      }
+    },
+    "java:S3242": {
+      "level": "on"
+    },
+    "java:S1541": {
+      "level": "on"
+    },
+    "java:S2131": {
+      "level": "on"
+    },
+    "java:S2301": {
+      "level": "on"
+    },
+    "java:S1176": {
+      "level": "on"
+    },
+    "java:S4248": {
+      "level": "on"
+    },
+    "java:S1641": {
+      "level": "on"
+    },
+    "java:S2196": {
+      "level": "on"
+    },
+    "java:S5977": {
+      "level": "on"
+    },
+    "java:S2047": {
+      "level": "on"
+    },
+    "java:S2693": {
+      "level": "on"
+    },
+    "java:S6411": {
+      "level": "on"
+    },
+    "java:S2148": {
+      "level": "on"
+    },
+    "java:S3658": {
+      "level": "on"
+    },
+    "java:S5194": {
+      "level": "on"
+    },
+    "java:S1941": {
+      "level": "on"
+    },
+    "java:S6374": {
+      "level": "on"
+    },
+    "java:S1659": {
+      "level": "off"
+    },
+    "java:S106": {
+      "level": "off"
+    },
+    "java:S107": {
+      "level": "off"
+    },
+    "java:S2160": {
+      "level": "off"
+    }
+  },
+  "java.checkstyle.configuration": "${workspaceFolder}/config/checkstyle/checkstyle.xml",
+  "java.checkstyle.version": "11.0.0",
+  "java.checkstyle.properties": {
+    "configDirectory": "${workspaceFolder}/config/checkstyle"
+  },
+  "command-runner.showRunCommandInEditorContextMenu": false,
+  "command-runner.showRunCommandInExplorerContextMenu": false,
+  "command-runner.terminal.autoClear": true,
+  "command-runner.commands": {
+    "tuning swerve encoders": "./gradlew tuning --args \"swerveencoders ${input:kraken}\""
+  }
+}

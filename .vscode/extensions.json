@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "streetsidesoftware.code-spell-checker",
+        "SonarSource.sonarlint-vscode",
+        "shengchen.vscode-checkstyle",
+        "edonet.vscode-command-runner"
+    ]
+}

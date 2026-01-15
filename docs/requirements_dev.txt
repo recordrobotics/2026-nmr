@@ -1,0 +1,5 @@
+-r requirements.txt
+esbonio==0.16.5
+docutils==0.21.2
+setuptools==78.1.1
+doc8==1.1.2

@@ -1,0 +1,280 @@
+{
+    "name": "Logitech G Extreme 3D Pro",
+    "components": [
+        {
+            "type": "button",
+            "isYellow": true,
+            "isEllipse": false,
+            "centerPx": [
+                292,
+                336
+            ],
+            "sizePx": [
+                46,
+                44
+            ],
+            "sourceIndex": 7
+        },
+        {
+            "type": "button",
+            "isYellow": true,
+            "isEllipse": false,
+            "centerPx": [
+                213,
+                469
+            ],
+            "sizePx": [
+                46,
+                44
+            ],
+            "sourceIndex": 9
+        },
+        {
+            "type": "button",
+            "isYellow": true,
+            "isEllipse": false,
+            "centerPx": [
+                211,
+                622
+            ],
+            "sizePx": [
+                46,
+                44
+            ],
+            "sourceIndex": 11
+        },
+        {
+            "type": "button",
+            "isYellow": true,
+            "isEllipse": false,
+            "centerPx": [
+                324,
+                397
+            ],
+            "sizePx": [
+                33,
+                33
+            ],
+            "sourceIndex": 8
+        },
+        {
+            "type": "button",
+            "isYellow": true,
+            "isEllipse": false,
+            "centerPx": [
+                289,
+                459
+            ],
+            "sizePx": [
+                33,
+                33
+            ],
+            "sourceIndex": 10
+        },
+        {
+            "type": "button",
+            "isYellow": true,
+            "isEllipse": false,
+            "centerPx": [
+                287,
+                629
+            ],
+            "sizePx": [
+                33,
+                33
+            ],
+            "sourceIndex": 12
+        },
+        {
+            "type": "button",
+            "isYellow": true,
+            "isEllipse": false,
+            "centerPx": [
+                436,
+                246
+            ],
+            "sizePx": [
+                27,
+                48
+            ],
+            "sourceIndex": 5
+        },
+        {
+            "type": "button",
+            "isYellow": true,
+            "isEllipse": false,
+            "centerPx": [
+                582,
+                245
+            ],
+            "sizePx": [
+                27,
+                48
+            ],
+            "sourceIndex": 6
+        },
+        {
+            "type": "button",
+            "isYellow": true,
+            "isEllipse": false,
+            "centerPx": [
+                466,
+                315
+            ],
+            "sizePx": [
+                41,
+                58
+            ],
+            "sourceIndex": 3
+        },
+        {
+            "type": "button",
+            "isYellow": true,
+            "isEllipse": false,
+            "centerPx": [
+                550,
+                315
+            ],
+            "sizePx": [
+                41,
+                58
+            ],
+            "sourceIndex": 4
+        },
+        {
+            "type": "button",
+            "isYellow": true,
+            "isEllipse": false,
+            "centerPx": [
+                508,
+                27
+            ],
+            "sizePx": [
+                61,
+                40
+            ],
+            "sourceIndex": 1
+        },
+        {
+            "type": "button",
+            "isYellow": true,
+            "isEllipse": true,
+            "centerPx": [
+                403,
+                348
+            ],
+            "sizePx": [
+                26,
+                74
+            ],
+            "sourceIndex": 2
+        },
+        {
+            "type": "button",
+            "isYellow": true,
+            "isEllipse": false,
+            "centerPx": [
+                508,
+                211
+            ],
+            "sizePx": [
+                23,
+                31
+            ],
+            "sourceIndex": 0,
+            "sourcePov": "up"
+        },
+        {
+            "type": "button",
+            "isYellow": true,
+            "isEllipse": false,
+            "centerPx": [
+                508,
+                260
+            ],
+            "sizePx": [
+                23,
+                31
+            ],
+            "sourceIndex": 0,
+            "sourcePov": "down"
+        },
+        {
+            "type": "button",
+            "isYellow": true,
+            "isEllipse": false,
+            "centerPx": [
+                481,
+                236
+            ],
+            "sizePx": [
+                31,
+                23
+            ],
+            "sourceIndex": 0,
+            "sourcePov": "left"
+        },
+        {
+            "type": "button",
+            "isYellow": true,
+            "isEllipse": false,
+            "centerPx": [
+                535,
+                236
+            ],
+            "sizePx": [
+                31,
+                23
+            ],
+            "sourceIndex": 0,
+            "sourcePov": "right"
+        },
+        {
+            "type": "axis",
+            "isYellow": true,
+            "centerPx": [
+                546,
+                853
+            ],
+            "sizePx": [
+                49,
+                94
+            ],
+            "sourceIndex": 3,
+            "sourceRange": [
+                1,
+                -1
+            ]
+        },
+        {
+            "type": "joystick",
+            "isYellow": true,
+            "centerPx": [
+                501,
+                541
+            ],
+            "radiusPx": 102,
+            "xSourceIndex": 0,
+            "xSourceInverted": false,
+            "ySourceIndex": 1,
+            "ySourceInverted": true
+        },
+        {
+            "type": "axis",
+            "isYellow": true,
+            "centerPx": [
+                743,
+                543
+            ],
+            "sizePx": [
+                68,
+                290
+            ],
+            "sourceIndex": 2,
+            "sourceRange": [
+                1,
+                -1
+            ]
+        }
+    ]
+}

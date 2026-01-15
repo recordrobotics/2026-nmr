@@ -1,0 +1,51 @@
+name: Lint Commit Message with Ollama
+
+on:
+  push:
+    branches: ["**"]
+
+jobs:
+  check-commit-message:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          ollama serve & 
+          sleep 5
+          ollama pull llama3  # you can change this to mistral or another model
+
+      - name: Get latest commit message
+        id: get_commit
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "commit_message<<EOF" >> $GITHUB_OUTPUT
+          echo "$COMMIT_MSG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Evaluate commit message with Ollama
+        id: ollama_check
+        run: |
+          COMMIT_MSG="${{ steps.get_commit.outputs.commit_message }}"
+          PROMPT=$(cat <<'EOF'
+          You are a strict commit message reviewer. Rate this commit message for clarity, descriptiveness, and professionalism.
+
+          Respond ONLY with one word:
+          - PASS (if it's clear, descriptive, and follows good conventions)
+          - FAIL (if it's vague, generic, or poor quality)
+          EOF
+          )
+
+          RESPONSE=$(ollama run llama3 "Commit message:\n$COMMIT_MSG\n\n$PROMPT")
+          echo "LLM response: $RESPONSE"
+
+          if echo "$RESPONSE" | grep -iq "FAIL"; then
+            echo "❌ Commit message rejected by LLM."
+            exit 1
+          else
+            echo "✅ Commit message approved by LLM."
+          fi
