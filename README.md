@@ -1,12 +1,12 @@
 <h1 align="center">
-  2026 Robot
+  2026 New Member Robot
 
   <p align="center">
-      <a href="https://github.com/recordrobotics/2026-robot/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/recordrobotics/2026-robot/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+      <a href="https://github.com/recordrobotics/2026-nmr/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/recordrobotics/2026-nmr/actions/workflows/ci.yml/badge.svg?branch=main"></a>
       <a href="https://docs.recordrobotics.org/"><img alt="Read the Docs" src="https://img.shields.io/readthedocs/2024-control?logo=readthedocs&labelColor=%23556bc2"></a>
-      <a href="https://github.com/recordrobotics/2026-robot/actions/workflows/ci.yml"><img alt="Unit Tests Status" src="https://img.shields.io/github/check-runs/recordrobotics/2026-robot/main?nameFilter=JUnit%20Test%20Report&logo=gradle&label=tests&labelColor=purple"></a>
-      <a href="https://sonarcloud.io/summary/new_code?id=recordrobotics-2026-robot"><img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=recordrobotics-2026-robot&metric=alert_status"></a>
-      <a href="https://sonarcloud.io/summary/new_code?id=recordrobotics-2026-robot"><img alt="Coverage" src="https://sonarcloud.io/api/project_badges/measure?project=recordrobotics-2026-robot&metric=coverage"></a>
+      <a href="https://github.com/recordrobotics/2026-nmr/actions/workflows/ci.yml"><img alt="Unit Tests Status" src="https://img.shields.io/github/check-runs/recordrobotics/2026-nmr/main?nameFilter=JUnit%20Test%20Report&logo=gradle&label=tests&labelColor=purple"></a>
+      <a href="https://sonarcloud.io/summary/new_code?id=recordrobotics-2026-nmr"><img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=recordrobotics-2026-nmr&metric=alert_status"></a>
+      <a href="https://sonarcloud.io/summary/new_code?id=recordrobotics-2026-nmr"><img alt="Coverage" src="https://sonarcloud.io/api/project_badges/measure?project=recordrobotics-2026-nmr&metric=coverage"></a>
   </p>
 </h1>
 
