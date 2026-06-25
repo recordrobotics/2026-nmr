@@ -1,0 +1,1001 @@
+{
+  "version": 1.0,
+  "grid_size": 32,
+  "tabs": [
+    {
+      "name": "Autonomous",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "Field",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 1024.0,
+            "height": 512.0,
+            "type": "Field",
+            "properties": {
+              "topic": "/SmartDashboard/Autonomous/Field",
+              "period": 0.06,
+              "field_game": "Rebuilt (No Fuel)",
+              "robot_width": 0.902,
+              "robot_length": 0.902,
+              "show_other_objects": true,
+              "show_trajectories": true,
+              "field_rotation": 0.0,
+              "robot_color": 4294198070,
+              "trajectory_color": 4294967295,
+              "show_robot_outside_widget": true
+            }
+          },
+          {
+            "title": "Starting Location",
+            "x": 1024.0,
+            "y": 128.0,
+            "width": 512.0,
+            "height": 128.0,
+            "type": "Split Button Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Starting Location",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "Auto Code",
+            "x": 1024.0,
+            "y": 0.0,
+            "width": 512.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Auto Code",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "Reset",
+            "x": 1184.0,
+            "y": 256.0,
+            "width": 160.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "Autonomous/ResetLocationButton",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Encoder Reset",
+            "x": 1024.0,
+            "y": 256.0,
+            "width": 160.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "Autonomous/EncoderReset",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Alerts",
+            "x": 1024.0,
+            "y": 384.0,
+            "width": 512.0,
+            "height": 320.0,
+            "type": "Alerts",
+            "properties": {
+              "topic": "/SmartDashboard/Alerts",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "Shift Time",
+            "x": 1344.0,
+            "y": 256.0,
+            "width": 192.0,
+            "height": 128.0,
+            "type": "Match Time",
+            "properties": {
+              "topic": "/SmartDashboard/ShiftTime",
+              "period": 0.06,
+              "data_type": "double",
+              "time_display_mode": "Seconds Only",
+              "red_start_time": 0,
+              "yellow_start_time": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Overview",
+      "grid_layout": {
+        "layouts": [
+          {
+            "title": "left-back",
+            "x": 224.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 384.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Enabled",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/left-back/Enabled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "ForceUnconstrained",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/left-back/ForceUnconstrained",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "UseRotation",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/left-back/UseRotation",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Uncon_w/Dsbld",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/left-back/ForceUnconstrainedWhenDisabled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Unthrottled",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/left-back/ForceUnthrottled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              }
+            ]
+          },
+          {
+            "title": "right-back",
+            "x": 352.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 384.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Enabled",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/right-back/Enabled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "ForceUnconstrained",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/right-back/ForceUnconstrained",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "UseRotation",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/right-back/UseRotation",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Uncon_w/Dsbld",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/right-back/ForceUnconstrainedWhenDisabled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Unthrottled",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/right-back/ForceUnthrottled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              }
+            ]
+          },
+          {
+            "title": "limelight-fr",
+            "x": 480.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 384.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Enabled",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/limelight-fr/Enabled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "ForceUnconstrained",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/limelight-fr/ForceUnconstrained",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "UseRotation",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/limelight-fr/UseRotation",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Uncon_w/Dsbld",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/limelight-fr/ForceUnconstrainedWhenDisabled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Unthrottled",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/limelight-fr/ForceUnthrottled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              }
+            ]
+          },
+          {
+            "title": "limelight-trt",
+            "x": 608.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 384.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Enabled",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/limelight-trt/Enabled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "ForceUnconstrained",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/limelight-trt/ForceUnconstrained",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "UseRotation",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/limelight-trt/UseRotation",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Uncon_w/Dsbld",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/limelight-trt/ForceUnconstrainedWhenDisabled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Unthrottled",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Camera/limelight-trt/ForceUnthrottled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              }
+            ]
+          }
+        ],
+        "containers": [
+          {
+            "title": "Drive Mode",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 224.0,
+            "height": 128.0,
+            "type": "Split Button Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Drive Mode",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "Field",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 768.0,
+            "height": 384.0,
+            "type": "Field",
+            "properties": {
+              "topic": "/SmartDashboard/Autonomous/Field",
+              "period": 0.06,
+              "field_game": "Rebuilt (No Fuel)",
+              "robot_width": 0.902,
+              "robot_length": 0.902,
+              "show_other_objects": true,
+              "show_trajectories": true,
+              "field_rotation": 0.0,
+              "robot_color": 4294198070,
+              "trajectory_color": 4294967295,
+              "show_robot_outside_widget": true
+            }
+          },
+          {
+            "title": "Flywheel Ratio",
+            "x": 768.0,
+            "y": 256.0,
+            "width": 448.0,
+            "height": 128.0,
+            "type": "Number Slider",
+            "properties": {
+              "topic": "FLYWHEEL_RATIO",
+              "period": 0.06,
+              "data_type": "double",
+              "min_value": 0.3,
+              "max_value": 0.5,
+              "divisions": 5,
+              "update_continuously": true
+            }
+          },
+          {
+            "title": "Alerts",
+            "x": 1216.0,
+            "y": 256.0,
+            "width": 320.0,
+            "height": 448.0,
+            "type": "Alerts",
+            "properties": {
+              "topic": "/SmartDashboard/Alerts",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "Shift Time",
+            "x": 992.0,
+            "y": 0.0,
+            "width": 288.0,
+            "height": 256.0,
+            "type": "Match Time",
+            "properties": {
+              "topic": "/SmartDashboard/ShiftTime",
+              "period": 0.06,
+              "data_type": "double",
+              "time_display_mode": "Seconds Only",
+              "red_start_time": 5,
+              "yellow_start_time": 15
+            }
+          },
+          {
+            "title": "Hub Active",
+            "x": 768.0,
+            "y": 0.0,
+            "width": 224.0,
+            "height": 256.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/HubActive",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "X"
+            }
+          },
+          {
+            "title": "Filter Tags",
+            "x": 128.0,
+            "y": 512.0,
+            "width": 96.0,
+            "height": 128.0,
+            "type": "Toggle Switch",
+            "properties": {
+              "topic": "Camera/FilterTags",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Prioritize Turret",
+            "x": 0.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Switch",
+            "properties": {
+              "topic": "Camera/PrioritizeTurret",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Won Auto",
+            "x": 1280.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/WonAuto",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4282201910,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Current Shift",
+            "x": 1280.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/CurrentShift",
+              "period": 0.06,
+              "data_type": "string"
+            }
+          },
+          {
+            "title": "Replay",
+            "x": 0.0,
+            "y": 640.0,
+            "width": 224.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "RecordMatchReplay",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tuning",
+      "grid_layout": {
+        "layouts": [
+          {
+            "title": "Override Known",
+            "x": 672.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "LEFT"
+            },
+            "children": [
+              {
+                "title": "Turret",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Positioned/Turret/OverrideKnown",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Intake",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Positioned/Intake/OverrideKnown",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Shooter",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Positioned/Shooter/OverrideKnown",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Climber",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "Positioned/Climber/OverrideKnown",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              }
+            ]
+          }
+        ],
+        "containers": [
+          {
+            "title": "Shoot Override",
+            "x": 256.0,
+            "y": 128.0,
+            "width": 160.0,
+            "height": 128.0,
+            "type": "Toggle Switch",
+            "properties": {
+              "topic": "SHOOT_OVERRIDE",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Shoot Velocity",
+            "x": 128.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "SHOOT_VELOCITY",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Hood Angle",
+            "x": 0.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "HOOD_ANGLE",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Shoot Mode",
+            "x": 416.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/ShootMode",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "Shoot Angle Offset",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 416.0,
+            "height": 128.0,
+            "type": "Number Slider",
+            "properties": {
+              "topic": "SHOOT_ANGLE_OFFSET",
+              "period": 0.06,
+              "data_type": "double",
+              "min_value": -0.3,
+              "max_value": 0.3,
+              "divisions": 5,
+              "update_continuously": true
+            }
+          },
+          {
+            "title": "Shot Feedforward",
+            "x": 416.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "SHOTFEED",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Turret FF Multiplier",
+            "x": 544.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "TURRET_FFMUL",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Disable Intake Wheel",
+            "x": 0.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Switch",
+            "properties": {
+              "topic": "Intake/DisableWheel",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "RTC Mode",
+            "x": 128.0,
+            "y": 256.0,
+            "width": 416.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Camera/RTCMode",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "PathPlanner",
+            "x": 1280.0,
+            "y": 352.0,
+            "width": 256.0,
+            "height": 352.0,
+            "type": "Alerts",
+            "properties": {
+              "topic": "/SmartDashboard/PathPlanner",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "B",
+            "x": 544.0,
+            "y": 256.0,
+            "width": 64.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Feeder/IsBottomBeamBroken",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "T",
+            "x": 608.0,
+            "y": 256.0,
+            "width": 64.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Feeder/IsTopBeamBroken",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Bottom BPS",
+            "x": 672.0,
+            "y": 256.0,
+            "width": 224.0,
+            "height": 224.0,
+            "type": "Radial Gauge",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Feeder/BottomBPS",
+              "period": 0.033,
+              "data_type": "int",
+              "start_angle": -140.0,
+              "end_angle": 140.0,
+              "min_value": 0.0,
+              "max_value": 7.0,
+              "number_of_labels": 4,
+              "wrap_value": false,
+              "show_pointer": true,
+              "show_ticks": true
+            }
+          },
+          {
+            "title": "Alerts",
+            "x": 1280.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 352.0,
+            "type": "Alerts",
+            "properties": {
+              "topic": "/SmartDashboard/Alerts",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "Top BPS",
+            "x": 896.0,
+            "y": 256.0,
+            "width": 224.0,
+            "height": 224.0,
+            "type": "Radial Gauge",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Feeder/TopBPS",
+              "period": 0.033,
+              "data_type": "int",
+              "start_angle": -140.0,
+              "end_angle": 140.0,
+              "min_value": 0.0,
+              "max_value": 7.0,
+              "number_of_labels": 4,
+              "wrap_value": false,
+              "show_pointer": true,
+              "show_ticks": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Defense",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "pv3_Port_1182_Output_MJPEG_Server",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 640.0,
+            "height": 416.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/pv3_Port_1182_Output_MJPEG_Server",
+              "period": 0.06,
+              "rotation_turns": 0,
+              "compression": 21,
+              "fps": 30,
+              "resolution": [
+                320.0,
+                180.0
+              ]
+            }
+          },
+          {
+            "title": "limelight-fr",
+            "x": 640.0,
+            "y": 0.0,
+            "width": 576.0,
+            "height": 416.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-fr",
+              "period": 0.06,
+              "rotation_turns": 0,
+              "compression": 41,
+              "fps": 30,
+              "resolution": [
+                320.0,
+                180.0
+              ]
+            }
+          },
+          {
+            "title": "limelight-trt",
+            "x": 0.0,
+            "y": 416.0,
+            "width": 544.0,
+            "height": 352.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-trt",
+              "period": 0.06,
+              "rotation_turns": 0,
+              "compression": 47,
+              "fps": 30,
+              "resolution": [
+                320.0,
+                180.0
+              ]
+            }
+          },
+          {
+            "title": "pv1_Port_1182_Output_MJPEG_Server",
+            "x": 1024.0,
+            "y": 416.0,
+            "width": 480.0,
+            "height": 352.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/pv1_Port_1182_Output_MJPEG_Server",
+              "period": 0.06,
+              "rotation_turns": 0,
+              "compression": 46,
+              "fps": 30,
+              "resolution": [
+                320.0,
+                180.0
+              ]
+            }
+          },
+          {
+            "title": "pv2_Port_1182_Output_MJPEG_Server",
+            "x": 544.0,
+            "y": 416.0,
+            "width": 480.0,
+            "height": 352.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/pv2_Port_1182_Output_MJPEG_Server",
+              "period": 0.06,
+              "rotation_turns": 0,
+              "compression": 54,
+              "fps": 30,
+              "resolution": [
+                320.0,
+                180.0
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

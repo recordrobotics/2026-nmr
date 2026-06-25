@@ -1,0 +1,31 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "wpilib",
+      "name": "WPILib Desktop Debug",
+      "request": "launch",
+      "desktop": true,
+    },
+    {
+      "type": "wpilib",
+      "name": "WPILib roboRIO Debug",
+      "request": "launch",
+      "desktop": false,
+    },
+    /**
+    * If "no robot code" in DS at comp and you see "Listening for transport dt_socket at address: 8349" in the
+    * console, run this to attach the debugger and unsuspend the code with Ctrl+Shift+D and select JDWP and hit run.
+    */
+    {
+      "type": "java",
+      "name": "JDWP",
+      "request": "attach",
+      "hostName": "10.67.31.2",
+      "port": 8349
+    }
+  ]
+}

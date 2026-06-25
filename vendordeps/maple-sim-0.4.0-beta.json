@@ -1,0 +1,29 @@
+{
+    "fileName": "maple-sim.json",
+    "name": "maplesim",
+    "version": "0.4.0-beta-rr-fix-2",
+    "frcYear": "2026",
+    "uuid": "c39481e8-4a63-4a4c-9df6-48d91e4da37b",
+    "mavenUrls": [
+        "https://maven.recordrobotics.org/maple-sim/vendordep/repos/releases"
+    ],
+    "jsonUrl": "https://maven.recordrobotics.org/maple-sim/vendordep/maple-sim.json",
+    "javaDependencies": [
+        {
+            "groupId": "org.ironmaple",
+            "artifactId": "maplesim-java",
+            "version": "0.4.0-beta-rr-fix-2"
+        },
+        {
+            "groupId": "org.dyn4j",
+            "artifactId": "dyn4j",
+            "version": "5.0.2"
+        }
+    ],
+    "jniDependencies": [
+
+    ],
+    "cppDependencies": [
+
+    ]
+}

@@ -1,0 +1,261 @@
+{
+  "name": "Nintendo Switch Controller",
+  "components": [
+    {
+      "type": "button",
+      "isYellow": true,
+      "isEllipse": true,
+      "centerPx": [
+        1032,
+        391
+      ],
+      "sizePx": [
+        80,
+        80
+      ],
+      "sourceIndex": 2
+    },
+    {
+      "type": "button",
+      "isYellow": true,
+      "isEllipse": true,
+      "centerPx": [
+        1111,
+        310
+      ],
+      "sizePx": [
+        80,
+        80
+      ],
+      "sourceIndex": 1
+    },
+    {
+      "type": "button",
+      "isYellow": true,
+      "isEllipse": true,
+      "centerPx": [
+        945,
+        308
+      ],
+      "sizePx": [
+        80,
+        80
+      ],
+      "sourceIndex": 3
+    },
+    {
+      "type": "button",
+      "isYellow": true,
+      "isEllipse": true,
+      "centerPx": [
+        1026,
+        224
+      ],
+      "sizePx": [
+        80,
+        80
+      ],
+      "sourceIndex": 4
+    },
+    {
+      "type": "button",
+      "isYellow": true,
+      "isEllipse": false,
+      "centerPx": [
+        379,
+        90
+      ],
+      "sizePx": [
+        208,
+        60
+      ],
+      "sourceIndex": 5
+    },
+    {
+      "type": "button",
+      "isYellow": true,
+      "isEllipse": false,
+      "centerPx": [
+        990,
+        90
+      ],
+      "sizePx": [
+        208,
+        60
+      ],
+      "sourceIndex": 6
+    },
+    {
+      "type": "button",
+      "isYellow": true,
+      "isEllipse": true,
+      "centerPx": [
+        555,
+        211
+      ],
+      "sizePx": [
+        60,
+        60
+      ],
+      "sourceIndex": 14
+    },
+    {
+      "type": "button",
+      "isYellow": true,
+      "isEllipse": true,
+      "centerPx": [
+        824,
+        208
+      ],
+      "sizePx": [
+        60,
+        60
+      ],
+      "sourceIndex": 13
+    },
+    {
+      "type": "button",
+      "isYellow": true,
+      "isEllipse": false,
+      "centerPx": [
+        627,
+        306
+      ],
+      "sizePx": [
+        55,
+        55
+      ],
+      "sourceIndex": 10
+    },
+    {
+      "type": "button",
+      "isYellow": true,
+      "isEllipse": true,
+      "centerPx": [
+        753,
+        305
+      ],
+      "sizePx": [
+        60,
+        60
+      ],
+      "sourceIndex": 9
+    },
+    {
+      "type": "button",
+      "isYellow": false,
+      "isEllipse": false,
+      "centerPx": [
+        170,
+        136
+      ],
+      "sizePx": [
+        60,
+        160
+      ],
+      "sourceIndex": 7
+    },
+    {
+      "type": "button",
+      "isYellow": false,
+      "isEllipse": false,
+      "centerPx": [
+        1200,
+        136
+      ],
+      "sizePx": [
+        60,
+        160
+      ],
+      "sourceIndex": 8
+    },
+    {
+      "type": "joystick",
+      "isYellow": true,
+      "centerPx": [
+        360,
+        290
+      ],
+      "radiusPx": 90,
+      "xSourceIndex": 0,
+      "xSourceInverted": false,
+      "ySourceIndex": 1,
+      "ySourceInverted": true,
+      "buttonSourceIndex": 11
+    },
+    {
+      "type": "joystick",
+      "isYellow": true,
+      "centerPx": [
+        860,
+        450
+      ],
+      "radiusPx": 90,
+      "xSourceIndex": 2,
+      "xSourceInverted": false,
+      "ySourceIndex": 3,
+      "ySourceInverted": true,
+      "buttonSourceIndex": 12
+    },
+    {
+      "type": "button",
+      "isYellow": true,
+      "isEllipse": false,
+      "centerPx": [
+        552,
+        419
+      ],
+      "sizePx": [
+        60,
+        60
+      ],
+      "sourceIndex": 0,
+      "sourcePov": "up"
+    },
+    {
+      "type": "button",
+      "isYellow": true,
+      "isEllipse": false,
+      "centerPx": [
+        612,
+        479
+      ],
+      "sizePx": [
+        60,
+        60
+      ],
+      "sourceIndex": 0,
+      "sourcePov": "right"
+    },
+    {
+      "type": "button",
+      "isYellow": true,
+      "isEllipse": false,
+      "centerPx": [
+        552,
+        539
+      ],
+      "sizePx": [
+        60,
+        60
+      ],
+      "sourceIndex": 0,
+      "sourcePov": "down"
+    },
+    {
+      "type": "button",
+      "isYellow": true,
+      "isEllipse": false,
+      "centerPx": [
+        492,
+        479
+      ],
+      "sizePx": [
+        60,
+        60
+      ],
+      "sourceIndex": 0,
+      "sourcePov": "left"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+    "fileName": "ruckig-frc.json",
+    "name": "ruckig-frc",
+    "version": "0.16.0",
+    "frcYear": "2026",
+    "uuid": "163c5268-070c-429a-9e20-0f2287b0d85a",
+    "mavenUrls": [
+        "https://maven.recordrobotics.org/ruckig-frc/vendordep/vendordep/repos/releases",
+        "https://repo1.maven.org/maven2"
+    ],
+    "jsonUrl": "https://maven.recordrobotics.org/ruckig-frc/vendordep/ruckig-frc.json",
+    "javaDependencies": [
+        {
+            "groupId": "org.recordrobotics.ruckig",
+            "artifactId": "ruckig-frc",
+            "version": "0.16.0"
+        }
+    ],
+    "jniDependencies": [
+        {
+            "groupId": "org.recordrobotics.ruckig",
+            "artifactId": "ruckig-native",
+            "version": "0.16.0",
+            "skipInvalidPlatforms": false,
+            "isJar": false,
+            "validPlatforms": [
+                "linuxathena",
+                "linuxx86-64",
+                "linuxarm64",
+                "osxuniversal",
+                "windowsx86-64"
+            ]
+        }
+    ],
+    "cppDependencies": []
+}

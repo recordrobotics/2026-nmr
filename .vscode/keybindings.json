@@ -1,0 +1,7 @@
+[
+    {
+        "key": "ctrl+alt+1",
+        "command": "command-runner.run",
+        "args": { "command": "tuning swerve encoders" }
+    }
+]

@@ -1,0 +1,111 @@
+{
+    "name": "M2026",
+    "rotations": [
+        {
+            "axis": "y",
+            "degrees": 180
+        }
+    ],
+    "position": [
+        0,
+        0,
+        0.103226
+    ],
+    "cameras": [],
+    "components": [
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "y",
+                    "degrees": 180
+                },
+                {
+                    "axis": "y",
+                    "degrees": -137
+                }
+            ],
+            "zeroedPosition": [
+                -0.3779,
+                0,
+                0.5948
+            ]
+        },
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "y",
+                    "degrees": 180
+                }
+            ],
+            "zeroedPosition": [
+                0,
+                0,
+                0.103226
+            ]
+        },
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "y",
+                    "degrees": 180
+                },
+                {
+                    "axis": "z",
+                    "degrees": -90
+                }
+            ],
+            "zeroedPosition": [
+                0,
+                0.254,
+                0.103226
+            ]
+        },
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "y",
+                    "degrees": 180
+                },
+                {
+                    "axis": "z",
+                    "degrees": -90
+                },
+                {
+                    "axis": "y",
+                    "degrees": 76
+                }
+            ],
+            "zeroedPosition": [
+                -0.1821,
+                0.254,
+                0.574826
+            ]
+        },
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "y",
+                    "degrees": 180
+                }
+            ],
+            "zeroedPosition": [
+                0,
+                0,
+                0.103226
+            ]
+        },
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "y",
+                    "degrees": 90
+                }
+            ],
+            "zeroedPosition": [
+                0.6942,
+                0,
+                0.2143
+            ]
+        }
+    ]
+}

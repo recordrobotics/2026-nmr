@@ -1,0 +1,20 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Spotless Apply",
+        "type": "shell",
+        "command": "./gradlew spotlessApply",
+        "group": "build",
+        "problemMatcher": []
+      },
+      {
+        "label": "Gradle Build",
+        "type": "shell",
+        "command": "./gradlew build",
+        "group": "build",
+        "problemMatcher": []
+      }      
+    ]
+  }
+  
