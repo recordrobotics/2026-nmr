@@ -23,7 +23,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.Feeder.FeederState;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Shooter.ShooterState;
-import frc.robot.subsystems.Spindexer.SpindexerState;
+import frc.robot.subsystems.Indexer.IndexerState;
 import frc.robot.subsystems.Turret.TurretState;
 import frc.robot.subsystems.shootorchestrator.ShotCalculator.ShotCalculation;
 import frc.robot.utils.DriverStationUtils;
@@ -372,11 +372,11 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
     }
 
     private void updateFeeders(boolean onTarget) {
-        SpindexerState spindexerState =
+        IndexerState indexerState =
                 switch (feedMode) {
-                    case AUTO -> (onTarget && shootingEnabled) ? SpindexerState.ON : SpindexerState.OFF;
-                    case ALWAYS -> shootingEnabled ? SpindexerState.ON : SpindexerState.OFF;
-                    case DISABLED -> SpindexerState.OFF;
+                    case AUTO -> (onTarget && shootingEnabled) ? IndexerState.ON : IndexerState.OFF;
+                    case ALWAYS -> shootingEnabled ? IndexerState.ON : IndexerState.OFF;
+                    case DISABLED -> IndexerState.OFF;
                 };
         FeederState feederState =
                 switch (feedMode) {
@@ -385,10 +385,10 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
                     case DISABLED -> FeederState.OFF;
                 };
 
-        RobotContainer.spindexer.setState(
-                RobotContainer.getControl().isUnstuckSpindexerPressed() ? SpindexerState.UNSTUCK : spindexerState);
+        RobotContainer.indexer.setState(
+                RobotContainer.getControl().isUnstuckIndexerPressed() ? IndexerState.UNSTUCK : indexerState);
         RobotContainer.feeder.setState(
-                RobotContainer.getControl().isUnstuckSpindexerPressed() ? FeederState.UNSTUCK : feederState);
+                RobotContainer.getControl().isUnstuckIndexerPressed() ? FeederState.UNSTUCK : feederState);
     }
 
     @Override

@@ -27,13 +27,13 @@ import frc.robot.subsystems.io.real.ClimberReal;
 import frc.robot.subsystems.io.real.FeederReal;
 import frc.robot.subsystems.io.real.IntakeReal;
 import frc.robot.subsystems.io.real.ShooterReal;
-import frc.robot.subsystems.io.real.SpindexerReal;
+import frc.robot.subsystems.io.real.IndexerReal;
 import frc.robot.subsystems.io.real.TurretReal;
 import frc.robot.subsystems.io.sim.ClimberSim;
 import frc.robot.subsystems.io.sim.FeederSim;
 import frc.robot.subsystems.io.sim.IntakeSim;
 import frc.robot.subsystems.io.sim.ShooterSim;
-import frc.robot.subsystems.io.sim.SpindexerSim;
+import frc.robot.subsystems.io.sim.IndexerSim;
 import frc.robot.subsystems.io.sim.TurretSim;
 import frc.robot.subsystems.shootorchestrator.ShootOrchestrator;
 import frc.robot.utils.AutoPath;
@@ -99,7 +99,7 @@ public final class RobotContainer {
     public static Intake intake;
     public static Turret turret;
     public static Shooter shooter;
-    public static Spindexer spindexer;
+    public static Indexer indexer;
     public static Feeder feeder;
     public static Climber climber;
     public static RobotModel model;
@@ -171,7 +171,7 @@ public final class RobotContainer {
             intake = new Intake(new IntakeReal());
             turret = new Turret(new TurretReal());
             shooter = new Shooter(new ShooterReal());
-            spindexer = new Spindexer(new SpindexerReal());
+            indexer = new Indexer(new IndexerReal());
             feeder = new Feeder(new FeederReal());
             climber = new Climber(new ClimberReal());
         } else {
@@ -208,7 +208,7 @@ public final class RobotContainer {
             intake = new Intake(new IntakeSim(ROBOT_PERIODIC, drivetrain.getSwerveDriveSimulation()));
             turret = new Turret(new TurretSim(ROBOT_PERIODIC));
             shooter = new Shooter(new ShooterSim(ROBOT_PERIODIC));
-            spindexer = new Spindexer(new SpindexerSim(ROBOT_PERIODIC));
+            indexer = new Indexer(new IndexerSim(ROBOT_PERIODIC));
             feeder = new Feeder(new FeederSim(ROBOT_PERIODIC));
             climber = new Climber(new ClimberSim(ROBOT_PERIODIC, drivetrain.getSwerveDriveSimulation()));
         }
@@ -246,7 +246,7 @@ public final class RobotContainer {
                             .ignoringDisable(true));
 
             // Register all powered subsystems with the simulation battery
-            registerPoweredSubsystems(intake, turret, shooter, spindexer, feeder, climber);
+            registerPoweredSubsystems(intake, turret, shooter, indexer, feeder, climber);
             SimulatedBattery.setVoltage(ACTUAL_RESTING_BATTERY_VOLTAGE);
             SimulatedBattery.setDischargeRate(0.02 / 378.45);
         }
@@ -459,7 +459,7 @@ public final class RobotContainer {
          */
         new Trigger(() -> getControl().isKillTriggered())
                 .whileTrue(CommandUtils.setForceDisabledForAllCommand(
-                                true, 2, intake, shooter, climber, feeder, spindexer, turret)
+                                true, 2, intake, shooter, climber, feeder, indexer, turret)
                         .repeatedly())
                 .onFalse(Commands.runOnce(() -> CommandScheduler.getInstance().cancelAll()));
 
@@ -608,7 +608,7 @@ public final class RobotContainer {
         shooter.close();
         climber.close();
         turret.close();
-        spindexer.close();
+        indexer.close();
         feeder.close();
     }
 }

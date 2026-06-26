@@ -282,7 +282,7 @@ public class TestControlBridge implements AbstractControl {
     }
 
     @Override
-    public boolean isUnstuckSpindexerPressed() {
+    public boolean isUnstuckIndexerPressed() {
         return false; // TODO
     }
 

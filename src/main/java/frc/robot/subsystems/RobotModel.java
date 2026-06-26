@@ -824,7 +824,7 @@ public final class RobotModel extends ManagedSubsystemBase {
             fuelObjects.add(new FuelObject(node.node.pose, node));
         }
 
-        // TODO: should be 8 not 5 - add the other 3 not in spindexer based off real robot
+        // TODO: should be 8 not 5 - add the other 3 not in indexer based off real robot
         public final void preloadFuel() {
             clearFuel();
             addFuelAtNode(fuelNodes[5]);
@@ -1072,7 +1072,7 @@ public final class RobotModel extends ManagedSubsystemBase {
         }
 
         public void randomizeNodes(List<Integer> nodeIndices) {
-            // Randomize with bias towards spindexer nodes being first, because they are directly touching the wheel
+            // Randomize with bias towards indexer nodes being first, because they are directly touching the wheel
             nodeIndices.sort((a, b) -> {
                 ManagedFuelNode nodeA = fuelNodes[a - 1];
                 ManagedFuelNode nodeB = fuelNodes[b - 1];
@@ -1185,7 +1185,7 @@ public final class RobotModel extends ManagedSubsystemBase {
                 }
             }
 
-            if (RobotContainer.spindexer.getSimIO().isOuttaking()
+            if (RobotContainer.indexer.getSimIO().isOuttaking()
                     && RobotContainer.feeder.getSimIO().isOuttaking()
                     && currentTime - lastShootTime >= 1.0 / SHOOT_BPS) {
                 lastShootTime = currentTime;

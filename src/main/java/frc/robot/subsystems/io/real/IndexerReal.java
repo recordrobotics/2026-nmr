@@ -13,46 +13,46 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.RobotContainer;
 import frc.robot.RobotMap;
-import frc.robot.subsystems.io.SpindexerIO;
+import frc.robot.subsystems.io.IndexerIO;
 import frc.robot.utils.TalonFXOrchestra;
 
-public class SpindexerReal implements SpindexerIO {
+public class IndexerReal implements IndexerIO {
 
-    protected final TalonFX spindexer;
+    protected final TalonFX indexer;
 
     private final StatusSignal<Angle> positionSignal;
     private final StatusSignal<AngularVelocity> velocitySignal;
     private final StatusSignal<Voltage> voltageSignal;
     private final StatusSignal<Current> currentSignal;
 
-    public SpindexerReal() {
-        spindexer = new TalonFX(RobotMap.Spindexer.MOTOR_ID);
-        spindexer.optimizeBusUtilization();
+    public IndexerReal() {
+        indexer = new TalonFX(RobotMap.Indexer.MOTOR_ID);
+        indexer.optimizeBusUtilization();
 
-        positionSignal = spindexer.getPosition();
-        velocitySignal = spindexer.getVelocity();
-        voltageSignal = spindexer.getMotorVoltage();
-        currentSignal = spindexer.getSupplyCurrent();
+        positionSignal = indexer.getPosition();
+        velocitySignal = indexer.getVelocity();
+        voltageSignal = indexer.getMotorVoltage();
+        currentSignal = indexer.getSupplyCurrent();
 
         BaseStatusSignal.setUpdateFrequencyForAll(Hertz.of(50), velocitySignal);
 
         RobotContainer.allStatusSignalsToRefresh.addAll(positionSignal, velocitySignal, voltageSignal, currentSignal);
 
-        RobotContainer.orchestra.add(spindexer, TalonFXOrchestra.Tracks.SPINDEXER);
+        RobotContainer.orchestra.add(indexer, TalonFXOrchestra.Tracks.INDEXER);
     }
 
     @Override
     public void applyTalonFXConfig(TalonFXConfiguration config) {
-        spindexer.getConfigurator().apply(config);
+        indexer.getConfigurator().apply(config);
     }
 
     @Override
     public void setControl(ControlRequest request) {
-        spindexer.setControl(request);
+        indexer.setControl(request);
     }
 
     @Override
-    public void updateInputs(SpindexerIOInputs inputs) {
+    public void updateInputs(IndexerIOInputs inputs) {
         inputs.connected = velocitySignal
                 .getStatus()
                 .isOK(); /* check signal status instead of calling isConnected() to reduce bus wait time */
@@ -64,6 +64,6 @@ public class SpindexerReal implements SpindexerIO {
 
     @Override
     public void close() {
-        spindexer.close();
+        indexer.close();
     }
 }

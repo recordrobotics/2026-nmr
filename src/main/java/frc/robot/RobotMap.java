@@ -32,10 +32,10 @@ public final class RobotMap {
         private Shooter() {}
     }
 
-    public static final class Spindexer {
+    public static final class Indexer {
         public static final int MOTOR_ID = 14;
 
-        private Spindexer() {}
+        private Indexer() {}
     }
 
     public static final class Feeder {

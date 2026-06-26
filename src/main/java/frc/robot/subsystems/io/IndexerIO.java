@@ -7,11 +7,11 @@ import com.ctre.phoenix6.controls.ControlRequest;
 import edu.wpi.first.units.measure.Current;
 import org.littletonrobotics.junction.AutoLog;
 
-public interface SpindexerIO {
+public interface IndexerIO {
 
     @AutoLog
     @SuppressWarnings("java:S1104") /* public fields in input */
-    class SpindexerIOInputs {
+    class IndexerIOInputs {
         public boolean connected = false;
         public double positionRotations = 0;
         public double velocityRotationsPerSecond = 0;
@@ -19,7 +19,7 @@ public interface SpindexerIO {
         public Current currentDraw = Amps.zero();
     }
 
-    default void updateInputs(SpindexerIOInputs inputs) {}
+    default void updateInputs(IndexerIOInputs inputs) {}
 
     default void applyTalonFXConfig(TalonFXConfiguration config) {}
 
