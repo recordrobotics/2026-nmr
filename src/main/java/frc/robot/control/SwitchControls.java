@@ -228,7 +228,7 @@ public class SwitchControls implements AbstractControl {
     }
 
     @Override
-    public boolean isUnstuckSpindexerPressed() {
+    public boolean isUnstuckIndexerPressed() {
         return xbox.getRawButton(3); // TODO: find button index for xbox X location button
     }
 

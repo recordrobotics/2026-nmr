@@ -29,7 +29,7 @@ public interface AbstractControl {
 
     boolean isShooterDisableShootPressed();
 
-    boolean isUnstuckSpindexerPressed();
+    boolean isUnstuckIndexerPressed();
 
     boolean isIntakeRelativePressed();
 

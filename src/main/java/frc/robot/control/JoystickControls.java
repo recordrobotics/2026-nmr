@@ -175,7 +175,7 @@ public class JoystickControls implements AbstractControl {
     }
 
     @Override
-    public boolean isUnstuckSpindexerPressed() {
+    public boolean isUnstuckIndexerPressed() {
         return joystick.getRawButton(3);
     }
 

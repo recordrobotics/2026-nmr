@@ -651,7 +651,7 @@ public final class Constants {
         private Shooter() {}
     }
 
-    public static final class Spindexer {
+    public static final class Indexer {
         public static final double KP = 0.0023175;
         public static final double KS = 0.073451;
         public static final double KV = 0.23114;
@@ -670,7 +670,7 @@ public final class Constants {
         public static final double INTAKE_VELOCITY_RPS = 21.0;
         public static final double UNSTUCK_VELOCITY_RPS = -5.0;
 
-        private Spindexer() {}
+        private Indexer() {}
     }
 
     public static final class Feeder {

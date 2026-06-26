@@ -16,9 +16,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.io.SpindexerIO;
-import frc.robot.subsystems.io.SpindexerIOInputsAutoLogged;
-import frc.robot.subsystems.io.sim.SpindexerSim;
+import frc.robot.subsystems.io.IndexerIO;
+import frc.robot.subsystems.io.IndexerIOInputsAutoLogged;
+import frc.robot.subsystems.io.sim.IndexerSim;
 import frc.robot.utils.AutoLogLevel;
 import frc.robot.utils.KillableSubsystem;
 import frc.robot.utils.PoweredSubsystem;
@@ -28,80 +28,80 @@ import frc.robot.utils.SysIdManager.SysIdProvider;
 import frc.robot.utils.wrappers.SafeAlert;
 import org.littletonrobotics.junction.Logger;
 
-public final class Spindexer extends KillableSubsystem implements PoweredSubsystem {
+public final class Indexer extends KillableSubsystem implements PoweredSubsystem {
 
     private static final double VELOCITY_TOLERANCE_RPS = 15.0; // TODO
 
-    private final SpindexerIO io;
-    private final SpindexerIOInputsAutoLogged inputs = new SpindexerIOInputsAutoLogged();
+    private final IndexerIO io;
+    private final IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
 
     private final SysIdRoutine sysIdRoutine;
     private final MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(0.0);
     private final VoltageOut voltageRequest = new VoltageOut(0.0);
 
-    private final SafeAlert disconnectedAlert = new SafeAlert("Spindexer disconnected!", AlertType.kError);
+    private final SafeAlert disconnectedAlert = new SafeAlert("Indexer disconnected!", AlertType.kError);
 
     private double targetVelocityRps;
-    private SpindexerState targetState = SpindexerState.OFF;
+    private IndexerState targetState = IndexerState.OFF;
 
-    public enum SpindexerState {
+    public enum IndexerState {
         OFF,
         ON,
         UNSTUCK
     }
 
-    public Spindexer(SpindexerIO io) {
+    public Indexer(IndexerIO io) {
         this.io = io;
 
         TalonFXConfiguration config = new TalonFXConfiguration();
 
         Slot0Configs slot0Configs = config.Slot0;
-        slot0Configs.kS = Constants.Spindexer.KS;
-        slot0Configs.kV = Constants.Spindexer.KV;
-        slot0Configs.kA = Constants.Spindexer.KA;
-        slot0Configs.kP = Constants.Spindexer.KP;
+        slot0Configs.kS = Constants.Indexer.KS;
+        slot0Configs.kV = Constants.Indexer.KV;
+        slot0Configs.kA = Constants.Indexer.KA;
+        slot0Configs.kP = Constants.Indexer.KP;
 
-        config.MotionMagic.MotionMagicJerk = Constants.Spindexer.MAX_JERK;
-        config.MotionMagic.MotionMagicAcceleration = Constants.Spindexer.MAX_ACCELERATION;
+        config.MotionMagic.MotionMagicJerk = Constants.Indexer.MAX_JERK;
+        config.MotionMagic.MotionMagicAcceleration = Constants.Indexer.MAX_ACCELERATION;
 
-        config.CurrentLimits.SupplyCurrentLimit = Constants.Spindexer.SUPPLY_CURRENT_LIMIT.in(Amps);
-        config.CurrentLimits.SupplyCurrentLowerLimit = Constants.Spindexer.SUPPLY_LOWER_CURRENT_LIMIT.in(Amps);
-        config.CurrentLimits.SupplyCurrentLowerTime = Constants.Spindexer.SUPPLY_LOWER_CURRENT_LIMIT_TIME.in(Seconds);
-        config.CurrentLimits.StatorCurrentLimit = Constants.Spindexer.STATOR_CURRENT_LIMIT.in(Amps);
+        config.CurrentLimits.SupplyCurrentLimit = Constants.Indexer.SUPPLY_CURRENT_LIMIT.in(Amps);
+        config.CurrentLimits.SupplyCurrentLowerLimit = Constants.Indexer.SUPPLY_LOWER_CURRENT_LIMIT.in(Amps);
+        config.CurrentLimits.SupplyCurrentLowerTime = Constants.Indexer.SUPPLY_LOWER_CURRENT_LIMIT_TIME.in(Seconds);
+        config.CurrentLimits.StatorCurrentLimit = Constants.Indexer.STATOR_CURRENT_LIMIT.in(Amps);
         config.CurrentLimits.StatorCurrentLimitEnable = true;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-        config.Feedback.SensorToMechanismRatio = Constants.Spindexer.GEAR_RATIO;
+        config.Feedback.SensorToMechanismRatio = Constants.Indexer.GEAR_RATIO;
         config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         io.applyTalonFXConfig(config.withAudio(new AudioConfigs().withAllowMusicDurDisable(true)));
 
-        setState(SpindexerState.OFF);
+        setState(IndexerState.OFF);
 
         sysIdRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
                         null, // default 1 volt/second ramp rate
                         null, // default 7 volt step voltage
                         null,
-                        state -> Logger.recordOutput("Spindexer/SysIdTestState", state.toString())),
+                        state -> Logger.recordOutput("Indexer/SysIdTestState", state.toString())),
                 new SysIdRoutine.Mechanism(v -> io.setControl(voltageRequest.withOutput(v)), null, this));
     }
 
-    public SpindexerSim getSimIO() {
-        if (io instanceof SpindexerSim sim) {
+    public IndexerSim getSimIO() {
+        if (io instanceof IndexerSim sim) {
             return sim;
         }
 
         return null;
     }
 
-    public void setState(SpindexerState newState) {
+    public void setState(IndexerState newState) {
         targetState = newState;
 
         targetVelocityRps = switch (targetState) {
             case OFF -> 0.0;
-            case ON -> Constants.Spindexer.INTAKE_VELOCITY_RPS;
-            case UNSTUCK -> Constants.Spindexer.UNSTUCK_VELOCITY_RPS;
+            case ON -> Constants.Indexer.INTAKE_VELOCITY_RPS;
+            case UNSTUCK -> Constants.Indexer.UNSTUCK_VELOCITY_RPS;
         };
 
         if (!isForceDisabled() && !(SysIdManager.getProvider() instanceof SysId)) {
@@ -119,7 +119,7 @@ public final class Spindexer extends KillableSubsystem implements PoweredSubsyst
     }
 
     @AutoLogLevel(level = AutoLogLevel.Level.DEBUG_REAL)
-    public SpindexerState getTargetState() {
+    public IndexerState getTargetState() {
         return targetState;
     }
 
@@ -144,7 +144,7 @@ public final class Spindexer extends KillableSubsystem implements PoweredSubsyst
     @Override
     public void periodicManaged() {
         io.updateInputs(inputs);
-        Logger.processInputs("Spindexer", inputs);
+        Logger.processInputs("Indexer", inputs);
 
         disconnectedAlert.set(!inputs.connected);
     }
@@ -163,12 +163,12 @@ public final class Spindexer extends KillableSubsystem implements PoweredSubsyst
     public static class SysId implements SysIdProvider {
         @Override
         public Command sysIdQuasistatic(Direction direction) {
-            return RobotContainer.spindexer.sysIdQuasistatic(direction);
+            return RobotContainer.indexer.sysIdQuasistatic(direction);
         }
 
         @Override
         public Command sysIdDynamic(Direction direction) {
-            return RobotContainer.spindexer.sysIdDynamic(direction);
+            return RobotContainer.indexer.sysIdDynamic(direction);
         }
 
         @Override

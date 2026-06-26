@@ -228,7 +228,7 @@ public class XboxControls implements AbstractControl {
     }
 
     @Override
-    public boolean isUnstuckSpindexerPressed() {
+    public boolean isUnstuckIndexerPressed() {
         return xbox.getXButton();
     }
 
