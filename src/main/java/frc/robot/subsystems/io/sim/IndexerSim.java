@@ -51,15 +51,12 @@ public class IndexerSim extends IndexerReal {
                 * calculateVoltageMultiplier(RobotModel.getFuelManager().getFuelCount()));
         indexerSimModel.update(periodicDt);
 
-        indexer
-                .getSimState()
+        indexer.getSimState()
                 .setRawRotorPosition(Constants.Indexer.GEAR_RATIO * indexerSimModel.getAngularPositionRotations());
-        indexer
-                .getSimState()
+        indexer.getSimState()
                 .setRotorVelocity(Constants.Indexer.GEAR_RATIO
                         * Units.radiansToRotations(indexerSimModel.getAngularVelocityRadPerSec()));
-        indexer
-                .getSimState()
+        indexer.getSimState()
                 .setRotorAcceleration(Constants.Indexer.GEAR_RATIO
                         * Units.radiansToRotations(indexerSimModel.getAngularAccelerationRadPerSecSq()));
     }

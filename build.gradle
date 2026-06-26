@@ -143,7 +143,7 @@ jacocoTestReport {
 
 sonar {
     properties {
-        property "sonar.projectKey", "recordrobotics-2026-robot"
+        property "sonar.projectKey", "recordrobotics-2026-nmr"
         property "sonar.organization", "recordrobotics"
     }
 }
