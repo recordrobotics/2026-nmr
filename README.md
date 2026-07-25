@@ -129,6 +129,13 @@ git lfs track "*.glb" # replace with target type
 
 This command adds an entry in the [`.gitattributes`](.gitattributes) file and updates the metadata for existing files matching the new filter. This means you will need to commit both the [`.gitattributes`](.gitattributes) and matching file changes.
 
+### Git LFS Migrate
+If existing large binary files are already tracked by regular git, they can be migrated to Git LFS:
+```bash
+$ git lfs migrate import --include="*.bin,*.dat" --everything # replace .bin and .dat with your specific file extensions
+$ git push origin --force-with-lease --all
+$ git push origin --force-with-lease --tags
+```
 
 ## Spotless Pre-Push Hook
 
