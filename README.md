@@ -132,9 +132,12 @@ This command adds an entry in the [`.gitattributes`](.gitattributes) file and up
 ### Git LFS Migrate
 If existing large binary files are already tracked by regular git, they can be migrated to Git LFS:
 ```bash
-$ git lfs migrate import --include="*.bin,*.dat" --everything # replace .bin and .dat with your specific file extensions
-$ git push origin --force-with-lease --all
-$ git push origin --force-with-lease --tags
+# replace "*.bin" with your specific file extension
+# replace "main" with your specific branch name
+$ git lfs migrate import --include="*.bin" --include-ref=main
+
+# replace "main" with your specific branch name
+$ git push origin main --force-with-lease
 ```
 
 ## Spotless Pre-Push Hook
