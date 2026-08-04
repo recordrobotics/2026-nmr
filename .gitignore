@@ -188,5 +188,7 @@ networktables.json
 
 src/main/java/frc/robot/BuildConstants.java
 
+.editorconfig
+
 # WPILogs
 *.wpilog
