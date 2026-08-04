@@ -71,15 +71,15 @@ public final class SwerveModule {
 
         // set slot 0 gains
         Slot0Configs slot0ConfigsDrive = driveConfig.Slot0;
-        slot0ConfigsDrive.kS = m.driveKs();
-        slot0ConfigsDrive.kV = m.driveKv();
-        slot0ConfigsDrive.kA = m.driveKa();
-        slot0ConfigsDrive.kP = m.driveKp();
+        slot0ConfigsDrive.kS = Constants.Swerve.DRIVE_KS;
+        slot0ConfigsDrive.kV = Constants.Swerve.DRIVE_KV;
+        slot0ConfigsDrive.kA = Constants.Swerve.DRIVE_KA;
+        slot0ConfigsDrive.kP = Constants.Swerve.DRIVE_KP;
         slot0ConfigsDrive.kI = 0;
         slot0ConfigsDrive.kD = 0;
 
         double wheelCircumference = m.wheelDiameter() * Math.PI;
-        driveConfig.Feedback.SensorToMechanismRatio = m.driveGearRatio() / wheelCircumference;
+        driveConfig.Feedback.SensorToMechanismRatio = Constants.Swerve.DRIVE_GEAR_RATIO / wheelCircumference;
 
         // set Motion Magic settings
         MotionMagicConfigs motionMagicConfigsDrive = driveConfig.MotionMagic;
@@ -91,10 +91,10 @@ public final class SwerveModule {
                         .withInverted(InvertedValue.Clockwise_Positive)
                         .withNeutralMode(NeutralModeValue.Brake))
                 .withCurrentLimits(new CurrentLimitsConfigs()
-                        .withSupplyCurrentLimit(m.driveMotorSupplyCurrentLimit())
-                        .withStatorCurrentLimit(m.driveMotorStatorCurrentLimit())
-                        .withSupplyCurrentLowerLimit(m.driveMotorSupplyLowerCurrentLimit())
-                        .withSupplyCurrentLowerTime(m.driveMotorSupplyLowerCurrentLimitTime())
+                        .withSupplyCurrentLimit(Constants.Swerve.DRIVE_SUPPLY_CURRENT_LIMIT)
+                        .withStatorCurrentLimit(Constants.Swerve.DRIVE_STATOR_CURRENT_LIMIT)
+                        .withSupplyCurrentLowerLimit(Constants.Swerve.DRIVE_SUPPLY_LOWER_CURRENT_LIMIT)
+                        .withSupplyCurrentLowerTime(Constants.Swerve.DRIVE_SUPPLY_LOWER_CURRENT_LIMIT_TIME)
                         .withSupplyCurrentLimitEnable(true)
                         .withStatorCurrentLimitEnable(true))
                 .withAudio(new AudioConfigs().withAllowMusicDurDisable(true)));
@@ -103,14 +103,14 @@ public final class SwerveModule {
 
         // set slot 0 gains
         Slot0Configs slot0ConfigsTurn = turnConfig.Slot0;
-        slot0ConfigsTurn.kS = m.turnKs();
-        slot0ConfigsTurn.kV = m.turnKv();
-        slot0ConfigsTurn.kA = m.turnKa();
-        slot0ConfigsTurn.kP = m.turnKp();
+        slot0ConfigsTurn.kS = Constants.Swerve.TURN_KS;
+        slot0ConfigsTurn.kV = Constants.Swerve.TURN_KV;
+        slot0ConfigsTurn.kA = Constants.Swerve.TURN_KA;
+        slot0ConfigsTurn.kP = Constants.Swerve.TURN_KP;
         slot0ConfigsTurn.kI = 0;
-        slot0ConfigsTurn.kD = m.turnKd();
+        slot0ConfigsTurn.kD = Constants.Swerve.TURN_KD;
         turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
-        turnConfig.Feedback.SensorToMechanismRatio = m.turnGearRatio();
+        turnConfig.Feedback.SensorToMechanismRatio = Constants.Swerve.TURN_GEAR_RATIO;
 
         // set Motion Magic settings
         MotionMagicConfigs motionMagicConfigsTurn = turnConfig.MotionMagic;
@@ -122,10 +122,10 @@ public final class SwerveModule {
                         .withInverted(InvertedValue.Clockwise_Positive)
                         .withNeutralMode(NeutralModeValue.Brake))
                 .withCurrentLimits(new CurrentLimitsConfigs()
-                        .withSupplyCurrentLimit(m.turnMotorSupplyCurrentLimit())
-                        .withStatorCurrentLimit(m.turnMotorStatorCurrentLimit())
-                        .withSupplyCurrentLowerLimit(m.turnMotorSupplyLowerCurrentLimit())
-                        .withSupplyCurrentLowerTime(m.turnMotorSupplyLowerCurrentLimitTime())
+                        .withSupplyCurrentLimit(Constants.Swerve.TURN_SUPPLY_CURRENT_LIMIT)
+                        .withStatorCurrentLimit(Constants.Swerve.TURN_STATOR_CURRENT_LIMIT)
+                        .withSupplyCurrentLowerLimit(Constants.Swerve.TURN_SUPPLY_LOWER_CURRENT_LIMIT)
+                        .withSupplyCurrentLowerTime(Constants.Swerve.TURN_SUPPLY_LOWER_CURRENT_LIMIT_TIME)
                         .withSupplyCurrentLimitEnable(true)
                         .withStatorCurrentLimitEnable(true))
                 .withAudio(new AudioConfigs().withAllowMusicDurDisable(true)));

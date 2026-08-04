@@ -155,7 +155,7 @@ public class RobotBumpSim {
     // -------------------------------------------------------------------------
 
     /** Effective wheel contact radius against the bump surface (metres). */
-    private static final double WHEEL_RADIUS = Constants.Swerve.WHEEL_DIAMETER / 2.0;
+    private static final double WHEEL_RADIUS = Constants.Swerve.AVERAGE_WHEEL_DIAMETER / 2.0;
 
     /** Height offset from the average module-contact Z to the robot-body origin (metres). */
     private static final double CHASSIS_HEIGHT = 0.0;
