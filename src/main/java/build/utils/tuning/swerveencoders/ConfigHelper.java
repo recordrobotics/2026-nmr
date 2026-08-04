@@ -2,6 +2,7 @@ package build.utils.tuning.swerveencoders;
 
 import build.utils.FileUtils;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,8 +30,7 @@ public final class ConfigHelper {
         return encoderChannels;
     }
 
-    public static void setEncoderOffsets(File configFile, Map<Integer, Double> offsets, String motorName)
-            throws FileNotFoundException {
+    public static void setEncoderOffsets(File configFile, Map<Integer, Double> offsets) throws FileNotFoundException {
         JsonNode obj = FileUtils.readJson(configFile);
 
         obj.properties().iterator().forEachRemaining(entry -> {
@@ -39,13 +39,8 @@ public final class ConfigHelper {
                 int channel = moduleConfig.get(ENCODER_CHANNEL).asInt();
                 if (offsets.containsKey(channel)
                         && moduleConfig instanceof ObjectNode objectNode
-                        && objectNode.get("encoderOffset") instanceof ObjectNode motorNode) {
-                    if (motorNode.get(motorName) == null) {
-                        System.out.println(
-                                "No existing offset for motor " + motorName + " on channel " + channel + ", skipping");
-                        return;
-                    }
-                    motorNode.put(motorName, offsets.get(channel));
+                        && objectNode.get("encoderOffset") instanceof NumericNode) {
+                    objectNode.put("encoderOffset", offsets.get(channel));
                 } else {
                     System.out.println("No offset for channel " + channel + ", skipping");
                 }

@@ -4,8 +4,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.Constants;
-import frc.robot.utils.wrappers.ImmutableCurrent;
-import frc.robot.utils.wrappers.ImmutableTime;
 import frc.robot.utils.wrappers.Translation2d;
 import java.io.File;
 import java.io.FileReader;
@@ -90,149 +88,6 @@ public record ModuleConstants(
         }
     }
 
-    private interface MotorType {
-        String getJsonId();
-
-        default double getEncoderOffset(JSONObject encoderOffset) throws InvalidConfigException {
-            return ModuleConstants.getProperty(encoderOffset, getJsonId(), Double.class);
-        }
-    }
-
-    public enum TurnMotorType implements MotorType {
-        FALCON(
-                "falcon",
-                Constants.Swerve.FALCON_TURN_GEAR_RATIO,
-                Constants.Swerve.FALCON_TURN_SUPPLY_CURRENT_LIMIT,
-                Constants.Swerve.FALCON_TURN_SUPPLY_LOWER_CURRENT_LIMIT,
-                Constants.Swerve.FALCON_TURN_SUPPLY_LOWER_CURRENT_LIMIT_TIME,
-                Constants.Swerve.FALCON_TURN_STATOR_CURRENT_LIMIT,
-                Constants.Swerve.FALCON_TURN_KV,
-                Constants.Swerve.FALCON_TURN_KA,
-                Constants.Swerve.FALCON_TURN_KS,
-                Constants.Swerve.FALCON_TURN_KP,
-                Constants.Swerve.FALCON_TURN_KD),
-        KRAKEN(
-                "kraken",
-                Constants.Swerve.KRAKEN_TURN_GEAR_RATIO,
-                Constants.Swerve.KRAKEN_TURN_SUPPLY_CURRENT_LIMIT,
-                Constants.Swerve.KRAKEN_TURN_SUPPLY_LOWER_CURRENT_LIMIT,
-                Constants.Swerve.KRAKEN_TURN_SUPPLY_LOWER_CURRENT_LIMIT_TIME,
-                Constants.Swerve.KRAKEN_TURN_STATOR_CURRENT_LIMIT,
-                Constants.Swerve.KRAKEN_TURN_KV,
-                Constants.Swerve.KRAKEN_TURN_KA,
-                Constants.Swerve.KRAKEN_TURN_KS,
-                Constants.Swerve.KRAKEN_TURN_KP,
-                Constants.Swerve.KRAKEN_TURN_KD);
-
-        private final String jsonId;
-        private final double gearRatio;
-        private final ImmutableCurrent supplyCurrentLimit;
-        private final ImmutableCurrent supplyLowerCurrentLimit;
-        private final ImmutableTime supplyLowerCurrentLimitTime;
-        private final ImmutableCurrent statorCurrentLimit;
-
-        private final double kV;
-        private final double kA;
-        private final double kS;
-        private final double kP;
-        private final double kD;
-
-        TurnMotorType(
-                String jsonId,
-                double gearRatio,
-                ImmutableCurrent supplyCurrentLimit,
-                ImmutableCurrent supplyLowerCurrentLimit,
-                ImmutableTime supplyLowerCurrentLimitTime,
-                ImmutableCurrent statorCurrentLimit,
-                double kV,
-                double kA,
-                double kS,
-                double kP,
-                double kD) {
-            this.jsonId = jsonId;
-            this.gearRatio = gearRatio;
-            this.supplyCurrentLimit = supplyCurrentLimit;
-            this.supplyLowerCurrentLimit = supplyLowerCurrentLimit;
-            this.supplyLowerCurrentLimitTime = supplyLowerCurrentLimitTime;
-            this.statorCurrentLimit = statorCurrentLimit;
-            this.kV = kV;
-            this.kA = kA;
-            this.kS = kS;
-            this.kP = kP;
-            this.kD = kD;
-        }
-
-        @Override
-        public String getJsonId() {
-            return jsonId;
-        }
-    }
-
-    public enum DriveMotorType implements MotorType {
-        FALCON(
-                "falcon",
-                Constants.Swerve.FALCON_DRIVE_GEAR_RATIO,
-                Constants.Swerve.FALCON_DRIVE_SUPPLY_CURRENT_LIMIT,
-                Constants.Swerve.FALCON_DRIVE_SUPPLY_LOWER_CURRENT_LIMIT,
-                Constants.Swerve.FALCON_DRIVE_SUPPLY_LOWER_CURRENT_LIMIT_TIME,
-                Constants.Swerve.FALCON_DRIVE_STATOR_CURRENT_LIMIT,
-                Constants.Swerve.FALCON_DRIVE_KV,
-                Constants.Swerve.FALCON_DRIVE_KA,
-                Constants.Swerve.FALCON_DRIVE_KS,
-                Constants.Swerve.FALCON_DRIVE_KP),
-        KRAKEN(
-                "kraken",
-                Constants.Swerve.KRAKEN_DRIVE_GEAR_RATIO,
-                Constants.Swerve.KRAKEN_DRIVE_SUPPLY_CURRENT_LIMIT,
-                Constants.Swerve.KRAKEN_DRIVE_SUPPLY_LOWER_CURRENT_LIMIT,
-                Constants.Swerve.KRAKEN_DRIVE_SUPPLY_LOWER_CURRENT_LIMIT_TIME,
-                Constants.Swerve.KRAKEN_DRIVE_STATOR_CURRENT_LIMIT,
-                Constants.Swerve.KRAKEN_DRIVE_KV,
-                Constants.Swerve.KRAKEN_DRIVE_KA,
-                Constants.Swerve.KRAKEN_DRIVE_KS,
-                Constants.Swerve.KRAKEN_DRIVE_KP);
-
-        private final String jsonId;
-        private final double gearRatio;
-        private final ImmutableCurrent supplyCurrentLimit;
-        private final ImmutableCurrent supplyLowerCurrentLimit;
-        private final ImmutableTime supplyLowerCurrentLimitTime;
-        private final ImmutableCurrent statorCurrentLimit;
-
-        private final double kV;
-        private final double kA;
-        private final double kS;
-        private final double kP;
-
-        DriveMotorType(
-                String jsonId,
-                double gearRatio,
-                ImmutableCurrent supplyCurrentLimit,
-                ImmutableCurrent supplyLowerCurrentLimit,
-                ImmutableTime supplyLowerCurrentLimitTime,
-                ImmutableCurrent statorCurrentLimit,
-                double kV,
-                double kA,
-                double kS,
-                double kP) {
-            this.jsonId = jsonId;
-            this.gearRatio = gearRatio;
-            this.supplyCurrentLimit = supplyCurrentLimit;
-            this.statorCurrentLimit = statorCurrentLimit;
-            this.supplyLowerCurrentLimit = supplyLowerCurrentLimit;
-            this.supplyLowerCurrentLimitTime = supplyLowerCurrentLimitTime;
-            this.kV = kV;
-            this.kA = kA;
-            this.kS = kS;
-            this.kP = kP;
-        }
-
-        @Override
-        public String getJsonId() {
-            return jsonId;
-        }
-    }
-
     public static class InvalidConfigException extends Exception {
         public InvalidConfigException(String message) {
             super(message);
@@ -243,12 +98,10 @@ public record ModuleConstants(
      * Loads module constants from deploy/swerve/motors.json file
      *
      * @param location Location of module
-     * @param driveMotorType Drive motor type (also determines the falcon/kraken objects in config)
+     * @param driveMotorType Drive motor type
      * @param turnMotorType Turn motor type (only used for the final module creation)
      */
-    public static ModuleConstants fromConfig(
-            MotorLocation location, DriveMotorType driveMotorType, TurnMotorType turnMotorType)
-            throws InvalidConfigException {
+    public static ModuleConstants fromConfig(MotorLocation location) throws InvalidConfigException {
         File configFile = new File(Filesystem.getDeployDirectory(), "swerve/motors.json");
         if (!configFile.exists()) throw new InvalidConfigException("Config file does not exist");
 
@@ -263,33 +116,32 @@ public record ModuleConstants(
         }
 
         JSONObject motor = location.getMotor(obj);
-        JSONObject encoderOffset = getProperty(motor, "encoderOffset", JSONObject.class);
 
         return new ModuleConstants(
                 Math.toIntExact(getProperty(motor, "driveMotorChannel", Long.class)),
                 Math.toIntExact(getProperty(motor, "turningMotorChannel", Long.class)),
                 Math.toIntExact(getProperty(motor, "encoderChannel", Long.class)),
-                driveMotorType.getEncoderOffset(encoderOffset),
+                getProperty(motor, "encoderOffset", Double.class),
                 location.wheelLocation,
-                turnMotorType.gearRatio,
-                driveMotorType.gearRatio,
-                turnMotorType.supplyCurrentLimit,
-                turnMotorType.supplyLowerCurrentLimit,
-                turnMotorType.supplyLowerCurrentLimitTime,
-                turnMotorType.statorCurrentLimit,
-                driveMotorType.supplyCurrentLimit,
-                driveMotorType.supplyLowerCurrentLimit,
-                driveMotorType.supplyLowerCurrentLimitTime,
-                driveMotorType.statorCurrentLimit,
-                driveMotorType.kV,
-                driveMotorType.kA,
-                driveMotorType.kS,
-                driveMotorType.kP,
-                turnMotorType.kV,
-                turnMotorType.kA,
-                turnMotorType.kS,
-                turnMotorType.kP,
-                turnMotorType.kD,
+                Constants.Swerve.TURN_GEAR_RATIO,
+                Constants.Swerve.DRIVE_GEAR_RATIO,
+                Constants.Swerve.TURN_SUPPLY_CURRENT_LIMIT,
+                Constants.Swerve.TURN_SUPPLY_LOWER_CURRENT_LIMIT,
+                Constants.Swerve.TURN_SUPPLY_LOWER_CURRENT_LIMIT_TIME,
+                Constants.Swerve.TURN_STATOR_CURRENT_LIMIT,
+                Constants.Swerve.DRIVE_SUPPLY_CURRENT_LIMIT,
+                Constants.Swerve.DRIVE_SUPPLY_LOWER_CURRENT_LIMIT,
+                Constants.Swerve.DRIVE_SUPPLY_LOWER_CURRENT_LIMIT_TIME,
+                Constants.Swerve.DRIVE_STATOR_CURRENT_LIMIT,
+                Constants.Swerve.DRIVE_KV,
+                Constants.Swerve.DRIVE_KA,
+                Constants.Swerve.DRIVE_KS,
+                Constants.Swerve.DRIVE_KP,
+                Constants.Swerve.TURN_KV,
+                Constants.Swerve.TURN_KA,
+                Constants.Swerve.TURN_KS,
+                Constants.Swerve.TURN_KP,
+                Constants.Swerve.TURN_KD,
                 Constants.Swerve.WHEEL_DIAMETER);
     }
 

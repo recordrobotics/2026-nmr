@@ -73,9 +73,7 @@ This repository is set up to show useful commands in a menu when pressing `Ctrl+
 
 #### Available commands
 
-- **tuning swerve encoders** — when selecting this command an additional window prompting for the type of module appears. The options are `kraken|falcon` with default `kraken`
-
-  <img width="996" height="141" alt="image" src="https://github.com/user-attachments/assets/5431c4f5-0d50-4350-90ad-8c85f21207a4" />
+- **tuning swerve encoders** — sets the swerve encoder offsets in `motors.json` to their current values (read from networktables)
 
 #### Keybindings
 

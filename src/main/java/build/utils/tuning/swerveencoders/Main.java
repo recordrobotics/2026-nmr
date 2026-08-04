@@ -19,8 +19,8 @@ public final class Main {
 
     @SuppressWarnings("java:S109")
     public static void main(String... args) {
-        if (args.length == 0) {
-            throw new IllegalArgumentException("Please provide the motor name as the first argument (e.g., 'kraken')");
+        if (args.length != 0) {
+            throw new IllegalArgumentException("Swerve Encoder Tuning expects no arguments");
         }
 
         WPIUtilJNI.checkMsvcRuntime();
@@ -76,7 +76,7 @@ public final class Main {
             }
 
             try {
-                ConfigHelper.setEncoderOffsets(config, values, args[0]);
+                ConfigHelper.setEncoderOffsets(config, values);
                 System.out.println("Updated config file: " + config.getAbsolutePath());
             } catch (Exception e) {
                 ConsoleLogger.logError(e);

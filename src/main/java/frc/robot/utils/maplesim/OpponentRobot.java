@@ -147,10 +147,10 @@ public class OpponentRobot extends ManagedSubsystemBase {
             .withSwerveModule(new SwerveModuleSimulationConfig(
                     DCMotor.getKrakenX60(1), // Drive motor is a Kraken X60
                     DCMotor.getKrakenX44(1), // Steer motor is a Kraken X44
-                    Constants.Swerve.KRAKEN_DRIVE_GEAR_RATIO, // Drive motor gear ratio.
-                    Constants.Swerve.KRAKEN_TURN_GEAR_RATIO, // Steer motor gear ratio.
-                    Volts.of(Constants.Swerve.KRAKEN_DRIVE_KS), // Drive static voltage
-                    Volts.of(Constants.Swerve.KRAKEN_TURN_KS), // Steer static voltage
+                    Constants.Swerve.DRIVE_GEAR_RATIO, // Drive motor gear ratio.
+                    Constants.Swerve.TURN_GEAR_RATIO, // Steer motor gear ratio.
+                    Volts.of(Constants.Swerve.DRIVE_KS), // Drive static voltage
+                    Volts.of(Constants.Swerve.TURN_KS), // Steer static voltage
                     Meters.of(Constants.Swerve.WHEEL_DIAMETER / 2), // Wheel radius
                     KilogramSquareMeters.of(0.03),
                     COTS.WHEELS.DEFAULT_NEOPRENE_TREAD.cof, // Use the COF for Neoprene Tread

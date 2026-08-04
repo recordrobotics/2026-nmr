@@ -27,10 +27,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.utils.AutoLogLevel;
 import frc.robot.utils.DriverStationUtils;
 import frc.robot.utils.ModuleConstants;
-import frc.robot.utils.ModuleConstants.DriveMotorType;
 import frc.robot.utils.ModuleConstants.InvalidConfigException;
 import frc.robot.utils.ModuleConstants.MotorLocation;
-import frc.robot.utils.ModuleConstants.TurnMotorType;
 import frc.robot.utils.SimpleMath;
 import frc.robot.utils.SysIdManager;
 import frc.robot.utils.wrappers.ImmutableCurrent;
@@ -348,68 +346,40 @@ public final class Constants {
         public static final Translation2d BACK_RIGHT_WHEEL_LOCATION =
                 new Translation2d(-WHEEL_EXTENT_X, -WHEEL_EXTENT_Y);
 
-        // Gear ratios for falcon and kraken
-        public static final double FALCON_TURN_GEAR_RATIO =
-                15.43; // (https://web.archive.org/web/20230117081053/https://docs.wcproducts.com/wcp-swervex/general-info/ratio-options)
-        public static final double FALCON_DRIVE_GEAR_RATIO =
-                7.36; // (https://web.archive.org/web/20230117081053/https://docs.wcproducts.com/wcp-swervex/general-info/ratio-options)
+        // Gear ratios
+        public static final double TURN_GEAR_RATIO = 13.3714;
+        public static final double DRIVE_GEAR_RATIO = 6.75; // X1 12 pinion
 
-        public static final double KRAKEN_TURN_GEAR_RATIO = 13.3714;
-        public static final double KRAKEN_DRIVE_GEAR_RATIO = 6.75; // X1 12 pinion
-
-        public static final ImmutableCurrent FALCON_TURN_STATOR_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(120));
-        public static final ImmutableCurrent FALCON_TURN_SUPPLY_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(70));
-        public static final ImmutableCurrent FALCON_TURN_SUPPLY_LOWER_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(40));
-        public static final ImmutableTime FALCON_TURN_SUPPLY_LOWER_CURRENT_LIMIT_TIME =
-                ImmutableTime.of(Seconds.of(1.0));
-        public static final ImmutableCurrent FALCON_DRIVE_STATOR_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(120));
-        public static final ImmutableCurrent FALCON_DRIVE_SUPPLY_LOWER_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(40));
-        public static final ImmutableTime FALCON_DRIVE_SUPPLY_LOWER_CURRENT_LIMIT_TIME =
-                ImmutableTime.of(Seconds.of(1.0));
-        public static final ImmutableCurrent FALCON_DRIVE_SUPPLY_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(70));
-
-        public static final ImmutableCurrent KRAKEN_TURN_STATOR_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(40));
-        public static final ImmutableCurrent KRAKEN_TURN_SUPPLY_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(25));
-        public static final ImmutableCurrent KRAKEN_TURN_SUPPLY_LOWER_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(25));
-        public static final ImmutableTime KRAKEN_TURN_SUPPLY_LOWER_CURRENT_LIMIT_TIME =
-                ImmutableTime.of(Seconds.of(1.0));
-        public static final ImmutableCurrent KRAKEN_DRIVE_STATOR_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(108));
-        public static final ImmutableCurrent KRAKEN_DRIVE_SUPPLY_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(58));
-        public static final ImmutableCurrent KRAKEN_DRIVE_SUPPLY_LOWER_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(40));
-        public static final ImmutableTime KRAKEN_DRIVE_SUPPLY_LOWER_CURRENT_LIMIT_TIME =
-                ImmutableTime.of(Seconds.of(1.0));
+        public static final ImmutableCurrent TURN_STATOR_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(40));
+        public static final ImmutableCurrent TURN_SUPPLY_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(25));
+        public static final ImmutableCurrent TURN_SUPPLY_LOWER_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(25));
+        public static final ImmutableTime TURN_SUPPLY_LOWER_CURRENT_LIMIT_TIME = ImmutableTime.of(Seconds.of(1.0));
+        public static final ImmutableCurrent DRIVE_STATOR_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(108));
+        public static final ImmutableCurrent DRIVE_SUPPLY_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(58));
+        public static final ImmutableCurrent DRIVE_SUPPLY_LOWER_CURRENT_LIMIT = ImmutableCurrent.of(Amps.of(40));
+        public static final ImmutableTime DRIVE_SUPPLY_LOWER_CURRENT_LIMIT_TIME = ImmutableTime.of(Seconds.of(1.0));
 
         // All of the DRIVE motor values treat the 4 drive motors as one gearbox, with one output. This means that
-        // applying KRAKEN_DRIVE_KA to all drive motors will accelerate the whole robot at 1 m/s^2.
+        // applying DRIVE_KA to all drive motors will accelerate the whole robot at 1 m/s^2.
         /* Units:
          * Ks: V
          * Kv: V/(m/s)
          * Ka: V/(m/s^2)
          * Kp: V/(m/s)
          */
-        public static final double FALCON_DRIVE_KS = 0.13192;
-        public static final double FALCON_DRIVE_KV = 2.7547;
-        public static final double FALCON_DRIVE_KA = 0.24758;
-        public static final double FALCON_DRIVE_KP = 4.6957;
 
-        public static final double FALCON_TURN_KV = 1.7214;
-        public static final double FALCON_TURN_KA = 0.049311;
-        public static final double FALCON_TURN_KS = 0.13609;
-        public static final double FALCON_TURN_KP = 67.02;
-        public static final double FALCON_TURN_KD = 3.2831;
+        public static final double DRIVE_KS = 0.16364;
+        public static final double DRIVE_KV = 2.4345;
+        public static final double DRIVE_KA = 0.23572;
+        public static final double DRIVE_KP = 3.8703;
 
-        public static final double KRAKEN_DRIVE_KS = 0.16364;
-        public static final double KRAKEN_DRIVE_KV = 2.4345;
-        public static final double KRAKEN_DRIVE_KA = 0.23572;
-        public static final double KRAKEN_DRIVE_KP = 3.8703;
+        public static final double TURN_KV = 1.3101;
+        public static final double TURN_KA = 0.063814;
+        public static final double TURN_KS = 0.62704;
+        public static final double TURN_KP = 68.174;
+        public static final double TURN_KD = 3.2858;
 
-        public static final double KRAKEN_TURN_KV = 1.3101;
-        public static final double KRAKEN_TURN_KA = 0.063814;
-        public static final double KRAKEN_TURN_KS = 0.62704;
-        public static final double KRAKEN_TURN_KP = 68.174;
-        public static final double KRAKEN_TURN_KD = 3.2858;
-
-        public static final double FEEDFORWARD_KA = KRAKEN_DRIVE_KA * 1; // 4 is good
+        public static final double FEEDFORWARD_KA = DRIVE_KA * 1; // 4 is good
 
         // Wheel diameter
         public static final double WHEEL_DIAMETER = Units.inchesToMeters(4); // TODO: measure
@@ -420,7 +390,7 @@ public final class Constants {
         public static final double MAX_ANGULAR_ACCELERATION_RADIANS =
                 54.9727426818 / WHEEL_BASE_RADIUS; // do the math if you want but this is right trust
 
-        public static final double DRIVE_MAX_ACCELERATION = 12.0 / KRAKEN_DRIVE_KA;
+        public static final double DRIVE_MAX_ACCELERATION = 12.0 / DRIVE_KA;
         public static final double DRIVE_MAX_JERK = DRIVE_MAX_ACCELERATION * 10;
 
         public static final double TURN_MMEXPO_KV = 1.5;
@@ -440,8 +410,8 @@ public final class Constants {
                         MAX_MODULE_SPEED,
                         COTS.WHEELS.DEFAULT_NEOPRENE_TREAD.cof,
                         DCMotor.getKrakenX60(1),
-                        Constants.Swerve.KRAKEN_DRIVE_GEAR_RATIO,
-                        Constants.Swerve.KRAKEN_DRIVE_SUPPLY_CURRENT_LIMIT.in(Amps),
+                        Constants.Swerve.DRIVE_GEAR_RATIO,
+                        Constants.Swerve.DRIVE_SUPPLY_CURRENT_LIMIT.in(Amps),
                         1),
                 FRONT_LEFT_WHEEL_LOCATION.minus(TURRET_OFFSET),
                 FRONT_RIGHT_WHEEL_LOCATION.minus(TURRET_OFFSET),
@@ -453,9 +423,6 @@ public final class Constants {
                 new PIDConstants(4.0, 0.0, 0.3) // Rotation PID constants
                 );
 
-        public static final DriveMotorType driveMotorType = DriveMotorType.KRAKEN;
-        public static final TurnMotorType turnMotorType = TurnMotorType.KRAKEN;
-
         public static final Double MAX_ANGULAR_SPEED_RADIANS =
                 Constants.Swerve.MAX_MODULE_SPEED / Constants.Swerve.WHEEL_BASE_RADIUS; // trust
 
@@ -464,19 +431,19 @@ public final class Constants {
         // Module Creation
 
         public static ModuleConstants getFrontLeftConstants() throws InvalidConfigException {
-            return ModuleConstants.fromConfig(MotorLocation.FRONT_LEFT, driveMotorType, turnMotorType);
+            return ModuleConstants.fromConfig(MotorLocation.FRONT_LEFT);
         }
 
         public static ModuleConstants getFrontRightConstants() throws InvalidConfigException {
-            return ModuleConstants.fromConfig(MotorLocation.FRONT_RIGHT, driveMotorType, turnMotorType);
+            return ModuleConstants.fromConfig(MotorLocation.FRONT_RIGHT);
         }
 
         public static ModuleConstants getBackLeftConstants() throws InvalidConfigException {
-            return ModuleConstants.fromConfig(MotorLocation.BACK_LEFT, driveMotorType, turnMotorType);
+            return ModuleConstants.fromConfig(MotorLocation.BACK_LEFT);
         }
 
         public static ModuleConstants getBackRightConstants() throws InvalidConfigException {
-            return ModuleConstants.fromConfig(MotorLocation.BACK_RIGHT, driveMotorType, turnMotorType);
+            return ModuleConstants.fromConfig(MotorLocation.BACK_RIGHT);
         }
     }
 
