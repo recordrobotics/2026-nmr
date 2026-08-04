@@ -298,9 +298,7 @@ public final class Intake extends KillableSubsystem implements PoweredSubsystem,
 
     private void setArmTarget(IntakeState state) {
         if (state == IntakeState.STARTING
-                && !(
-                /* not near start and turret isn't stowed (need to stow turret first) */
-                !isNearStartPosition() && RobotContainer.turret != null && !RobotContainer.turret.isStowed())) {
+                && (isNearStartPosition() || RobotContainer.turret == null || RobotContainer.turret.isStowed())) {
             armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_UP_POSITION_RADIANS);
         } else if (!(RobotContainer.climber != null
                 && RobotContainer.climber.isShotblockerExtended())) { // guard against shotblocker extension
