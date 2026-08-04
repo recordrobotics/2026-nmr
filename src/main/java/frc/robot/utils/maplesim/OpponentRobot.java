@@ -302,9 +302,7 @@ public class OpponentRobot extends ManagedSubsystemBase {
     public void periodicManaged() {
         if (enabled && RobotState.isEnabled()) {
             switch (behavior) {
-                case DEFENSE:
-                    runDefense(RobotContainer.model.getRobot());
-                    break;
+                case DEFENSE -> runDefense(RobotContainer.model.getRobot());
             }
         } else {
             driveSimulation.runChassisSpeeds(new ChassisSpeeds(0, 0, 0), Translation2d.kZero, false, true);

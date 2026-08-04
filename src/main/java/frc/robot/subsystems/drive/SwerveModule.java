@@ -161,24 +161,25 @@ public final class SwerveModule {
 
         if (inputs.encoderConnected) {
             switch (inputs.encoderMagnetHealth) {
-                case Magnet_Invalid:
+                case Magnet_Invalid -> {
                     absEncoderErrorAlert.setText(prefix + "invalid magnet health");
                     absEncoderErrorAlert.set(true);
                     absEncoderWarningAlert.set(false);
-                    break;
-                case Magnet_Red:
+                }
+                case Magnet_Red -> {
                     absEncoderWarningAlert.setText(prefix + "magnet health red");
                     absEncoderWarningAlert.set(true);
                     absEncoderErrorAlert.set(false);
-                    break;
-                case Magnet_Orange:
+                }
+                case Magnet_Orange -> {
                     absEncoderWarningAlert.setText(prefix + "magnet health orange");
                     absEncoderWarningAlert.set(true);
                     absEncoderErrorAlert.set(false);
-                    break;
-                default:
+                }
+                default -> {
                     absEncoderWarningAlert.set(false);
                     absEncoderErrorAlert.set(false);
+                }
             }
         } else {
             absEncoderErrorAlert.setText(prefix + "disconnected");

@@ -85,21 +85,21 @@ public class PhotonVisionCamera extends PoseEstimationCamera {
             cameraSim = new PhotonCameraSim(camera, cameraProp);
 
             switch (performanceMode) {
-                case FAST:
+                case FAST -> {
                     cameraSim.enableDrawWireframe(false);
                     cameraSim.enableRawStream(false);
                     cameraSim.enableProcessedStream(false);
-                    break;
-                case STREAMED:
+                }
+                case STREAMED -> {
                     cameraSim.enableDrawWireframe(false);
                     cameraSim.enableRawStream(true);
                     cameraSim.enableProcessedStream(true);
-                    break;
-                case WIREFRAME:
+                }
+                case WIREFRAME -> {
                     cameraSim.enableDrawWireframe(true);
                     cameraSim.enableRawStream(true);
                     cameraSim.enableProcessedStream(true);
-                    break;
+                }
             }
 
             cameraSim.setMaxSightRange(physicalCamera.maxSightRange);

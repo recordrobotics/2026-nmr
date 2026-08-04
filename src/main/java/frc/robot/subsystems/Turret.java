@@ -174,11 +174,11 @@ public final class Turret extends KillableSubsystem implements PoweredSubsystem,
     private void setControl() {
         if (positionStatus == PositionStatus.UNKNOWN) {
             switch (resetState) {
-                case NOT_RESETTING:
+                case NOT_RESETTING -> {
                     resetState = ResetState.SPIN_CW;
                     io.setControl(voltageRequest.withOutput(-RESET_VOLTAGE));
-                    break;
-                case SPIN_CW:
+                }
+                case SPIN_CW -> {
                     checkMagnet();
                     if (isForceDisabled()
                             || (!SimpleMath.isAFartherFromZeroThanB(inputs.voltage, -RESET_VOLTAGE / 3)
@@ -189,8 +189,8 @@ public final class Turret extends KillableSubsystem implements PoweredSubsystem,
                         resetState = ResetState.SPIN_CCW;
                         io.setControl(voltageRequest.withOutput(RESET_VOLTAGE));
                     }
-                    break;
-                case SPIN_CCW:
+                }
+                case SPIN_CCW -> {
                     checkMagnet();
                     if (isForceDisabled()
                             || (!SimpleMath.isAFartherFromZeroThanB(inputs.voltage, RESET_VOLTAGE / 3)
@@ -206,12 +206,12 @@ public final class Turret extends KillableSubsystem implements PoweredSubsystem,
                         }
                         io.setControl(voltageRequest.withOutput(0));
                     }
-                    break;
-                case WAIT_FOR_INTAKE:
+                }
+                case WAIT_FOR_INTAKE -> {
                     if (!RobotContainer.intake.isNearStartPosition()) {
                         resetState = ResetState.NOT_RESETTING;
                     }
-                    break;
+                }
             }
         } else if (positionStatus == PositionStatus.KNOWN
                 && !isForceDisabled()

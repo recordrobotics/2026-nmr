@@ -303,15 +303,13 @@ public final class Intake extends KillableSubsystem implements PoweredSubsystem,
         } else if (!(RobotContainer.climber != null
                 && RobotContainer.climber.isShotblockerExtended())) { // guard against shotblocker extension
             switch (state) {
-                case INTAKE, OUT:
+                case INTAKE, OUT ->
                     armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_DOWN_POSITION_RADIANS);
-                    break;
-                case EJECT:
+                case EJECT ->
                     armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_EJECT_POSITION_RADIANS);
-                    break;
-                case RETRACTED:
+                case RETRACTED ->
                     armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_RETRACTED_POSITION_RADIANS);
-                    break;
+                case STARTING -> {} // don't start moving the arm until the turret is stowed
             }
         }
     }
@@ -377,13 +375,9 @@ public final class Intake extends KillableSubsystem implements PoweredSubsystem,
     private void setWheelControl() {
 
         switch (wheelTargetState) {
-            case OFF:
-                wheelTargetVelocityMps = 0;
-                break;
-            case EJECT:
-                wheelTargetVelocityMps = Constants.Intake.WHEEL_EJECT_VELOCITY_MPS;
-                break;
-            case INTAKE:
+            case OFF -> wheelTargetVelocityMps = 0;
+            case EJECT -> wheelTargetVelocityMps = Constants.Intake.WHEEL_EJECT_VELOCITY_MPS;
+            case INTAKE -> {
                 if (actualWheelTargetVelocityMps > 1) {
                     if (inputs.wheelVelocityMps >= 1) {
                         lastNotJammedTime = Timer.getTimestamp();
@@ -395,7 +389,7 @@ public final class Intake extends KillableSubsystem implements PoweredSubsystem,
                 } else {
                     wheelTargetVelocityMps = Constants.Intake.WHEEL_INTAKE_VELOCITY_MPS;
                 }
-                break;
+            }
         }
 
         boolean armNearGoal = SimpleMath.isWithinTolerance(

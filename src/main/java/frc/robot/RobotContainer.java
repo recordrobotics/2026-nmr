@@ -310,12 +310,10 @@ public final class RobotContainer {
 
         if (shootModeChooser.get() == null) return false;
 
-        switch (shootModeChooser.get()) {
-            case FORCE:
-                return true;
-            case DISABLED:
-                return false;
-            case AUTO:
+        return switch (shootModeChooser.get()) {
+            case FORCE -> true;
+            case DISABLED -> false;
+            case AUTO -> {
                 double timeToScore = shootOrchestrator.getShotTimeOfFlight() + HUB_SCORE_REGISTER_TIME;
                 boolean shouldAutoShoot = matchData.currentHubActive()
                         // start early if next shift active
@@ -324,16 +322,13 @@ public final class RobotContainer {
                         // shoot even after shift deactivates while fuel is still being scored
                         (matchData.previousHubActive() && matchData.timeSinceShift() <= HUB_SCORE_TIME - timeToScore);
 
-                if (FieldUtils.isInAllianceZone() && shouldAutoShoot) {
-                    return !getControl().isShooterDisableShootPressed();
-                } else {
-                    return getControl().isShooterPassPressed();
-                }
-            case FIXED:
-                return getControl().isShooterPassPressed();
-            default:
-                return false;
-        }
+                yield FieldUtils.isInAllianceZone() && shouldAutoShoot
+                        ? !getControl().isShooterDisableShootPressed()
+                        : getControl().isShooterPassPressed();
+            }
+            case FIXED -> getControl().isShooterPassPressed();
+            default -> false;
+        };
     }
 
     private static void returnToOverviewTabIfIntakeStarting() {
