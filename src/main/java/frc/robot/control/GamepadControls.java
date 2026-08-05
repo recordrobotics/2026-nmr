@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
@@ -17,11 +16,11 @@ import frc.robot.utils.modifiers.DrivetrainControl;
 import java.util.OptionalDouble;
 
 @SuppressWarnings({"java:S109"})
-public class SwitchControls implements AbstractControl {
+public class GamepadControls implements AbstractControl {
 
     private static final double SLOW_SPEED = 2.0;
 
-    private GenericHID xbox;
+    private final GamepadController gamepad;
 
     private ProfiledPIDController spinController = new ProfiledPIDController(
             Constants.Control.SPIN_KP, 0, Constants.Control.SPIN_KD, Constants.Control.SPIN_CONSTRAINTS);
@@ -36,13 +35,13 @@ public class SwitchControls implements AbstractControl {
     private Transform2d acceleration = new Transform2d();
     private Transform2d jerk = new Transform2d();
 
-    public SwitchControls(int xboxPort) {
-        xbox = new GenericHID(xboxPort);
+    public GamepadControls(GamepadController gamepad) {
+        this.gamepad = gamepad;
         spinController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     private Pair<Double, Double> getXYStickOutput() {
-        return new Pair<>(xbox.getRawAxis(0), xbox.getRawAxis(1));
+        return new Pair<>(gamepad.getLeftX(), gamepad.getLeftY());
     }
 
     @Override
@@ -133,7 +132,9 @@ public class SwitchControls implements AbstractControl {
 
     public double getRelativeSpin() {
         double unsquaredX = SimpleMath.applyThresholdAndSensitivity(
-                xbox.getRawAxis(2), Constants.Control.JOYSTICK_XY_THRESHOLD, Constants.Control.JOYSTICK_XY_SENSITIVITY);
+                gamepad.getRightX(),
+                Constants.Control.JOYSTICK_XY_THRESHOLD,
+                Constants.Control.JOYSTICK_XY_SENSITIVITY);
         return Math.copySign(Math.pow(unsquaredX, Constants.Control.JOYSTICK_XY_EXPONENT), unsquaredX);
     }
 
@@ -155,8 +156,8 @@ public class SwitchControls implements AbstractControl {
             return OptionalDouble.empty();
         }
 
-        double x = xbox.getRawButton(12) ? xbox.getRawAxis(0) : xbox.getRawAxis(2);
-        double y = xbox.getRawButton(12) ? xbox.getRawAxis(1) : xbox.getRawAxis(3);
+        double x = gamepad.rightStickButtonPressed() ? gamepad.getLeftX() : gamepad.getRightX();
+        double y = gamepad.rightStickButtonPressed() ? gamepad.getLeftY() : gamepad.getRightY();
         double angle = -Math.atan2(y, x) + Math.PI / 2;
 
         if (DriverStationUtils.getCurrentAlliance() == Alliance.Red) {
@@ -169,7 +170,7 @@ public class SwitchControls implements AbstractControl {
 
         double magnitude = Math.hypot(x, y);
         if (magnitude
-                < (xbox.getRawButton(12)
+                < (gamepad.rightStickButtonPressed()
                         ? Constants.Control.JOYSTICK_ABSOLUTE_SPIN_THRESHOLD_PACMAN
                         : Constants.Control.JOYSTICK_ABSOLUTE_SPIN_THRESHOLD)) {
             return OptionalDouble.empty();
@@ -179,17 +180,17 @@ public class SwitchControls implements AbstractControl {
 
     @Override
     public boolean isPoseResetTriggered() {
-        return xbox.getRawButtonPressed(14);
+        return gamepad.leftMenuButtonPressed();
     }
 
     @Override
     public boolean isKillTriggered() {
-        return xbox.getRawButton(13);
+        return gamepad.rightMenuButtonPressed();
     }
 
     @Override
     public void vibrate(RumbleType type, double value) {
-        xbox.setRumble(type, value);
+        gamepad.vibrate(type, value);
     }
 
     @Override
@@ -199,37 +200,37 @@ public class SwitchControls implements AbstractControl {
 
     @Override
     public boolean isIntakePressed() {
-        return xbox.getRawButton(7);
+        return gamepad.leftTriggerAxis() > 0.75;
     }
 
     @Override
     public boolean isIntakeUpPressed() {
-        return xbox.getRawButton(5);
+        return gamepad.leftBumperPressed();
     }
 
     @Override
     public boolean isClimbPressed() {
-        return xbox.getRawButton(2);
+        return gamepad.inputDiamondDown();
     }
 
     @Override
     public boolean isReverseIntakePressed() {
-        return xbox.getPOV() == 180; // D-pad down
+        return gamepad.getPOV() == 180; // D-pad down
     }
 
     @Override
     public boolean isShooterPassPressed() {
-        return xbox.getRawButton(8);
+        return gamepad.rightTriggerAxis() > 0.75;
     }
 
     @Override
     public boolean isShooterDisableShootPressed() {
-        return xbox.getRawButton(4); // TODO: find button index for xbox Y location button
+        return gamepad.inputDiamondUp();
     }
 
     @Override
     public boolean isUnstuckIndexerPressed() {
-        return xbox.getRawButton(3); // TODO: find button index for xbox X location button
+        return gamepad.inputDiamondLeft();
     }
 
     @Override
@@ -238,26 +239,26 @@ public class SwitchControls implements AbstractControl {
     }
 
     public boolean isFastSpeedPressed() {
-        return xbox.getRawButton(6);
-    }
-
-    @Override
-    public boolean isIntakeRelativePressed() {
-        return xbox.getRawButton(1); // TODO: find button index for xbox B location button
+        return gamepad.rightBumperPressed();
     }
 
     @Override
     public boolean isDefenseModePressed() {
-        return xbox.getPOV() == 0; // D-pad up
+        return gamepad.getPOV() == 0; // D-pad up
+    }
+
+    @Override
+    public boolean isIntakeRelativePressed() {
+        return gamepad.inputDiamondRight();
     }
 
     @Override
     public boolean hasUserInput() {
-        return AbstractControl.hasUserInput(xbox);
+        return gamepad.hasUserInput();
     }
 
     @Override
     public String toDisplayName() {
-        return "Switch";
+        return gamepad.toDisplayName();
     }
 }

@@ -76,7 +76,7 @@ public final class RobotContainer {
 
     public static final double ROBOT_PERIODIC = 0.02;
     public static final int CONTROL_JOYSTICK_PORT = 2;
-    public static final int CONTROL_XBOX_PORT = 0;
+    public static final int CONTROL_GAMEPAD_PORT = 0;
 
     // Min time remaining in which we can auto reset encoders if not already reset during autonomous
     // (20 - 18 = 2 seconds at the start of auto)
@@ -232,9 +232,9 @@ public final class RobotContainer {
 
         // Sets up Control scheme chooser
         addControls(
-                new XboxControls(CONTROL_XBOX_PORT),
+                new GamepadControls(new XboxController(CONTROL_GAMEPAD_PORT)),
                 new JoystickControls(CONTROL_JOYSTICK_PORT),
-                new SwitchControls(CONTROL_XBOX_PORT));
+                new GamepadControls(new SwitchController(CONTROL_GAMEPAD_PORT)));
 
         configureTriggers();
 
