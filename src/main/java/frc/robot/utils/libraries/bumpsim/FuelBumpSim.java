@@ -1,45 +1,17 @@
-// Copyright (c) 2025-2026 KAISER 6989
-// https://github.com/haar09/FRC-Rebuilt-BumpSim
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file at
-// the root directory of this project.
-//
-// Claude Sonnet 4.6 is used for code generation and refactoring.
-
 package frc.robot.utils.libraries.bumpsim;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.Constants;
-import org.dyn4j.geometry.Vector2;
+import frc.robot.utils.maplesim.ImprovedRebuiltFuelOnField;
+import org.dyn4j.dynamics.Force;
 
-/** Fuel-bump physics simulation for MapleSim.
- *
- * <p>The sim tracks a single fuel carrier's pose as it climbs the raised bump, then applies a
- * frictionless slide model so it can roll back if it cannot crest the top. The field shape is
- * represented as simple XZ line segments with Y guards.
- */
 public class FuelBumpSim {
+    public record DoublePair<F, S>(F first, S second) {}
 
-    // -------------------------------------------------------------------------
-    // Field / physics constants
-    // -------------------------------------------------------------------------
+    private static final double FIELD_LENGTH = 16.51; // m
 
-    /** Control-loop period in seconds. */
-    private static final double PERIOD = 0.02;
-
-    /** Gravitational acceleration vector in m/s². */
-    private static final Translation3d GRAVITY = new Translation3d(0, 0, -9.81);
-
-    /** Full length of the field in metres. */
-    private static final double FIELD_LENGTH = 16.51;
-
-    /** Full width of the field in metres. */
-    private static final double FIELD_WIDTH = 8.04;
+    private static final double FIELD_WIDTH = 8.04; // m
 
     /** Start points of the bump line segments. */
     static final Translation3d[] BUMP_LINE_STARTS = {
@@ -57,148 +29,119 @@ public class FuelBumpSim {
         new Translation3d(FIELD_LENGTH - 3.96, FIELD_WIDTH - 1.57, 0),
     };
 
-    /** First bump segment index. */
-    private static final int BUMP_LINE_FIRST = 0;
+    public static DoublePair<Double, Double> getFuelHeightAndHorizontalDisplacement(Translation2d fuelTranslationd) {
+        /* returns the height of the center of the fuel, and the horizontal displacement from the fuel to its contact point with the ramp in the X direction on the fuel. if the fuel is resting on the ground, this is the
+        radius above the ground and 0. however, if the fuel is on the ramp, this is the height above the ramp
+        surface (or, if resting on a ramp's tip, tangent to that endpoint). */
+        double fuelX = fuelTranslationd.getX();
+        double fuelY = fuelTranslationd.getY();
 
-    /** Last bump segment index. */
-    private static final int BUMP_LINE_LAST = BUMP_LINE_STARTS.length - 1;
+        for (int i = 0; i < BUMP_LINE_STARTS.length; i++) {
+            Translation3d lineStart = BUMP_LINE_STARTS[i];
+            Translation3d lineEnd = BUMP_LINE_ENDS[i];
 
-    // -------------------------------------------------------------------------
-    // Tunable physics constants for the fuel carrier
-    // -------------------------------------------------------------------------
+            if (fuelY < lineStart.getY() || fuelY > lineEnd.getY()) continue;
 
-    /** Effective contact radius against the bump surface in metres. */
-    private static final double WHEEL_RADIUS = Constants.Game.FUEL_DIAMETER_METERS / 2.0;
+            Translation2d start2d = new Translation2d(lineStart.getX(), lineStart.getZ());
+            Translation2d end2d = new Translation2d(lineEnd.getX(), lineEnd.getZ());
+            Translation2d lineVec = end2d.minus(start2d);
 
-    /** Height offset from the contact surface to the body origin in metres. */
-    private static final double CHASSIS_HEIGHT = 0.0;
+            Translation2d toFuel = new Translation2d(fuelX, Constants.Game.FUEL_RADIUS_METERS).minus(start2d);
+            double projectionT = toFuel.dot(lineVec) / lineVec.getSquaredNorm();
 
-    /** Coefficient of restitution for vertical bump collisions. */
-    private static final double BUMP_COR = 0.15;
+            if (projectionT < 0 || projectionT > 1) {
+                // fuel's X is beyond the segment's extent - check if it's resting on the near endpoint (tip) instead
+                Translation2d endpoint = projectionT < 0 ? start2d : end2d;
 
-    /** Tolerance used to keep endpoint checks stable under floating-point rounding. */
-    private static final double SEGMENT_PROJECTION_TOLERANCE = 1e-6;
+                double dx = fuelX - endpoint.getX();
+                if (Math.abs(dx) >= Constants.Game.FUEL_RADIUS_METERS)
+                    continue; // too far horizontally to touch this tip
 
-    /** True while the sim owns the field-X position. */
-    private boolean onRamp = false;
-
-    private double zPos = 0.0;
-
-    private double zVel = 0.0;
-
-    /** Absolute field-X position while on the ramp. */
-    private double simXPos = 0.0;
-
-    /** Field-X velocity on the ramp in m/s. */
-    private double simXVel = 0.0;
-
-    // -------------------------------------------------------------------------
-    // Public API
-    // -------------------------------------------------------------------------
-
-    /** Returns true while the sim is handling the ramp slide. */
-    public boolean isOnRamp() {
-        return onRamp;
-    }
-
-    /** Returns the pose MapleSim should use while the sim owns field X. */
-    public Pose2d getSimWorldPose(Pose2d latestMaplePose) {
-        return new Pose2d(simXPos, latestMaplePose.getY(), latestMaplePose.getRotation());
-    }
-
-    /** Advances the simulation by one control period and returns the fuel pose. */
-    public Pose3d update(Pose2d fuelPose2d, Vector2 fieldRelativeSpeeds, int subticks, int subTickNum) {
-        double vx = fieldRelativeSpeeds.x;
-        double dt = PERIOD / subticks;
-
-        double rampAccelXSum = 0.0;
-        int contactCount = 0;
-
-        zVel += GRAVITY.getZ() * dt;
-        zPos += zVel * dt;
-
-        for (int lineIdx = BUMP_LINE_FIRST; lineIdx <= BUMP_LINE_LAST; lineIdx++) {
-            double gax = handleFuelBumpCollision(
-                    onRamp ? simXPos : fuelPose2d.getX(), fuelPose2d.getY(), onRamp ? simXVel : vx, lineIdx);
-            if (!Double.isNaN(gax)) {
-                rampAccelXSum += gax;
-                contactCount++;
+                double dz = Math.sqrt(Constants.Game.FUEL_RADIUS_METERS * Constants.Game.FUEL_RADIUS_METERS - dx * dx);
+                if (endpoint.getY() + dz > Constants.Game.FUEL_RADIUS_METERS)
+                    return new DoublePair<>(endpoint.getY() + dz, dx); // never put fuel below ground
+                continue;
             }
+
+            // fuel projects onto the segment itself - rest tangent to the line
+            Translation2d projected = start2d.plus(lineVec.times(projectionT));
+
+            double dx = fuelX - projected.getX();
+            if (Math.abs(dx) >= Constants.Game.FUEL_RADIUS_METERS)
+                continue; // too far horizontally to touch this segment
+
+            double dz = Math.sqrt(Constants.Game.FUEL_RADIUS_METERS * Constants.Game.FUEL_RADIUS_METERS - dx * dx);
+            if (projected.getY() + dz > Constants.Game.FUEL_RADIUS_METERS)
+                return new DoublePair<>(projected.getY() + dz, dx); // never put fuel below ground
         }
 
-        if (zPos < 0.0) {
-            zPos = 0.0;
-            if (zVel < 0.0) zVel = -zVel * BUMP_COR;
-        }
-
-        if (contactCount > 0) {
-            if (!onRamp) {
-                onRamp = true;
-                simXPos = fuelPose2d.getX();
-                simXVel = vx;
-            }
-            double avgGravAccelX = (rampAccelXSum / contactCount);
-            simXVel += avgGravAccelX * dt;
-            simXPos += simXVel * dt;
-        } else if (onRamp) {
-            boolean allFlat = zPos > 0.01;
-            if (allFlat) {
-                onRamp = false;
-            } else {
-                simXPos += simXVel * dt;
-            }
-        }
-
-        return computePose3d(fuelPose2d);
+        return new DoublePair<>(Constants.Game.FUEL_RADIUS_METERS, 0.0);
     }
 
-    // -------------------------------------------------------------------------
-    // Private helpers
-    // -------------------------------------------------------------------------
+    public static Translation3d updateFuel(ImprovedRebuiltFuelOnField fuel) {
+        Translation2d fuelPose = fuel.getPoseOnField().getTranslation();
 
-    /** Applies the bump contact response for one fuel contact point. */
-    private double handleFuelBumpCollision(double worldX, double worldY, double currentXVel, int lineIdx) {
-        Translation3d lineStart = BUMP_LINE_STARTS[lineIdx];
-        Translation3d lineEnd = BUMP_LINE_ENDS[lineIdx];
+        double fuelX = fuelPose.getX();
+        double fuelY = fuelPose.getY();
 
-        if (worldY < lineStart.getY() || worldY > lineEnd.getY()) return Double.NaN;
+        double horizontalAcceleration = 0.0;
 
-        Translation2d start2d = new Translation2d(lineStart.getX(), lineStart.getZ());
-        Translation2d end2d = new Translation2d(lineEnd.getX(), lineEnd.getZ());
-        Translation2d pos2d = new Translation2d(worldX, zPos);
-        Translation2d lineVec = end2d.minus(start2d);
+        for (int i = 0; i < BUMP_LINE_STARTS.length; i++) {
+            Translation3d lineStart = BUMP_LINE_STARTS[i];
+            Translation3d lineEnd = BUMP_LINE_ENDS[i];
 
-        Translation2d toFuel = pos2d.minus(start2d);
-        double projectionT = toFuel.dot(lineVec) / lineVec.getSquaredNorm();
-        Translation2d projected = start2d.plus(lineVec.times(projectionT));
+            if (fuelY < lineStart.getY() || fuelY > lineEnd.getY()) {
+                continue;
+            }
 
-        if (projected.getDistance(start2d) + projected.getDistance(end2d)
-                > lineVec.getNorm() + SEGMENT_PROJECTION_TOLERANCE) return Double.NaN;
+            double x1 = lineStart.getX();
+            double z1 = lineStart.getZ();
+            double x2 = lineEnd.getX();
+            double z2 = lineEnd.getZ();
 
-        double dist = pos2d.getDistance(projected);
-        if (dist > WHEEL_RADIUS) return Double.NaN;
+            double dx = x2 - x1;
+            double dz = z2 - z1;
 
-        double normalX = -lineVec.getY() / lineVec.getNorm();
-        double normalZ = lineVec.getX() / lineVec.getNorm();
+            double lengthSquared = dx * dx + dz * dz;
 
-        zPos += normalZ * (WHEEL_RADIUS - dist);
+            // Determine whether the ball's X position is horizontally
+            // within this ramp segment.
+            double t = (fuelX - x1) / dx;
 
-        double velDotNormal = currentXVel * normalX + zVel * normalZ;
-        if (velDotNormal < 0.0) {
-            zVel += normalZ * (-(1.0 + BUMP_COR) * velDotNormal);
+            if (t < 0.0 || t > 1.0) {
+                continue;
+            }
+
+            /*
+             * Gravity along the ramp:
+             *
+             *   a = g * sin(theta)
+             *
+             * Horizontal component:
+             *
+             *   ax = g * sin(theta) * cos(theta)
+             *
+             * For a ramp vector (dx, dz):
+             *
+             *   sin(theta) = dz / sqrt(dx² + dz²)
+             *   cos(theta) = dx / sqrt(dx² + dz²)
+             *
+             * Therefore:
+             *
+             *   ax = -g * dx * dz / (dx² + dz²)
+             *
+             * The negative sign makes the acceleration point downhill.
+             */
+            horizontalAcceleration = -9.81 * dx * dz / lengthSquared;
+
+            break;
         }
 
-        return -GRAVITY.getZ() * normalX * normalZ;
-    }
+        // F = ma
+        fuel.applyForce(new Force(horizontalAcceleration * Constants.Game.FUEL_MASS_KG, 0.0));
 
-    /** Builds the visible 3D pose from the current 2D pose and bump state. */
-    private Pose3d computePose3d(Pose2d fuelPose2d) {
-        double visualX = onRamp ? simXPos : fuelPose2d.getX();
+        double height = getFuelHeightAndHorizontalDisplacement(fuelPose).first();
 
-        return new Pose3d(
-                visualX,
-                fuelPose2d.getY(),
-                zPos + WHEEL_RADIUS,
-                new Rotation3d(0, 0, fuelPose2d.getRotation().getRadians()));
+        return new Translation3d(fuelX, fuelY, height);
     }
 }

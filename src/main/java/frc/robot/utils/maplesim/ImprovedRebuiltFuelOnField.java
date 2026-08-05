@@ -2,10 +2,10 @@ package frc.robot.utils.maplesim;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.utils.libraries.bumpsim.FuelBumpSim;
 import java.util.WeakHashMap;
-import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnField;
 import org.ironmaple.utils.mathutils.GeometryConvertor;
 
@@ -15,13 +15,10 @@ public class ImprovedRebuiltFuelOnField extends RebuiltFuelOnField {
     private static final WeakHashMap<ImprovedRebuiltFuelOnField, ImprovedRebuiltFuelOnField> instances =
             new WeakHashMap<>();
 
-    private final FuelBumpSim fuelBumpSim;
-
     private Pose3d lastSimPose3d = new Pose3d();
 
     public ImprovedRebuiltFuelOnField(Translation2d initialPosition) {
         super(initialPosition);
-        fuelBumpSim = new FuelBumpSim();
         instances.put(this, this);
     }
 
@@ -31,7 +28,6 @@ public class ImprovedRebuiltFuelOnField extends RebuiltFuelOnField {
         super.setTransform(GeometryConvertor.toDyn4jTransform(initialPose));
         super.setLinearVelocity(GeometryConvertor.toDyn4jVector2(initialVelocityMPS));
 
-        fuelBumpSim = new FuelBumpSim();
         instances.put(this, this);
     }
 
@@ -41,13 +37,7 @@ public class ImprovedRebuiltFuelOnField extends RebuiltFuelOnField {
     }
 
     public void update(int subTickNum) {
-        Pose2d simPose = getPoseOnField();
-
-        lastSimPose3d = fuelBumpSim.update(
-                simPose, getLinearVelocity(), SimulatedArena.getSimulationSubTicksIn1Period(), subTickNum);
-        if (fuelBumpSim.isOnRamp()) {
-            super.setTransform(GeometryConvertor.toDyn4jTransform(fuelBumpSim.getSimWorldPose(simPose)));
-        }
+        lastSimPose3d = new Pose3d(FuelBumpSim.updateFuel(this), Rotation3d.kZero);
     }
 
     public static void updateAll(int subTickNum) {

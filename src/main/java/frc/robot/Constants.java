@@ -49,6 +49,9 @@ import org.ironmaple.simulation.drivesims.COTS;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    public static final double GRAVITY = 9.81; // m/s^2
+
     private Constants() {}
 
     public final class Game {
@@ -89,6 +92,8 @@ public final class Constants {
 
         public static final double HUB_RIM_HEIGHT_METERS = Units.feetToMeters(6);
         public static final double FUEL_DIAMETER_METERS = Units.inchesToMeters(5.906);
+        public static final double FUEL_RADIUS_METERS = FUEL_DIAMETER_METERS / 2.0; // convenience
+        public static final double FUEL_MASS_KG = 0.449 * 0.45359237; // fuel can be 0.448-0.500lbs, and then lbs -> kgs
 
         public static final Translation3d BLUE_HUB_POSITION =
                 new Translation3d(4.625594, 4.03463, Units.feetToMeters(6));
