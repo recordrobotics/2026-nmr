@@ -109,18 +109,10 @@ public class RobotBumpSim {
      * bump (near X ≈ FIELD_LENGTH−5.18 – FIELD_LENGTH−3.96 m).
      */
     static final Translation3d[] BUMP_LINE_STARTS = {
-        // Blue bump — ascending faces (Z rises from 0 → 0.165 m)
         new Translation3d(3.96, 1.57, 0),
-        new Translation3d(3.96, FIELD_WIDTH / 2 + 0.60, 0),
-        // Blue bump — descending faces (Z falls from 0.165 → 0 m)
         new Translation3d(4.61, 1.57, 0.165),
-        new Translation3d(4.61, FIELD_WIDTH / 2 + 0.60, 0.165),
-        // Red bump — ascending faces
         new Translation3d(FIELD_LENGTH - 5.18, 1.57, 0),
-        new Translation3d(FIELD_LENGTH - 5.18, FIELD_WIDTH / 2 + 0.60, 0),
-        // Red bump — descending faces
         new Translation3d(FIELD_LENGTH - 4.61, 1.57, 0.165),
-        new Translation3d(FIELD_LENGTH - 4.61, FIELD_WIDTH / 2 + 0.60, 0.165),
     };
 
     /**
@@ -130,17 +122,9 @@ public class RobotBumpSim {
      * the ramp face, the maximum field-Y at which this segment is present, and the ramp Z at that X.
      */
     static final Translation3d[] BUMP_LINE_ENDS = {
-        // Blue bump — ascending faces
-        new Translation3d(4.61, FIELD_WIDTH / 2 - 0.60, 0.165),
         new Translation3d(4.61, FIELD_WIDTH - 1.57, 0.165),
-        // Blue bump — descending faces
-        new Translation3d(5.18, FIELD_WIDTH / 2 - 0.60, 0),
         new Translation3d(5.18, FIELD_WIDTH - 1.57, 0),
-        // Red bump — ascending faces
-        new Translation3d(FIELD_LENGTH - 4.61, FIELD_WIDTH / 2 - 0.60, 0.165),
         new Translation3d(FIELD_LENGTH - 4.61, FIELD_WIDTH - 1.57, 0.165),
-        // Red bump — descending faces
-        new Translation3d(FIELD_LENGTH - 3.96, FIELD_WIDTH / 2 - 0.60, 0),
         new Translation3d(FIELD_LENGTH - 3.96, FIELD_WIDTH - 1.57, 0),
     };
 
