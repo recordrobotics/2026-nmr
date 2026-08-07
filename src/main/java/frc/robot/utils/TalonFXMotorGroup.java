@@ -59,11 +59,11 @@ public class TalonFXMotorGroup implements AutoCloseable {
                     : velocitySignal.getStatus().isOK();
         }
 
-        public Set<BaseStatusSignal> getStatusSignals() {
+        private Set<BaseStatusSignal> getStatusSignals() {
             return Set.of(positionSignal, velocitySignal, voltageSignal, currentSignal);
         }
 
-        public Set<BaseStatusSignal> getHighRefreshRateStatusSignals() {
+        private Set<BaseStatusSignal> getHighRefreshRateStatusSignals() {
             return Set.of(
                     prioritizePosition ? positionSignal : velocitySignal,
                     voltageSignal /* followers require either dutycycle, voltage, or current signal to follow */);
