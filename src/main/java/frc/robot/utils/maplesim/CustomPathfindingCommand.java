@@ -332,7 +332,7 @@ public class CustomPathfindingCommand extends Command {
                 PathPlannerTrajectoryState closestState2 = currentTrajectory.getState(closestState2Idx);
 
                 double d = closestState1.pose.getTranslation().getDistance(closestState2.pose.getTranslation());
-                double t = (currentPose.getTranslation().getDistance(closestState1.pose.getTranslation())) / d;
+                double t = currentPose.getTranslation().getDistance(closestState1.pose.getTranslation()) / d;
                 t = MathUtil.clamp(t, 0.0, 1.0);
 
                 timeOffset = MathUtil.interpolate(closestState1.timeSeconds, closestState2.timeSeconds, t);
