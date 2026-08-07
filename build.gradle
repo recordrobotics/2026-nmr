@@ -192,7 +192,7 @@ tasks.withType(JavaCompile) {
 tasks.withType(JavaCompile).configureEach {
     options.errorprone {
         disableWarningsInGeneratedCode = true
-        excludedPaths = ".*/libraries/.*\\.java"
+        excludedPaths = ".*(build/generated/sources/annotationProcessor/java/main/|/libraries/).*\\.java"
     }
     options.compilerArgs.addAll(["-Xlint:-removal"])
 }
