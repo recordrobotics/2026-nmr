@@ -53,7 +53,7 @@ public class TalonFXMotorGroup implements AutoCloseable {
             currentSignal = this.device.getSupplyCurrent();
         }
 
-        public boolean isOK() {
+        private boolean isOK() {
             return prioritizePosition
                     ? positionSignal.getStatus().isOK()
                     : velocitySignal.getStatus().isOK();
