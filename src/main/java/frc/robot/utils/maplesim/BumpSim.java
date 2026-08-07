@@ -99,12 +99,11 @@ public class BumpSim {
                     Translation2d sphereCenterPosXZ = new Translation2d(sphereX, endpoint.getY() + dz);
                     Translation2d fromEndpointToSphere = sphereCenterPosXZ.minus(endpoint);
                     // the effective slope is perpendicular to the line through the center of the sphere and its contact
-                    // point (which is the endpoint), therefore, an inverse reciprical is used to find the perpendicular
+                    // point (which is the endpoint), therefore, an inverse reciprocal is used to find the perpendicular
                     // slope.
                     double effectiveSlope = -fromEndpointToSphere.getX() / fromEndpointToSphere.getY();
                     return new DoublePair(endpoint.getY() + dz, effectiveSlope);
                 }
-                continue;
             }
         }
 
