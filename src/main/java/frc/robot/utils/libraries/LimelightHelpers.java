@@ -23,6 +23,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -659,6 +660,11 @@ public class LimelightHelpers {
                     && Double.compare(distToRobot, other.distToRobot) == 0
                     && Double.compare(ambiguity, other.ambiguity) == 0;
         }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id, txnc, tync, ta, distToCamera, distToRobot, ambiguity);
+        }
     }
 
     /**
@@ -683,6 +689,11 @@ public class LimelightHelpers {
             return Double.compare(txnc, other.txnc) == 0
                     && Double.compare(tync, other.tync) == 0
                     && Double.compare(ta, other.ta) == 0;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(txnc, tync, ta);
         }
     }
 
@@ -797,6 +808,20 @@ public class LimelightHelpers {
                     && Double.compare(that.avgTagArea, avgTagArea) == 0
                     && pose.equals(that.pose)
                     && Arrays.equals(rawFiducials, that.rawFiducials);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(
+                    pose,
+                    timestampSeconds,
+                    latency,
+                    tagCount,
+                    tagSpan,
+                    avgTagDist,
+                    avgTagArea,
+                    Arrays.hashCode(rawFiducials),
+                    isMegaTag2);
         }
     }
 

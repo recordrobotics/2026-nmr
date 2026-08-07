@@ -27,6 +27,7 @@ public interface ClimberIO extends AutoCloseable {
 
     default void setControl(ControlRequest request) {}
 
+    @Override
     default void close() {}
 
     default void simulationPeriodic() {}

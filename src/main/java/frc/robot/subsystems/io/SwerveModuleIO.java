@@ -48,6 +48,7 @@ public interface SwerveModuleIO extends AutoCloseable {
 
     default void setTurnMechanismPosition(double newValue) {}
 
+    @Override
     default void close() {}
 
     default void simulationPeriodic() {}
