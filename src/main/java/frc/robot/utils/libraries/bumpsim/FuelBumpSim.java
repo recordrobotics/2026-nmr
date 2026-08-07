@@ -1,5 +1,6 @@
 package frc.robot.utils.libraries.bumpsim;
 
+import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.Constants;
@@ -9,28 +10,28 @@ import org.dyn4j.dynamics.Force;
 public class FuelBumpSim {
     public record DoublePair(double first, double second) {}
 
-    private static final double FIELD_LENGTH = 16.51; // m
+    private static final double FIELD_LENGTH_M = FlippingUtil.fieldSizeX;
 
-    private static final double FIELD_WIDTH = 8.04; // m
+    private static final double FIELD_WIDTH = FlippingUtil.fieldSizeY;
 
     /** Start points of the bump line segments. */
     static final Translation3d[] BUMP_LINE_STARTS = {
-        new Translation3d(3.96, 1.57, 0),
-        new Translation3d(4.61, 1.57, 0.165),
-        new Translation3d(FIELD_LENGTH - 5.18, 1.57, 0),
-        new Translation3d(FIELD_LENGTH - 4.61, 1.57, 0.165),
+        new Translation3d(4.004176, 1.583531, 0),
+        new Translation3d(4.625626, 1.583531, 0.166517),
+        new Translation3d(FIELD_LENGTH_M - 5.247075, 1.583531, 0),
+        new Translation3d(FIELD_LENGTH_M - 4.625626, 1.583531, 0.166517),
     };
 
     /** End points of the bump line segments. */
     static final Translation3d[] BUMP_LINE_ENDS = {
-        new Translation3d(4.61, FIELD_WIDTH - 1.57, 0.165),
-        new Translation3d(5.18, FIELD_WIDTH - 1.57, 0),
-        new Translation3d(FIELD_LENGTH - 4.61, FIELD_WIDTH - 1.57, 0.165),
-        new Translation3d(FIELD_LENGTH - 3.96, FIELD_WIDTH - 1.57, 0),
+        new Translation3d(4.625626, FIELD_WIDTH - 1.583531, 0.166517),
+        new Translation3d(5.247075, FIELD_WIDTH - 1.583531, 0),
+        new Translation3d(FIELD_LENGTH_M - 4.625626, FIELD_WIDTH - 1.583531, 0.166517),
+        new Translation3d(FIELD_LENGTH_M - 4.004176, FIELD_WIDTH - 1.583531, 0),
     };
 
     public static DoublePair getFuelHeightAndEffectiveSlope(Translation2d fuelTranslationd) {
-        /* returns the height of the center of the fuel, and the effective slope, which is perpendicular to the line through the center of the fuel and its contact point with the ramp or endpoint. if the fuel is resting on the ground, this is the
+        /* Returns the height of the center of the fuel, and the effective slope, which is perpendicular to the line through the center of the fuel and its contact point with the ramp or endpoint. if the fuel is resting on the ground, this is the
         radius above the ground and 0. however, if the fuel is on the ramp, this is the height above the ramp
         surface (or, if resting on a ramp's tip, tangent to that endpoint). */
         double fuelX = fuelTranslationd.getX();
