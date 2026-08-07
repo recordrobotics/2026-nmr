@@ -66,6 +66,7 @@ public final class PoseSensorFusion extends ManagedSubsystemBase {
 
     private static final int[] RED_HUB_TAG_FILTER = new int[] {2, 3, 4, 5, 8, 9, 10, 11};
 
+    @SuppressWarnings("ImmutableEnumChecker")
     public enum RTCMode {
         OFF(Pose2d.kZero),
         CORNER_DEPOT_SIDE_FORWARD(new Pose2d(0.439, 7.614, Rotation2d.kZero)),

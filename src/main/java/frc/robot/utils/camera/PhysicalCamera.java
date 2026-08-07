@@ -8,6 +8,7 @@ import edu.wpi.first.units.measure.Current;
 /**
  * Enum representing different physical camera models with their specifications.
  */
+@SuppressWarnings("ImmutableEnumChecker")
 public enum PhysicalCamera {
     /**
      * Limelight 2 Camera Specifications
