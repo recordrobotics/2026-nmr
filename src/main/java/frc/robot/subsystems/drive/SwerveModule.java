@@ -193,8 +193,8 @@ public final class SwerveModule {
     }
 
     /**
-     *
-     * @return The current state of the module.
+     * Gets the current state of the module.
+     * @return current state of the module.
      */
     public SwerveModuleState getModuleState() {
         return new SwerveModuleState(
@@ -207,8 +207,8 @@ public final class SwerveModule {
     }
 
     /**
-     *
-     * @return The current position of the module as a SwerveModulePosition object.
+     * Gets the current position of the module
+     * @return The current position of the module as a SwerveModulePosition object
      */
     public SwerveModulePosition getModulePosition() {
         return new SwerveModulePosition(
@@ -216,9 +216,8 @@ public final class SwerveModule {
     }
 
     /**
-     * Sets the desired state for the module.
-     *
-     * @param desiredState Desired state with speed and angle.
+     * Sets the desired state for the module
+     * @param desiredState Desired state with speed and angle
      */
     public void setDesiredState(SwerveModuleState desiredState, double feedforward) {
         // Optimize the reference state to avoid spinning further than 90 degrees

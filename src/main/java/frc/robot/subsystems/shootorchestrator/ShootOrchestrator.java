@@ -212,11 +212,10 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
     }
 
     /**
-     *
-     * @param robotPose
-     * @param robotRelativeSpeeds
+     * @param robotPose position and rotation of the robot in 3d space
+     * @param robotRelativeSpeeds speeds of the robot in its own coordinate system
      * @param shooterReleaseOffset robot relative offset from robot center where shots are released, used for calculating distance to target and velocity
-     * @return
+     * @return vector from yaw, pitch, and magnitude and subtract tangential velocity (not compensated for by shot calculator)
      */
     private ShotCalculationResult calculateShot(
             ShotTarget target,
@@ -231,7 +230,7 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
                 robotRelativeSpeeds, robotPose.toPose2d().getRotation());
 
         double omega = robotSpeeds.omegaRadiansPerSecond;
-        // Add robot velocity to velocity induced from angular rotation
+        // TODO: Add robot velocity to velocity induced from angular rotation
         double releaseVx = robotSpeeds.vxMetersPerSecond - omega * shooterReleaseOffset.getY();
         double releaseVy = robotSpeeds.vyMetersPerSecond + omega * shooterReleaseOffset.getX();
         Transform2d shooterReleaseVelocity = new Transform2d(releaseVx, releaseVy, new Rotation2d(omega));
@@ -256,8 +255,6 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
         double targetPitch = shotCalculation.shootAngleRadians();
         double targetSpeed = shotCalculation.fuelVelocityMagnitudeMps();
 
-        // Construct a vector from yaw,pitch,and magnitude
-        // and subtract tangential velocity (not compensated for by shot calculator)
         return new ShotCalculationResult(
                 new Translation3d(targetSpeed, 0.0, 0.0)
                         .rotateBy(new Rotation3d(0.0, -targetPitch, targetYaw))
