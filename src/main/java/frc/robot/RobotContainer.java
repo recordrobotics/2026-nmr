@@ -322,7 +322,7 @@ public final class RobotContainer {
                         // shoot even after shift deactivates while fuel is still being scored
                         (matchData.previousHubActive() && matchData.timeSinceShift() <= HUB_SCORE_TIME - timeToScore);
 
-                yield FieldUtils.isInAllianceZone() && shouldAutoShoot
+                yield (FieldUtils.isInAllianceZone() && shouldAutoShoot)
                         ? !getControl().isShooterDisableShootPressed()
                         : getControl().isShooterPassPressed();
             }
