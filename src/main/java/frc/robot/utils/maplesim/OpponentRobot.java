@@ -25,7 +25,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.RobotState.Mode;
 import frc.robot.RobotContainer;
 import frc.robot.utils.ManagedSubsystemBase;
-import frc.robot.utils.libraries.bumpsim.RobotBumpSim;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -151,7 +150,7 @@ public class OpponentRobot extends ManagedSubsystemBase {
                     Constants.Swerve.TURN_GEAR_RATIO, // Steer motor gear ratio.
                     Volts.of(Constants.Swerve.DRIVE_KS), // Drive static voltage
                     Volts.of(Constants.Swerve.TURN_KS), // Steer static voltage
-                    Meters.of(Constants.Swerve.AVERAGE_WHEEL_DIAMETER / 2), // Wheel radius
+                    Meters.of(Constants.Swerve.AVERAGE_WHEEL_DIAMETER_M / 2), // Wheel radius
                     KilogramSquareMeters.of(0.03),
                     COTS.WHEELS.DEFAULT_NEOPRENE_TREAD.cof, // Use the COF for Neoprene Tread
                     batterySource))
@@ -171,13 +170,6 @@ public class OpponentRobot extends ManagedSubsystemBase {
 
     private final SelfControlledSwerveDriveSimulation driveSimulation;
     private final Pose2d startingPose;
-
-    private final RobotBumpSim robotBumpSim = new RobotBumpSim(new Translation2d[] {
-        Constants.Swerve.FRONT_LEFT_WHEEL_LOCATION,
-        Constants.Swerve.FRONT_RIGHT_WHEEL_LOCATION,
-        Constants.Swerve.BACK_LEFT_WHEEL_LOCATION,
-        Constants.Swerve.BACK_RIGHT_WHEEL_LOCATION
-    });
 
     private final Pathfinder pathfinder;
     private final CustomPathfindingCommand pathfindingCommand;
@@ -307,15 +299,15 @@ public class OpponentRobot extends ManagedSubsystemBase {
         } else {
             driveSimulation.runChassisSpeeds(new ChassisSpeeds(0, 0, 0), Translation2d.kZero, false, true);
         }
-
-        Pose2d simPose = driveSimulation.getActualPoseInSimulationWorld();
-
-        ChassisSpeeds fieldRelativeSpeeds = driveSimulation.getActualSpeedsFieldRelative();
-        lastSimPose3d =
-                robotBumpSim.update(simPose, fieldRelativeSpeeds, SimulatedArena.getSimulationSubTicksIn1Period());
-        if (robotBumpSim.isOnRamp()) {
-            driveSimulation.setSimulationWorldPose(robotBumpSim.getSimWorldPose(simPose));
-        }
+        lastSimPose3d = BumpSim.updateSwerveDriveSimulation(
+                driveSimulation.getDriveTrainSimulation(),
+                new Translation2d[] {
+                    Constants.Swerve.FRONT_LEFT_WHEEL_LOCATION,
+                    Constants.Swerve.FRONT_RIGHT_WHEEL_LOCATION,
+                    Constants.Swerve.BACK_LEFT_WHEEL_LOCATION,
+                    Constants.Swerve.BACK_RIGHT_WHEEL_LOCATION
+                },
+                Constants.Swerve.AVERAGE_WHEEL_RADIUS_M);
     }
 
     private void runDefense(Pose3d targetPose) {

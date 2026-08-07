@@ -20,7 +20,7 @@ import org.json.simple.parser.ParseException;
  * @param turningEncoderOffset offset of the abs turn encoder at a set starting position (which we
  *     found through manually testing)
  * @param wheelLocation Translation2d object of where the wheel is relative to robot frame
- * @param wheelDiameter Diameter of the wheel
+ * @param wheelDiameter Diameter of the wheel in meters
  */
 public record ModuleConstants(
         int driveMotorChannel,
@@ -95,7 +95,7 @@ public record ModuleConstants(
         return type.cast(val);
     }
 
-    public static double getAverageWheelDiameter() {
+    public static double getAverageWheelDiameterMeters() {
         try {
             return (fromConfig(MotorLocation.FRONT_LEFT).wheelDiameter()
                             + fromConfig(MotorLocation.FRONT_RIGHT).wheelDiameter()

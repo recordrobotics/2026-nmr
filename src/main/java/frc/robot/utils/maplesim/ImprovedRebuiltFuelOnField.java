@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.utils.libraries.bumpsim.FuelBumpSim;
 import java.util.WeakHashMap;
 import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnField;
 import org.ironmaple.utils.mathutils.GeometryConvertor;
@@ -37,7 +36,7 @@ public class ImprovedRebuiltFuelOnField extends RebuiltFuelOnField {
     }
 
     public void update(int subTickNum) {
-        lastSimPose3d = new Pose3d(FuelBumpSim.updateFuel(this), Rotation3d.kZero);
+        lastSimPose3d = new Pose3d(BumpSim.updateFuel(this), Rotation3d.kZero);
     }
 
     public static void updateAll(int subTickNum) {

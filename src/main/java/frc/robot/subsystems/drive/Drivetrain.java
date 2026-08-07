@@ -6,7 +6,6 @@ import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -41,7 +40,7 @@ import frc.robot.utils.TalonFXOrchestra;
 import frc.robot.utils.libraries.Elastic;
 import frc.robot.utils.libraries.Elastic.Notification;
 import frc.robot.utils.libraries.Elastic.NotificationLevel;
-import frc.robot.utils.libraries.bumpsim.RobotBumpSim;
+import frc.robot.utils.maplesim.BumpSim;
 import frc.robot.utils.modifiers.ControlModifierService;
 import frc.robot.utils.modifiers.ControlModifierService.ControlModifier;
 import frc.robot.utils.modifiers.DrivetrainControl;
@@ -129,7 +128,7 @@ public final class Drivetrain extends ManagedSubsystemBase {
                     Constants.Swerve.TURN_GEAR_RATIO, // Steer motor gear ratio.
                     Volts.of(Constants.Swerve.DRIVE_KS), // Drive static voltage
                     Volts.of(Constants.Swerve.TURN_KS), // Steer static voltage
-                    Meters.of(Constants.Swerve.AVERAGE_WHEEL_DIAMETER / 2), // Average wheel radius
+                    Meters.of(Constants.Swerve.AVERAGE_WHEEL_DIAMETER_M / 2), // Average wheel radius
                     KilogramSquareMeters.of(0.03),
                     COTS.WHEELS.DEFAULT_NEOPRENE_TREAD.cof, // Use the COF for Neoprene Tread
                     SimulatedBattery.ROBORIO_BATTERY))
@@ -144,7 +143,6 @@ public final class Drivetrain extends ManagedSubsystemBase {
             .withRobotMass(Kilograms.of(Constants.Frame.ROBOT_MASS_KG));
 
     private final SwerveDriveSimulation swerveDriveSimulation;
-    private final RobotBumpSim robotBumpSim;
 
     private final SwerveSetpointGenerator setpointGenerator;
     private SwerveSetpoint previousSetpoint;
@@ -173,7 +171,6 @@ public final class Drivetrain extends ManagedSubsystemBase {
 
         if (Constants.RobotState.getMode() == Mode.REAL) {
             swerveDriveSimulation = null;
-            robotBumpSim = null;
 
             for (int i = 0; i < moduleConstants.length; i++) {
                 moduleIO[i] = new SwerveModuleReal(moduleConstants[i], MODULE_DRIVE_TRACKS[i], MODULE_TURN_TRACKS[i]);
@@ -198,8 +195,6 @@ public final class Drivetrain extends ManagedSubsystemBase {
                         MODULE_PDP_CHANNELS[i].driveChannel(),
                         MODULE_PDP_CHANNELS[i].turnChannel());
             }
-
-            robotBumpSim = new RobotBumpSim(kinematics.getModules());
         }
 
         modules = new SwerveModule[moduleConstants.length];
@@ -381,14 +376,8 @@ public final class Drivetrain extends ManagedSubsystemBase {
             module.simulationPeriodic();
         }
 
-        Pose2d simPose = swerveDriveSimulation.getSimulatedDriveTrainPose();
-
-        ChassisSpeeds fieldRelativeSpeeds = swerveDriveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative();
-        lastSimPose3d =
-                robotBumpSim.update(simPose, fieldRelativeSpeeds, SimulatedArena.getSimulationSubTicksIn1Period());
-        if (robotBumpSim.isOnRamp()) {
-            swerveDriveSimulation.setSimulationWorldPose(robotBumpSim.getSimWorldPose(simPose));
-        }
+        lastSimPose3d = BumpSim.updateSwerveDriveSimulation(
+                swerveDriveSimulation, kinematics.getModules(), Constants.Swerve.AVERAGE_WHEEL_RADIUS_M);
     }
 
     public void sysIdOnlyDriveMotorsSpin(Voltage volts) {

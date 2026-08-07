@@ -386,8 +386,9 @@ public final class Constants {
 
         public static final double FEEDFORWARD_KA = DRIVE_KA * 1; // 4 is good
 
-        public static final double AVERAGE_WHEEL_DIAMETER =
-                ModuleConstants.getAverageWheelDiameter(); // TODO: measure wheel diameters with spin test
+        public static final double AVERAGE_WHEEL_DIAMETER_M =
+                ModuleConstants.getAverageWheelDiameterMeters(); // TODO: measure wheel diameters with spin test
+        public static final double AVERAGE_WHEEL_RADIUS_M = AVERAGE_WHEEL_DIAMETER_M / 2.0;
 
         public static final double TURN_MAX_ANGULAR_VELOCITY = 5; // ROTATIONS / SECOND // TODO: measure
 
@@ -410,7 +411,7 @@ public final class Constants {
                 Constants.Frame.ROBOT_MASS_KG,
                 Constants.Frame.ROBOT_MOI,
                 new ModuleConfig(
-                        AVERAGE_WHEEL_DIAMETER / 2,
+                        AVERAGE_WHEEL_DIAMETER_M / 2,
                         MAX_MODULE_SPEED,
                         COTS.WHEELS.DEFAULT_NEOPRENE_TREAD.cof,
                         DCMotor.getKrakenX60(1),
