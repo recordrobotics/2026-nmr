@@ -11,14 +11,14 @@ import org.ironmaple.utils.mathutils.GeometryConvertor;
 @SuppressWarnings("java:S110") /* library override, not abstraction */
 public class ImprovedRebuiltFuelOnField extends RebuiltFuelOnField {
 
-    private static final WeakHashMap<ImprovedRebuiltFuelOnField, ImprovedRebuiltFuelOnField> instances =
-            new WeakHashMap<>();
+    // java has no weak set, so we use a weak map with the values being a dummy boolean
+    private static final WeakHashMap<ImprovedRebuiltFuelOnField, Boolean> instances = new WeakHashMap<>();
 
     private Pose3d lastSimPose3d = new Pose3d();
 
     public ImprovedRebuiltFuelOnField(Translation2d initialPosition) {
         super(initialPosition);
-        instances.put(this, this);
+        instances.put(this, true);
     }
 
     public ImprovedRebuiltFuelOnField(Pose2d initialPose, Translation2d initialVelocityMPS) {
@@ -27,7 +27,7 @@ public class ImprovedRebuiltFuelOnField extends RebuiltFuelOnField {
         super.setTransform(GeometryConvertor.toDyn4jTransform(initialPose));
         super.setLinearVelocity(GeometryConvertor.toDyn4jVector2(initialVelocityMPS));
 
-        instances.put(this, this);
+        instances.put(this, true);
     }
 
     @Override
