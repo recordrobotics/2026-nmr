@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.Constants;
+import java.util.Arrays;
 import org.dyn4j.dynamics.Force;
 import org.dyn4j.geometry.Vector2;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -16,36 +17,37 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 public class BumpSim {
     public record DoublePair(double first, double second) {}
 
-    private static final double FIELD_LENGTH_M = FlippingUtil.fieldSizeX;
+    public record BumpLine(Translation3d start, Translation3d end) {}
 
-    private static final double FIELD_WIDTH = FlippingUtil.fieldSizeY;
-
-    /** Start points of the bump line segments. */
-    static final Translation3d[] BUMP_LINE_STARTS = {
-        new Translation3d(4.004176, 1.583531, 0),
-        new Translation3d(4.625626, 1.583531, 0.166517),
-        new Translation3d(FIELD_LENGTH_M - 5.247075, 1.583531, 0),
-        new Translation3d(FIELD_LENGTH_M - 4.625626, 1.583531, 0.166517),
+    static final BumpLine[] BUMP_LINES = {
+        new BumpLine(
+                new Translation3d(4.004176, 1.583531, 0),
+                new Translation3d(4.625626, FlippingUtil.fieldSizeY - 1.583531, 0.166517)),
+        new BumpLine(
+                new Translation3d(4.625626, 1.583531, 0.166517),
+                new Translation3d(5.247075, FlippingUtil.fieldSizeY - 1.583531, 0)),
+        new BumpLine(
+                new Translation3d(FlippingUtil.fieldSizeX - 5.247075, 1.583531, 0),
+                new Translation3d(FlippingUtil.fieldSizeX - 4.625626, FlippingUtil.fieldSizeY - 1.583531, 0.166517)),
+        new BumpLine(
+                new Translation3d(FlippingUtil.fieldSizeX - 4.625626, 1.583531, 0.166517),
+                new Translation3d(FlippingUtil.fieldSizeX - 4.004176, FlippingUtil.fieldSizeY - 1.583531, 0)),
     };
 
-    /** End points of the bump line segments. */
-    static final Translation3d[] BUMP_LINE_ENDS = {
-        new Translation3d(4.625626, FIELD_WIDTH - 1.583531, 0.166517),
-        new Translation3d(5.247075, FIELD_WIDTH - 1.583531, 0),
-        new Translation3d(FIELD_LENGTH_M - 4.625626, FIELD_WIDTH - 1.583531, 0.166517),
-        new Translation3d(FIELD_LENGTH_M - 4.004176, FIELD_WIDTH - 1.583531, 0),
-    };
-
+    /**
+     * Returns the height of the center of the sphere, and the effective slope, which is perpendicular to the line through the center of the sphere and its contact point with the ramp or endpoint. if the fuel is resting on the ground, this is the
+     * radius above the ground and 0. however, if the sphere is on the ramp, this is the height above the ramp
+     * surface (or, if resting on a ramp's tip, tangent to that endpoint). */
     public static DoublePair getSphereHeightAndEffectiveSlope(Translation2d sphereTranslationd, double sphereRadius) {
-        /* Returns the height of the center of the sphere, and the effective slope, which is perpendicular to the line through the center of the sphere and its contact point with the ramp or endpoint. if the fuel is resting on the ground, this is the
-        radius above the ground and 0. however, if the sphere is on the ramp, this is the height above the ramp
-        surface (or, if resting on a ramp's tip, tangent to that endpoint). */
+
         double sphereX = sphereTranslationd.getX();
         double sphereY = sphereTranslationd.getY();
 
-        for (int i = 0; i < BUMP_LINE_STARTS.length; i++) {
-            Translation3d lineStart = BUMP_LINE_STARTS[i];
-            Translation3d lineEnd = BUMP_LINE_ENDS[i];
+        // first pass to find where balls should be resting on the ramp itself
+        for (int i = 0; i < BUMP_LINES.length; i++) {
+            BumpLine line = BUMP_LINES[i];
+            Translation3d lineStart = line.start();
+            Translation3d lineEnd = line.end();
 
             if (sphereY < lineStart.getY() || sphereY > lineEnd.getY()) continue;
 
@@ -71,11 +73,11 @@ public class BumpSim {
                         projected.getY() + dz, (end2d.getY() - start2d.getY()) / (end2d.getX() - start2d.getX()));
         }
 
-        for (int i = 0;
-                i < BUMP_LINE_STARTS.length;
-                i++) { // second pass to find where balls should be resting on the endpoint of a ramp
-            Translation3d lineStart = BUMP_LINE_STARTS[i];
-            Translation3d lineEnd = BUMP_LINE_ENDS[i];
+        // second pass to find where balls should be resting on the ramp's tips (endpoints)
+        for (int i = 0; i < BUMP_LINES.length; i++) {
+            BumpLine line = BUMP_LINES[i];
+            Translation3d lineStart = line.start();
+            Translation3d lineEnd = line.end();
 
             if (sphereY < lineStart.getY() || sphereY > lineEnd.getY()) continue;
 
@@ -135,7 +137,7 @@ public class BumpSim {
     public static Pose3d updateSwerveDriveSimulation(
             SwerveDriveSimulation swerveDriveSimultion, Translation2d[] moduleOffsets, double wheelRadiusMeters) {
         Pose2d robotPose = swerveDriveSimultion.getSimulatedDriveTrainPose();
-        double[] moduleZPos = new double[4];
+        double[] moduleZs = new double[4];
         for (int i = 0; i < moduleOffsets.length; i++) {
             Translation2d moduleOffset = moduleOffsets[i];
             Translation2d modulePosition = robotPose
@@ -147,40 +149,26 @@ public class BumpSim {
             double horizontalAcceleration =
                     -9.81 * moduleEffectiveSlope / (1 + moduleEffectiveSlope * moduleEffectiveSlope);
 
-            moduleZPos[i] = moduleHeightAndSlope.first();
+            moduleZs[i] = moduleHeightAndSlope.first();
 
             // F = ma
             swerveDriveSimultion.applyForce(
                     new Vector2(horizontalAcceleration * Constants.Frame.ROBOT_MASS_KG, 0.0),
                     new Vector2(modulePosition.getX(), modulePosition.getY()));
         }
-        return computePose3d(robotPose, moduleZPos, moduleOffsets, wheelRadiusMeters);
-    }
 
-    /**
-     * Derives a {@link Pose3d} from the robot's 2D pose and the four module Z positions.
-     * Pitch and roll come from front/back and left/right height differences.
-     * X uses {@link #simXPos} when on the ramp for visual accuracy.
-     */
-    private static Pose3d computePose3d(
-            Pose2d robotPose2d, double[] moduleZPos, Translation2d[] moduleOffsets, double wheelRadiusMeters) {
         // FL=0, FR=1, BL=2, BR=3
-        double frontZ = (moduleZPos[0] + moduleZPos[1]) / 2.0;
-        double backZ = (moduleZPos[2] + moduleZPos[3]) / 2.0;
-        double leftZ = (moduleZPos[0] + moduleZPos[2]) / 2.0;
-        double rightZ = (moduleZPos[1] + moduleZPos[3]) / 2.0;
-        double centerZ = (frontZ + backZ) / 2.0;
+        // these are the measurements of the rectangle formed by the four modules
+        double moduleRectangleXDist = Math.max(Math.abs(moduleOffsets[0].getX() - moduleOffsets[2].getX()), 1e-3);
+        double moduleRectangleYDist = Math.max(Math.abs(moduleOffsets[0].getY() - moduleOffsets[1].getY()), 1e-3);
 
-        double frontBackDist = Math.max(Math.abs(moduleOffsets[0].getX() - moduleOffsets[2].getX()), 1e-3);
-        double leftRightDist = Math.max(Math.abs(moduleOffsets[0].getY() - moduleOffsets[1].getY()), 1e-3);
-
-        double pitch = -Math.atan2(frontZ - backZ, frontBackDist);
-        double roll = Math.atan2(leftZ - rightZ, leftRightDist);
+        double roll = Math.atan2(moduleZs[0] + moduleZs[2] - moduleZs[1] - moduleZs[3], 2 * moduleRectangleYDist);
+        double pitch = Math.atan2(moduleZs[2] + moduleZs[3] - moduleZs[0] - moduleZs[1], 2 * moduleRectangleXDist);
 
         return new Pose3d(
-                robotPose2d.getX(),
-                robotPose2d.getY(),
-                centerZ - wheelRadiusMeters,
-                new Rotation3d(roll, pitch, robotPose2d.getRotation().getRadians()));
+                robotPose.getX(),
+                robotPose.getY(),
+                Arrays.stream(moduleZs).sum() / 4.0 - wheelRadiusMeters,
+                new Rotation3d(roll, pitch, robotPose.getRotation().getRadians()));
     }
 }
