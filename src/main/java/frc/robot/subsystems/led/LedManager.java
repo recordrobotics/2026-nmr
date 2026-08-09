@@ -24,6 +24,8 @@ public class LedManager extends ManagedSubsystemBase implements PoweredSubsystem
 
     private static final int PORT = 9;
     private static final int LED_COUNT = 30;
+
+    @SuppressWarnings("unused") // provided for convienience, not needed for calculations
     private static final Distance LED_SPACING = Meters.of(1 / 120.0);
 
     // from https://www.alldatasheet.com/datasheet-pdf/download/1134588/WORLDSEMI/WS2815B.html
