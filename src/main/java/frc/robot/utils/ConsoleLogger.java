@@ -1,5 +1,8 @@
 package frc.robot.utils;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.Constants;
+
 public final class ConsoleLogger {
 
     private static final int TRACE_START_INDEX = 3;
@@ -60,37 +63,35 @@ public final class ConsoleLogger {
     }
 
     private static String trace(StackTraceElement[] stackTrace, int traceStartIndex) {
-        return "";
-        // StringBuilder traceBuilder = new StringBuilder();
-        // for (int i = traceStartIndex; i < stackTrace.length; i++) {
-        //     traceBuilder.append("    at ");
-        //     traceBuilder.append(stackTrace[i].toString());
-        //     if (i < stackTrace.length - 1) {
-        //         traceBuilder.append("\n");
-        //     }
-        // }
-        // return traceBuilder.toString();
+        StringBuilder traceBuilder = new StringBuilder();
+        for (int i = traceStartIndex; i < stackTrace.length; i++) {
+            traceBuilder.append("    at ");
+            traceBuilder.append(stackTrace[i].toString());
+            if (i < stackTrace.length - 1) {
+                traceBuilder.append("\n");
+            }
+        }
+        return traceBuilder.toString();
     }
 
     private static void logImpl(String type, String message, int traceStartIndex) {
-        // StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        // String className = stackTrace[traceStartIndex].getClassName();
-        // String text =
-        //         "[" + type + " / " + className + "]: " + message + TRACE_SEPARATOR + trace(stackTrace,
-        // traceStartIndex);
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        String className = stackTrace[traceStartIndex].getClassName();
+        String text =
+                "[" + type + " / " + className + "]: " + message + TRACE_SEPARATOR + trace(stackTrace, traceStartIndex);
 
-        // // Only report to DriverStation on real robot (no access to console on field)
-        // if (Constants.RobotState.getMode() == Constants.RobotState.Mode.REAL) {
-        //     // Ends up printing to console twice, but ensures both AdvantageKit log and the driver station have the
-        //     // message
-        //     if (type.equals(ERROR)) {
-        //         DriverStation.reportError(text, false);
-        //     } else if (type.equals(WARNING)) {
-        //         DriverStation.reportWarning(text, false);
-        //     }
-        // }
+        // Only report to DriverStation on real robot (no access to console on field)
+        if (Constants.RobotState.getMode() == Constants.RobotState.Mode.REAL) {
+            // Ends up printing to console twice, but ensures both AdvantageKit log and the driver station have the
+            // message
+            if (type.equals(ERROR)) {
+                DriverStation.reportError(text, false);
+            } else if (type.equals(WARNING)) {
+                DriverStation.reportWarning(text, false);
+            }
+        }
 
-        // System.out.println(text);
+        System.out.println(text);
     }
 
     private static void logImpl(String type, Throwable e, int traceStartIndex) {
