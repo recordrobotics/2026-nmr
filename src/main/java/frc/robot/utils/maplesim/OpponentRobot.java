@@ -71,6 +71,8 @@ public class OpponentRobot extends ManagedSubsystemBase {
     }
 
     public static void resetAndEnableAllOthers() {
+        @SuppressWarnings("EnumOrdinal") // This is the best way to get the alliance station as an int that matches
+        // the format of robot.getAllianceStation()
         int station = DriverStation.getRawAllianceStation().ordinal();
 
         for (OpponentRobot robot : allOpponentRobots) {
