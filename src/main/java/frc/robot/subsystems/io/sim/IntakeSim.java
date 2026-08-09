@@ -21,10 +21,9 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.RobotModel;
 import frc.robot.subsystems.RobotModel.FuelManager;
 import frc.robot.subsystems.io.real.IntakeReal;
-import frc.robot.utils.ConsoleLogger;
 import frc.robot.utils.IntakeSimulationUtils;
 import frc.robot.utils.SimpleMath;
-import java.lang.reflect.Field;
+import frc.robot.utils.maplesim.ImprovedArena2026Rebuilt;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.dyn4j.collision.CollisionBody;
@@ -36,7 +35,6 @@ import org.dyn4j.geometry.MassType;
 import org.dyn4j.geometry.Rectangle;
 import org.dyn4j.geometry.Vector2;
 import org.dyn4j.world.ContactCollisionData;
-import org.dyn4j.world.World;
 import org.dyn4j.world.listener.ContactListener;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.SimulatedArena;
@@ -133,14 +131,7 @@ public class IntakeSim extends IntakeReal {
             return passed;
         });
 
-        try {
-            Field physicsWorldField = SimulatedArena.class.getDeclaredField("physicsWorld");
-            physicsWorldField.setAccessible(true);
-            World<Body> physicsWorld = (World<Body>) physicsWorldField.get(SimulatedArena.getInstance());
-            physicsWorld.addContactListener(new BreakingContactListener());
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            ConsoleLogger.logError("Failed to register intake contact listener", e);
-        }
+        ((ImprovedArena2026Rebuilt) SimulatedArena.getInstance()).addContactListener(new BreakingContactListener());
 
         RobotContainer.pdp.registerSimDevice(9, () -> armGroup.getSimState(0).getSupplyCurrentMeasure());
         RobotContainer.pdp.registerSimDevice(10, () -> armGroup.getSimState(1).getSupplyCurrentMeasure());
