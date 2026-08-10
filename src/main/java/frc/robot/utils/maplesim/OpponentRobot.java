@@ -7,6 +7,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinder;
+import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -121,6 +122,22 @@ public class OpponentRobot extends ManagedSubsystemBase {
                 }
             }
             return Optional.empty();
+        }
+    }
+
+    public enum BehaviorPositionLimit {
+        BLUE_ALLIANCE_WALL(0.0),
+        BLUE_FRONT_OF_HUB(4.028726), // essentially the same as the robot starting line
+        BLUE_BACK_OF_HUB(5.222526),
+        CENTER_OF_FIELD(FlippingUtil.fieldSizeX / 2),
+        RED_BACK_OF_HUB(FlippingUtil.fieldSizeX - BLUE_BACK_OF_HUB.xPosition),
+        RED_FRONT_OF_HUB(FlippingUtil.fieldSizeX - BLUE_FRONT_OF_HUB.xPosition),
+        RED_ALLIANCE_WALL(FlippingUtil.fieldSizeX);
+
+        public final double xPosition;
+
+        private BehaviorPositionLimit(double yPosition) {
+            this.xPosition = yPosition;
         }
     }
 
@@ -296,7 +313,12 @@ public class OpponentRobot extends ManagedSubsystemBase {
     public void periodicManaged() {
         if (enabled && RobotState.isEnabled()) {
             switch (behavior) {
-                case DEFENSE -> runDefense(RobotContainer.model.getRobot());
+                case DEFENSE ->
+                    runDefense(
+                            RobotContainer.model.getRobot(),
+                            RobotContainer.drivetrain.getChassisSpeeds(),
+                            BehaviorPositionLimit.BLUE_ALLIANCE_WALL,
+                            BehaviorPositionLimit.RED_ALLIANCE_WALL);
             }
         } else {
             driveSimulation.runChassisSpeeds(new ChassisSpeeds(0, 0, 0), Translation2d.kZero, false, true);
@@ -312,30 +334,56 @@ public class OpponentRobot extends ManagedSubsystemBase {
                 Constants.Swerve.AVERAGE_WHEEL_RADIUS_M);
     }
 
-    private void runDefense(Pose3d targetPose) {
-
+    private void runDefense(
+            Pose3d targetRobotPose3d,
+            ChassisSpeeds targetRobotChassisSpeeds,
+            BehaviorPositionLimit firstBehaviorLimit,
+            BehaviorPositionLimit secondBehaviorLimit) {
+        // magic numbers everywhere >:D
         Pose2d current = driveSimulation.getActualPoseInSimulationWorld();
-        Pose2d target = targetPose.toPose2d();
+        Pose2d targetRobotPose = targetRobotPose3d.toPose2d();
+        double distanceToTarget = Math.min(current.getTranslation().getDistance(targetRobotPose.getTranslation()), 6.0);
+        Translation2d targetRobotVelocityRobotRelative = new Translation2d(
+                targetRobotChassisSpeeds.vxMetersPerSecond, targetRobotChassisSpeeds.vyMetersPerSecond);
+        Translation2d targetRobotVelocityFieldRelative =
+                targetRobotVelocityRobotRelative.rotateBy(targetRobotPose.getRotation());
+        Pose2d targetPoseUnbounded = new Pose2d(
+                targetRobotPose.getTranslation().plus(targetRobotVelocityFieldRelative.times(0.2 * distanceToTarget)),
+                targetRobotPose.getRotation());
+        double higherLimit = Math.max(firstBehaviorLimit.xPosition, secondBehaviorLimit.xPosition);
+        double lowerLimit = Math.min(firstBehaviorLimit.xPosition, secondBehaviorLimit.xPosition);
+        Pose2d targetPose = new Pose2d(
+                Math.max(lowerLimit + 0.4444, Math.min(higherLimit - 0.4444, targetPoseUnbounded.getX())),
+                Math.max(0 + 0.4444, Math.min(FlippingUtil.fieldSizeY - 0.4444, targetPoseUnbounded.getY())),
+                targetPoseUnbounded.getRotation());
+
+        Logger.recordOutput("OpponentRobot/" + robotId + "/TargetRobotPose", targetRobotPose);
+        Logger.recordOutput("OpponentRobot/" + robotId + "/TargetRobotVelocityField", targetRobotVelocityFieldRelative);
+        Logger.recordOutput("OpponentRobot/" + robotId + "/TargetRobotVelocityRobot", targetRobotVelocityRobotRelative);
+        Logger.recordOutput("OpponentRobot/" + robotId + "/distanceToTarget", distanceToTarget);
+        Logger.recordOutput("OpponentRobot/" + robotId + "/TargetPoseUnbounded", targetPoseUnbounded);
+        Logger.recordOutput("OpponentRobot/" + robotId + "/TargetPose", targetPose);
 
         pathfinder.setDynamicObstacles(getAllOpponentRobotBoundingBoxes(this), current.getTranslation());
 
-        if (lastTargetPosition.getDistance(target.getTranslation()) > 1.0) {
-            lastTargetPosition = target.getTranslation();
+        if (lastTargetPosition.getDistance(targetPose.getTranslation()) > 1.0) {
+            lastTargetPosition = targetPose.getTranslation();
 
-            pathfindingCommand.targetPose = target;
+            pathfindingCommand.targetPose = targetPose;
             pathfindingCommand.initialize();
         }
 
         pathfindingCommand.execute();
 
         ChassisSpeeds pidSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                xPid.calculate(current.getX(), target.getX()),
-                yPid.calculate(current.getY(), target.getY()),
+                xPid.calculate(current.getX(), targetPose.getX()),
+                yPid.calculate(current.getY(), targetPose.getY()),
                 rPid.calculate(
-                        current.getRotation().getRadians(), target.getRotation().getRadians()),
+                        current.getRotation().getRadians(),
+                        targetPose.getRotation().getRadians()),
                 current.getRotation());
 
-        double targetDistance = target.getTranslation().getDistance(current.getTranslation());
+        double targetDistance = targetPose.getTranslation().getDistance(current.getTranslation());
 
         boolean isRepelling = !repelTimer.hasElapsed(2.0);
         if (isRepelling) {
