@@ -61,7 +61,7 @@ To use the custom SonarQube rules configured for this repository, you need to co
 
 1. Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P` on Mac).
 2. Type and select **Preferences: Open User Settings (JSON)**.
-3. Copy the `"sonarqube.rules"` section from [`.vscode/settings.json`](.vscode/settings.json) into your user settings file.
+3. Copy the `"sonarlint.rules"` section from [`.vscode/settings.json`](.vscode/settings.json) into your user settings file.
 
 This ensures SonarQube uses the same code quality rules as the repository.
 
