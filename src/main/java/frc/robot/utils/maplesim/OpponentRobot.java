@@ -142,12 +142,12 @@ public class OpponentRobot extends ManagedSubsystemBase {
     }
 
     private static final Pose2d[] ALLIANCE_START_POSITIONS = new Pose2d[] {
-        Constants.FieldStartingLocation.TrenchDepot.getPose(Alliance.Red),
+        Constants.FieldStartingLocation.LeftTrench.getPose(Alliance.Red),
         Constants.FieldStartingLocation.Center.getPose(Alliance.Red),
-        Constants.FieldStartingLocation.TrenchOutpost.getPose(Alliance.Red),
-        Constants.FieldStartingLocation.TrenchDepot.getPose(Alliance.Blue),
+        Constants.FieldStartingLocation.RightTrench.getPose(Alliance.Red),
+        Constants.FieldStartingLocation.LeftTrench.getPose(Alliance.Blue),
         Constants.FieldStartingLocation.Center.getPose(Alliance.Blue),
-        Constants.FieldStartingLocation.TrenchOutpost.getPose(Alliance.Blue)
+        Constants.FieldStartingLocation.RightTrench.getPose(Alliance.Blue)
     };
 
     private static Pose2d nextStartingPose = new Pose2d(-30, -30, Rotation2d.kZero);

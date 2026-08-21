@@ -13,13 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TrenchD"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "BCDot"
+            "pathName": "RightTrenchBump"
           }
         }
       ]

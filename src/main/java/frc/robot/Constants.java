@@ -120,9 +120,11 @@ public final class Constants {
     }
 
     public enum FieldStartingLocation {
-        TrenchDepot(new Pose2d(4.408, 7.408, Rotation2d.kZero)),
+        LeftTrench(new Pose2d(4.408, 7.408, Rotation2d.kZero)),
+        LeftBump(new Pose2d(3.431, 5.568, Rotation2d.fromDegrees(45.0))),
         Center(new Pose2d(3.418, 4.080, Rotation2d.fromDegrees(34.439))),
-        TrenchOutpost(new Pose2d(4.414, 0.630, Rotation2d.kZero));
+        RightBump(new Pose2d(3.431, 2.502, Rotation2d.fromDegrees(-45.0))),
+        RightTrench(new Pose2d(4.414, 0.630, Rotation2d.kZero));
 
         private final Pose2d transformRed;
         private final Pose2d transformBlue;

@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.commands.auto.BCDot;
 import frc.robot.commands.auto.CreateAutoRoutineException;
 import frc.robot.commands.auto.IAutoRoutine;
 import frc.robot.subsystems.Intake.IntakeState;
@@ -99,7 +98,6 @@ public final class AutoPath {
                         Commands.waitSeconds(0.5),
                         Commands.runOnce(() -> RobotContainer.intake.setState(IntakeState.OUT), RobotContainer.intake),
                         Commands.waitSeconds(0.5)));
-        NamedCommands.registerCommand("BCDot", new BCDot());
         NamedCommands.registerCommand(
                 "Pass",
                 Commands.startEnd(

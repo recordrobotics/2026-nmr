@@ -156,7 +156,7 @@ public final class RobotContainer {
         EnumSet.allOf(FieldStartingLocation.class)
                 .forEach(v -> fieldStartingLocationChooser.addOption(v.toString(), v));
         fieldStartingLocationChooser.addDefaultOption(
-                FieldStartingLocation.TrenchDepot.toString(), FieldStartingLocation.TrenchDepot);
+                FieldStartingLocation.LeftTrench.toString(), FieldStartingLocation.LeftTrench);
 
         orchestra = new TalonFXOrchestra();
 
@@ -597,7 +597,7 @@ public final class RobotContainer {
     }
 
     public static FieldStartingLocation getStartingLocation() {
-        return Objects.requireNonNullElse(fieldStartingLocationChooser.get(), FieldStartingLocation.TrenchDepot);
+        return Objects.requireNonNullElse(fieldStartingLocationChooser.get(), FieldStartingLocation.LeftTrench);
     }
 
     /** frees up all hardware allocations */
