@@ -62,9 +62,6 @@ public final class Intake extends KillableSubsystem implements PoweredSubsystem,
     private static final double RESET_VELOCITY_THRESHOLD = 0.06;
     private static final double RESET_VELOCITY_THRESHOLD_TIME = 0.1;
 
-    // Don't use reset delta if we moved less than 40 degrees, assume ARM_STARTING_POSITION_RADIANS instead
-    private static final double ENCODERS_RESET_DELTA_THRESHOLD = Units.degreesToRotations(40);
-
     private static final LoggedNetworkBoolean disableWheelToggle =
             new LoggedNetworkBoolean("Intake/DisableWheel", false);
 
