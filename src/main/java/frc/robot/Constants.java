@@ -674,8 +674,6 @@ public final class Constants {
         DOWN(0),
         UP(Units.inchesToMeters(8.0));
 
-        private static final double HEIGHT_DIFFERENCE_TOLERANCE = 0.1; // meters
-
         private final double height;
 
         private ClimberHeight(double heightMeters) {
@@ -687,7 +685,7 @@ public final class Constants {
         }
 
         public double getDifference(double height) {
-            return Math.abs(this.height - height) / HEIGHT_DIFFERENCE_TOLERANCE; // TODO what is this division doing???
+            return Math.abs(this.height - height);
         }
     }
 
