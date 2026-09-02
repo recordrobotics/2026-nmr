@@ -1,0 +1,58 @@
+{
+    "name": "Minivan",
+    "rotations": [
+        {
+            "axis": "x",
+            "degrees": 90
+        },
+        {
+            "axis": "z",
+            "degrees": 90
+        }
+    ],
+    "position": [
+        0,
+        0,
+        0.103226
+    ],
+    "cameras": [],
+    "rsl": [
+        "Robot_Signal_Light_(RSL)_(Werma)"
+    ],
+    "bumper": {
+        "name": [
+            "foam",
+            "wood_1",
+            "wood_2",
+            "wood_3",
+            "wood_4"
+        ],
+        "redColor": "#9e1616ff"
+    },
+    "led": {
+        "name": [
+            "led_strip"
+        ],
+        "count": 30.303030303,
+        "aspectRatio": 1.65
+    },
+    "components": [
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "x",
+                    "degrees": 90
+                },
+                {
+                    "axis": "z",
+                    "degrees": 90
+                }
+            ],
+            "zeroedPosition": [
+                0.26,
+                0,
+                -0.16
+            ]
+        }
+    ]
+}
