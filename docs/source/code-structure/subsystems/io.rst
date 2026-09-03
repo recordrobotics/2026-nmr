@@ -13,7 +13,6 @@ There are 3 types of IO classes:
 .. toctree::
     :maxdepth: 1
 
-    io/climber-io
     io/coral-intake-io
     io/elevator-arm-io
     io/elevator-head-io

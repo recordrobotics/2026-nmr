@@ -17,7 +17,6 @@ Read through `Command-Based Progamming <https://docs.wpilib.org/en/stable/docs/s
     subsystems/nav-sensor
     subsystems/power-distribution-panel
     subsystems/coral-detection
-    subsystems/climber
     subsystems/coral-intake
     subsystems/elevator
     subsystems/elevator-arm

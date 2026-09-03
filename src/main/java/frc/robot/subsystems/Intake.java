@@ -275,12 +275,7 @@ public final class Intake extends KillableSubsystem implements PoweredSubsystem,
 
         if (
         // want to go to starting config but not there yet, wait for turret to stow
-        (targetState == IntakeState.STARTING && !isNearStartPosition() && RobotContainer.turret.isStowed())
-                ||
-                // want to extend but not there yet, wait for shotblocker to go down
-                (targetState != IntakeState.STARTING
-                        && isNearStartPosition()
-                        && !RobotContainer.climber.isShotblockerExtended())) {
+        (targetState == IntakeState.STARTING && !isNearStartPosition() && RobotContainer.turret.isStowed())) {
             setState(targetState); // refresh state
         }
 
@@ -297,17 +292,6 @@ public final class Intake extends KillableSubsystem implements PoweredSubsystem,
         if (state == IntakeState.STARTING
                 && (isNearStartPosition() || RobotContainer.turret == null || RobotContainer.turret.isStowed())) {
             armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_UP_POSITION_RADIANS);
-        } else if (!(RobotContainer.climber != null
-                && RobotContainer.climber.isShotblockerExtended())) { // guard against shotblocker extension
-            switch (state) {
-                case INTAKE, OUT ->
-                    armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_DOWN_POSITION_RADIANS);
-                case EJECT ->
-                    armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_EJECT_POSITION_RADIANS);
-                case RETRACTED ->
-                    armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_RETRACTED_POSITION_RADIANS);
-                case STARTING -> {} // don't start moving the arm until the turret is stowed
-            }
         }
     }
 

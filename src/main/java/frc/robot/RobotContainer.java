@@ -23,13 +23,11 @@ import frc.robot.control.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.drive.*;
-import frc.robot.subsystems.io.real.ClimberReal;
 import frc.robot.subsystems.io.real.FeederReal;
 import frc.robot.subsystems.io.real.IndexerReal;
 import frc.robot.subsystems.io.real.IntakeReal;
 import frc.robot.subsystems.io.real.ShooterReal;
 import frc.robot.subsystems.io.real.TurretReal;
-import frc.robot.subsystems.io.sim.ClimberSim;
 import frc.robot.subsystems.io.sim.FeederSim;
 import frc.robot.subsystems.io.sim.IndexerSim;
 import frc.robot.subsystems.io.sim.IntakeSim;
@@ -104,7 +102,6 @@ public final class RobotContainer {
     public static Shooter shooter;
     public static Indexer indexer;
     public static Feeder feeder;
-    public static Climber climber;
     public static RobotModel model;
     public static FieldStateTracker fieldStateTracker;
     public static ShootOrchestrator shootOrchestrator;
@@ -175,7 +172,6 @@ public final class RobotContainer {
             shooter = new Shooter(new ShooterReal());
             indexer = new Indexer(new IndexerReal());
             feeder = new Feeder(new FeederReal());
-            climber = new Climber(new ClimberReal());
         } else {
             if (Constants.Vision.VISION_SIMULATION_MODE.isPhotonSim()) {
                 visionSim = new VisionSystemSim("main");
@@ -212,7 +208,6 @@ public final class RobotContainer {
             shooter = new Shooter(new ShooterSim(ROBOT_PERIODIC));
             indexer = new Indexer(new IndexerSim(ROBOT_PERIODIC));
             feeder = new Feeder(new FeederSim(ROBOT_PERIODIC));
-            climber = new Climber(new ClimberSim(ROBOT_PERIODIC, drivetrain.getSwerveDriveSimulation()));
         }
 
         poseSensorFusion = new PoseSensorFusion(getStartingLocation().getPose());
@@ -249,7 +244,7 @@ public final class RobotContainer {
                             .ignoringDisable(true));
 
             // Register all powered subsystems with the simulation battery
-            registerPoweredSubsystems(intake, turret, shooter, indexer, feeder, climber);
+            registerPoweredSubsystems(intake, turret, shooter, indexer, feeder);
             SimulatedBatteryFactory.modify(SimulatedBattery.ROBORIO_BATTERY);
         }
     }
@@ -343,72 +338,56 @@ public final class RobotContainer {
                         () -> {
                             returnToOverviewTabIfIntakeStarting();
                             intake.setState(Intake.IntakeState.RETRACTED);
-                            climber.setState(Constants.ClimberHeight.DOWN);
                         },
-                        intake,
-                        climber))
+                        intake))
                 .onFalse(Commands.runOnce(
                         () -> {
                             returnToOverviewTabIfIntakeStarting();
                             intake.setState(Intake.IntakeState.INTAKE);
-                            climber.setState(Constants.ClimberHeight.DOWN);
                         },
-                        intake,
-                        climber));
+                        intake));
 
         new Trigger(() -> getControl().isIntakePressed())
                 .onTrue(Commands.runOnce(
                         () -> {
                             returnToOverviewTabIfIntakeStarting();
                             intake.setState(Intake.IntakeState.INTAKE);
-                            climber.setState(Constants.ClimberHeight.DOWN);
                         },
-                        intake,
-                        climber))
+                        intake))
                 .onFalse(Commands.runOnce(
                         () -> {
                             returnToOverviewTabIfIntakeStarting();
                             intake.setState(Intake.IntakeState.OUT);
-                            climber.setState(Constants.ClimberHeight.DOWN);
                         },
-                        intake,
-                        climber));
+                        intake));
 
         new Trigger(() -> getControl().isIntakeUpPressed())
                 .onTrue(Commands.runOnce(
                         () -> {
                             returnToOverviewTabIfIntakeStarting();
                             intake.setState(Intake.IntakeState.RETRACTED);
-                            climber.setState(Constants.ClimberHeight.DOWN);
                         },
-                        intake,
-                        climber))
+                        intake))
                 .onFalse(Commands.runOnce(
                         () -> {
                             returnToOverviewTabIfIntakeStarting();
                             intake.setState(Intake.IntakeState.OUT);
-                            climber.setState(Constants.ClimberHeight.DOWN);
                         },
-                        intake,
-                        climber));
+                        intake));
 
         new Trigger(() -> getControl().isReverseIntakePressed())
                 .onTrue(Commands.runOnce(
                         () -> {
                             returnToOverviewTabIfIntakeStarting();
                             intake.setState(Intake.IntakeState.EJECT);
-                            climber.setState(Constants.ClimberHeight.DOWN);
                         },
-                        intake,
-                        climber))
+                        intake))
                 .onFalse(Commands.runOnce(
                         () -> {
                             returnToOverviewTabIfIntakeStarting();
                             intake.setState(Intake.IntakeState.OUT);
-                            climber.setState(Constants.ClimberHeight.DOWN);
                         },
-                        intake,
-                        climber));
+                        intake));
 
         new Trigger(() -> getControl().isDefenseModePressed())
                 .onTrue(Commands.runOnce(
@@ -416,21 +395,6 @@ public final class RobotContainer {
                             intake.setState(Intake.IntakeState.STARTING);
                             Elastic.selectTab("Defense");
                         },
-                        intake));
-
-        new Trigger(() -> getControl().isClimbPressed())
-                .onTrue(Commands.runOnce(
-                        () -> {
-                            if (climber.getNearestHeight() == Constants.ClimberHeight.DOWN) {
-                                climber.setState(Constants.ClimberHeight.UP);
-                                intake.setState(Intake.IntakeState.STARTING);
-                                Elastic.selectTab("Defense");
-                            } else {
-                                climber.setState(Constants.ClimberHeight.DOWN);
-                                Elastic.selectTab("Overview");
-                            }
-                        },
-                        climber,
                         intake));
 
         new Trigger(RobotContainer::shouldBeShooting)
@@ -455,8 +419,7 @@ public final class RobotContainer {
          * When button is released all commands are canceled
          */
         new Trigger(() -> getControl().isKillTriggered())
-                .whileTrue(CommandUtils.setForceDisabledForAllCommand(
-                                true, 2, intake, shooter, climber, feeder, indexer, turret)
+                .whileTrue(CommandUtils.setForceDisabledForAllCommand(true, 2, intake, shooter, feeder, indexer, turret)
                         .repeatedly())
                 .onFalse(Commands.runOnce(() -> CommandScheduler.getInstance().cancelAll()));
 
@@ -606,7 +569,6 @@ public final class RobotContainer {
         poseSensorFusion.close();
         intake.close();
         shooter.close();
-        climber.close();
         turret.close();
         indexer.close();
         feeder.close();
