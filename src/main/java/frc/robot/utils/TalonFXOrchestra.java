@@ -37,8 +37,6 @@ public class TalonFXOrchestra extends SubsystemBase {
 
         public static final int FEEDER = 1;
 
-        public static final int CLIMBER = 2;
-
         private Tracks() {}
     }
 

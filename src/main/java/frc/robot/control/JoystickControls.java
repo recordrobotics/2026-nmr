@@ -160,11 +160,6 @@ public class JoystickControls implements AbstractControl {
     }
 
     @Override
-    public boolean isClimbPressed() {
-        return joystick.getRawButton(7);
-    }
-
-    @Override
     public boolean isShooterPassPressed() {
         return joystick.getRawButton(1);
     }

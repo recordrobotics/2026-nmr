@@ -267,11 +267,6 @@ public class TestControlBridge implements AbstractControl {
     }
 
     @Override
-    public boolean isClimbPressed() {
-        return false; // TODO
-    }
-
-    @Override
     public boolean isShooterPassPressed() {
         return false; // TODO
     }

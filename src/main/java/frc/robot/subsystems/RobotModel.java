@@ -57,11 +57,9 @@ public final class RobotModel extends ManagedSubsystemBase {
 
     public final IntakeModel intakeModel = new IntakeModel();
     public final ShooterModel shooterModel = new ShooterModel();
-    public final ClimberModel climberModel = new ClimberModel();
 
     @AutoLogLevel(level = Level.REAL)
-    public Pose3d[] mechanismPoses =
-            new Pose3d[intakeModel.getPoseCount() + shooterModel.getPoseCount() + climberModel.getPoseCount()];
+    public Pose3d[] mechanismPoses = new Pose3d[intakeModel.getPoseCount() + shooterModel.getPoseCount()];
 
     public RobotModel() {
         periodicManaged();
@@ -78,7 +76,7 @@ public final class RobotModel extends ManagedSubsystemBase {
 
     @Override
     public void periodicManaged() {
-        updatePoses(intakeModel, shooterModel, climberModel);
+        updatePoses(intakeModel, shooterModel);
         if (Constants.RobotState.getMode() != Mode.REAL) {
             fuelManager.update();
         }
@@ -268,38 +266,6 @@ public final class RobotModel extends ManagedSubsystemBase {
                     .rotateAround(
                             shooterBallStart,
                             new Rotation3d(Rotation2d.fromRotations(RobotContainer.turret.getPositionRotations())));
-        }
-    }
-
-    public static class ClimberModel implements MechanismModel {
-        public static final int POSE_COUNT = 2;
-        private static final Translation3d SHAFT_ORIGIN = new Translation3d(0.292, 0, 0.5063);
-
-        private double climberHeightMeters;
-        private double shotBlockerAngle;
-
-        public void update(double newClimberHeightMeters) {
-            climberHeightMeters = newClimberHeightMeters;
-            shotBlockerAngle = MathUtil.interpolate(
-                    -Math.PI / 2,
-                    0,
-                    (climberHeightMeters - Constants.Climber.CLIMBER_SHOTBLOCKER_EXTEND_START_HEIGHT)
-                            / (Constants.Climber.CLIMBER_SHOTBLOCKER_EXTEND_END_HEIGHT
-                                    - Constants.Climber.CLIMBER_SHOTBLOCKER_EXTEND_START_HEIGHT));
-        }
-
-        @Override
-        public int getPoseCount() {
-            return POSE_COUNT;
-        }
-
-        @Override
-        public void updatePoses(Pose3d[] poses, int i) {
-            poses[i] = new Pose3d(0, 0, climberHeightMeters, Rotation3d.kZero);
-            Pose3d shotBlockerPose = Pose3d.kZero.rotateAround(SHAFT_ORIGIN, new Rotation3d(0, -shotBlockerAngle, 0));
-            poses[i + 1] = new Pose3d(
-                    shotBlockerPose.getTranslation().plus(new Translation3d(0, 0, climberHeightMeters)),
-                    shotBlockerPose.getRotation());
         }
     }
 

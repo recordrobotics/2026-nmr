@@ -164,10 +164,6 @@ public class GamepadControls implements AbstractControl {
             angle += Math.PI;
         }
 
-        if (RobotContainer.climber != null && RobotContainer.climber.isShotblockerExtended()) {
-            angle -= Math.PI;
-        }
-
         double magnitude = Math.hypot(x, y);
         if (magnitude
                 < (gamepad.rightStickButtonPressed()
@@ -206,11 +202,6 @@ public class GamepadControls implements AbstractControl {
     @Override
     public boolean isIntakeUpPressed() {
         return gamepad.leftBumperPressed();
-    }
-
-    @Override
-    public boolean isClimbPressed() {
-        return gamepad.inputDiamondDown();
     }
 
     @Override

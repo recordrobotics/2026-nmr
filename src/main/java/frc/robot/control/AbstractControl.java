@@ -23,8 +23,6 @@ public interface AbstractControl {
 
     boolean isDefenseModePressed();
 
-    boolean isClimbPressed();
-
     boolean isShooterPassPressed();
 
     boolean isShooterDisableShootPressed();

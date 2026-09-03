@@ -15,7 +15,6 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -29,7 +28,6 @@ import frc.robot.utils.DriverStationUtils;
 import frc.robot.utils.ModuleConstants;
 import frc.robot.utils.ModuleConstants.InvalidConfigException;
 import frc.robot.utils.ModuleConstants.MotorLocation;
-import frc.robot.utils.SimpleMath;
 import frc.robot.utils.SysIdManager;
 import frc.robot.utils.wrappers.ImmutableCurrent;
 import frc.robot.utils.wrappers.ImmutableTime;
@@ -37,7 +35,6 @@ import frc.robot.utils.wrappers.Pose2d;
 import frc.robot.utils.wrappers.Translation2d;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import org.ironmaple.simulation.drivesims.COTS;
 
 /**
@@ -668,93 +665,6 @@ public final class Constants {
         public static final Distance WHEEL_DIAMETER = Inches.of(2.0);
 
         private Feeder() {}
-    }
-
-    public enum ClimberHeight {
-        DOWN(0),
-        UP(Units.inchesToMeters(8.0));
-
-        private final double height;
-
-        private ClimberHeight(double heightMeters) {
-            this.height = heightMeters;
-        }
-
-        public double getHeight() {
-            return height;
-        }
-
-        public double getDifference(double height) {
-            return Math.abs(this.height - height);
-        }
-    }
-
-    public static final class Climber {
-        public static final double KV = 46.657;
-        public static final double KA = 0.88771;
-        public static final double KG = 0.033723;
-        public static final double KS = 0.077735;
-
-        public static final double KP = 47.973;
-        public static final double KD = 34.1;
-
-        public static final double MMEXPO_KV = KV;
-        public static final double MMEXPO_KA = 10;
-
-        public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(70);
-        public static final Current SUPPLY_CURRENT_LOWER_LIMIT = Amps.of(40);
-        public static final Current STATOR_CURRENT_LIMIT = Amps.of(120);
-
-        public static final double GEAR_RATIO = 48;
-        public static final double SPROCKET_EFFECTIVE_RADIUS = Units.inchesToMeters(
-                0.75); // MUST BE EFFECTIVE RADIUS, NOT PHYSICAL RADIUS. This is the radius at which it contacts the
-        // rack, which is not the same as the physical radius of the sprocket due to the sprocket
-        // entering into the rack.
-        public static final double METERS_PER_ROTATION = SPROCKET_EFFECTIVE_RADIUS
-                * 2
-                * Math.PI
-                / GEAR_RATIO; // 2 * pi * r / gear ratio because same as getting distance a wheelmoved, just vertically
-
-        public static final double AT_GOAL_POSITION_TOLERANCE = 0.03; // TODO make correct
-        public static final double AT_GOAL_VELOCITY_TOLERANCE = 0.63514; // TODO make correct
-
-        public static final double MAX_HEIGHT_METERS = Units.inchesToMeters(8.0);
-
-        public static final double CARRIAGE_MASS_KG = 0.706915816;
-
-        public static final List<Translation3d> END_OF_TOWER_POSITIONS = List.of(
-                // always in the center of the round tower rung, NOT THE TOP OF THE RUNG
-                // blue
-                SimpleMath.fromCenterFieldRelativeTranslation3d(new Translation3d(7.208488, 0.8112125, 0.685800)),
-                SimpleMath.fromCenterFieldRelativeTranslation3d(new Translation3d(7.208488, -0.2333625, 0.685800)),
-                // red
-                SimpleMath.fromCenterFieldRelativeTranslation3d(new Translation3d(-7.208488, -0.8112125, 0.685800)),
-                SimpleMath.fromCenterFieldRelativeTranslation3d(new Translation3d(-7.208488, 0.2333625, 0.685800)));
-
-        public static final double END_OF_TOWER_POSITION_TOLERANCE = Units.inchesToMeters(
-                        2.9375) // half of the width of the part of the rung that sticks out
-                + Units.inchesToMeters(1.0); // a little bit extra because sim doesn't have bumper gap yet TODO remove
-
-        public static final Predicate<Translation3d> AT_END_OF_TOWER_POSITION_PREDICATE = pos -> {
-            for (Translation3d endPos : END_OF_TOWER_POSITIONS) {
-                if (pos.getDistance(endPos) < END_OF_TOWER_POSITION_TOLERANCE) {
-                    return true;
-                }
-            }
-            return false;
-        };
-
-        public static final Transform2d ROBOT_TO_CLIMBER_OFFSET = new Transform2d(
-                0.292100,
-                -0.119634,
-                new Rotation2d()); // TODO this is centered on climber, should be centered on hook, make correct
-        public static final double CLIMBER_BASE_HEIGHT_METERS = 0.502432;
-
-        public static final double CLIMBER_SAFE_SHOTBLOCKER_HEIGHT = Units.inchesToMeters(6.0);
-        public static final double CLIMBER_SHOTBLOCKER_EXTEND_START_HEIGHT = Units.inchesToMeters(6.3);
-        public static final double CLIMBER_SHOTBLOCKER_EXTEND_END_HEIGHT = Units.inchesToMeters(7.5);
-
-        private Climber() {}
     }
 
     public final class RobotState {
