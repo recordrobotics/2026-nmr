@@ -13,6 +13,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -430,6 +431,13 @@ public final class Constants {
         public static final Double MAX_ANGULAR_SPEED_RADIANS =
                 Constants.Swerve.MAX_MODULE_SPEED / Constants.Swerve.WHEEL_BASE_RADIUS; // trust
 
+        public static final ProfiledPIDController spinController = new ProfiledPIDController(
+                Constants.Control.SPIN_KP, 0, Constants.Control.SPIN_KD, Constants.Control.SPIN_CONSTRAINTS);
+
+        static {
+            spinController.enableContinuousInput(-Math.PI, Math.PI);
+        }
+
         private Swerve() {}
 
         // Module Creation
@@ -449,6 +457,9 @@ public final class Constants {
         public static ModuleConstants getBackRightConstants() throws InvalidConfigException {
             return ModuleConstants.fromConfig(MotorLocation.BACK_RIGHT);
         }
+
+        public record DrivetrainSpinTargetState(
+                double positionRadians, double velocityRadiansPerSecond, double accelerationRadiansPerSecondSquared) {}
     }
 
     public static final class Auto {
@@ -519,60 +530,6 @@ public final class Constants {
         public static final double WHEEL_METERS_PER_ROTATION = ROLLER_DIAMETER.in(Meter) * Math.PI / WHEEL_GEAR_RATIO;
 
         private Intake() {}
-    }
-
-    public static final class Turret {
-        public static final double KP = 50;
-        public static final double KD = 3.811;
-        public static final double KS = 0.3;
-        public static final double KV = 2.1;
-        public static final double KA_MM = 0.01;
-        public static final double KA = 0.25;
-        public static final double KVP = 0.2;
-        public static double FF_MUL = 0.72;
-        public static double LOOKAHEAD_TIME = 0.1;
-
-        public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(40);
-        public static final Current SUPPLY_LOWER_CURRENT_LIMIT = Amps.of(40);
-        public static final Time SUPPLY_LOWER_CURRENT_LIMIT_TIME = Seconds.of(1.0);
-        public static final Current STATOR_CURRENT_LIMIT = Amps.of(90);
-
-        public static final double MMEXPO_KV = 1.931;
-        public static final double MMEXPO_KA = 1.1;
-
-        public static final double GEAR_RATIO = 15.5428571429;
-
-        public static final double ROTATION_LIMIT_INSET_ROTATIONS = 0.002;
-        public static final double ROTATION_MAX_POSITION_MOTOR_ROTATIONS = 0.6921 - ROTATION_LIMIT_INSET_ROTATIONS;
-        public static final double ROTATION_MIN_POSITION_MOTOR_ROTATIONS = -0.56665 + ROTATION_LIMIT_INSET_ROTATIONS;
-
-        public static final double FRONT_LEFT_MAGNET_MOTOR_ROTATIONS_CW = -0.044678;
-        public static final double FRONT_LEFT_MAGNET_MOTOR_ROTATIONS_CCW = -0.060547;
-
-        public static final double BACK_LEFT_MAGNET_MOTOR_ROTATIONS_CW = 0.206299;
-        public static final double BACK_LEFT_MAGNET_MOTOR_ROTATIONS_CCW = 0.191406;
-
-        public static final double BACK_RIGHT_MAGNET_MOTOR_ROTATIONS_CW = 0.453125;
-        public static final double BACK_RIGHT_MAGNET_MOTOR_ROTATIONS_CCW = 0.437012;
-
-        public static final double TURRET_SPRING_HIGH_START_POS = 0.376709;
-        public static final double TURRET_SPRING_HIGH_START_NEG = -0.355957;
-        public static final double TURRET_SPRING_LOW_START_POS = 0.376709;
-        public static final double TURRET_SPRING_LOW_START_NEG = -0.355957;
-        public static double TURRET_SPRING_HIGH_VOLTS = 1.11;
-        public static double TURRET_SPRING_LOW_VOLTS = 1.11;
-
-        public static final double STARTING_POSITION_RADIANS = Units.degreesToRadians(90.0);
-
-        public static final double MAGNETIC_LIMIT_SWITCH_TRIGGER_ANGLE_RAD = Units.degreesToRadians(5);
-        public static final double MAGNETIC_LIMIT_SWITCH_DETRIGGER_ANGLE_RAD = Units.degreesToRadians(10);
-        public static final double TURRET_MAGNET_OFFSET_ANGLE_RAD = Units.degreesToRadians(27.7335249689);
-
-        public static final double FRONT_LEFT_LIMIT_SWITCH_POSITION_RADIANS = Units.degreesToRadians(45.0);
-        public static final double BACK_LEFT_LIMIT_SWITCH_POSITION_RADIANS = Units.degreesToRadians(135.0);
-        public static final double BACK_RIGHT_LIMIT_SWITCH_POSITION_RADIANS = Units.degreesToRadians(225.0);
-
-        private Turret() {}
     }
 
     public static final class Shooter {

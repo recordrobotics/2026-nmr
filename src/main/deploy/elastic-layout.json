@@ -537,19 +537,6 @@
             }
           },
           {
-            "title": "Prioritize Turret",
-            "x": 0.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Toggle Switch",
-            "properties": {
-              "topic": "Camera/PrioritizeTurret",
-              "period": 0.06,
-              "data_type": "boolean"
-            }
-          },
-          {
             "title": "Won Auto",
             "x": 1280.0,
             "y": 0.0,
@@ -610,19 +597,6 @@
               "label_position": "LEFT"
             },
             "children": [
-              {
-                "title": "Turret",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Toggle Switch",
-                "properties": {
-                  "topic": "Positioned/Turret/OverrideKnown",
-                  "period": 0.06,
-                  "data_type": "boolean"
-                }
-              },
               {
                 "title": "Intake",
                 "x": 0.0,
@@ -733,20 +707,6 @@
             "type": "Text Display",
             "properties": {
               "topic": "SHOTFEED",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Turret FF Multiplier",
-            "x": 544.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "TURRET_FFMUL",
               "period": 0.06,
               "data_type": "double",
               "show_submit_button": false

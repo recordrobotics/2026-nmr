@@ -14,16 +14,6 @@ public final class RobotMap {
         private Intake() {}
     }
 
-    public static final class Turret {
-        public static final int MOTOR_ID = 19;
-
-        public static final int FRONT_LEFT_LIMIT_SWITCH_ID = 3;
-        public static final int BACK_LEFT_LIMIT_SWITCH_ID = 2;
-        public static final int BACK_RIGHT_LIMIT_SWITCH_ID = 4;
-
-        private Turret() {}
-    }
-
     public static final class Shooter {
         public static final int HOOD_ID = 20;
         public static final int FLYWHEEL_LEFT_ID = 21;

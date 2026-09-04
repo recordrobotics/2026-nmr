@@ -1,7 +1,6 @@
 package frc.robot.control;
 
 import edu.wpi.first.math.Pair;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -22,10 +21,9 @@ public class GamepadControls implements AbstractControl {
 
     private final GamepadController gamepad;
 
-    private ProfiledPIDController spinController = new ProfiledPIDController(
-            Constants.Control.SPIN_KP, 0, Constants.Control.SPIN_KD, Constants.Control.SPIN_CONSTRAINTS);
     private double spinOutput = 0;
     private double spinTarget = 0;
+    private boolean isSpinTargeting = false;
 
     private double lastSpinTime = -1000;
 
@@ -37,7 +35,6 @@ public class GamepadControls implements AbstractControl {
 
     public GamepadControls(GamepadController gamepad) {
         this.gamepad = gamepad;
-        spinController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     private Pair<Double, Double> getXYStickOutput() {
@@ -251,5 +248,13 @@ public class GamepadControls implements AbstractControl {
     @Override
     public String toDisplayName() {
         return gamepad.toDisplayName();
+    }
+
+    public double getSpinTarget() {
+        return spinTarget;
+    }
+
+    public boolean getSpinTargeting() {
+        return isSpinTargeting;
     }
 }

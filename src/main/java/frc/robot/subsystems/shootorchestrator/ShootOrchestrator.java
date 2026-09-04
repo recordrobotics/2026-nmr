@@ -19,16 +19,14 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
+import frc.robot.Constants.Swerve.DrivetrainSpinTargetState;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Feeder.FeederState;
 import frc.robot.subsystems.Indexer.IndexerState;
-import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Shooter.ShooterState;
-import frc.robot.subsystems.Turret.TurretState;
 import frc.robot.subsystems.shootorchestrator.ShotCalculator.ShotCalculation;
 import frc.robot.utils.DriverStationUtils;
 import frc.robot.utils.ManagedSubsystemBase;
-import frc.robot.utils.PositionedSubsystem.PositionStatus;
 import frc.robot.utils.SimpleMath;
 import frc.robot.utils.field.FieldUtils;
 import frc.robot.utils.wrappers.SafeAlert;
@@ -103,6 +101,8 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
     private double shooterFeedforward = 0;
 
     private boolean lastOnTarget = false;
+
+    private DrivetrainSpinTargetState spinTarget = new DrivetrainSpinTargetState(0.0, 0.0, 0.0);
 
     private SafeAlert shootOverrideAlert = new SafeAlert("Shooting override enabled!", AlertType.kWarning);
     private SafeAlert feedModeAlert = new SafeAlert("feed mode alert", AlertType.kWarning);
@@ -266,7 +266,7 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
                 shotCalculation);
     }
 
-    private TurretState calculateTurretState(
+    private DrivetrainSpinTargetState calculateTurretState(
             Vector<N3> fieldShotVector,
             Vector<N3> robotRelativeShotVector,
             ChassisSpeeds robotRelativeSpeeds,
@@ -280,14 +280,10 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
                 : 0;
         lastShotYaw = OptionalDouble.of(fieldShotYaw);
 
-        if (RobotContainer.intake.isNearStartPosition()
-                || RobotContainer.intake.getTargetState() == IntakeState.STARTING) {
-            double turretPos = Units.rotationsToRadians(RobotContainer.turret.getPositionRotations());
-            return new TurretState(Math.copySign(Constants.Turret.STARTING_POSITION_RADIANS, turretPos), 0, 0);
-        } else if (useFixedShooting) {
-            return new TurretState(FIXED_TURRET_ANGLE_RADIANS, 0, 0);
+        if (useFixedShooting) {
+            return new DrivetrainSpinTargetState(FIXED_TURRET_ANGLE_RADIANS, 0, 0);
         } else {
-            return new TurretState(
+            return new DrivetrainSpinTargetState(
                     shotYaw,
                     shotYawVelocity - robotRelativeSpeeds.omegaRadiansPerSecond,
                     -robotRelativeAcceleration.omegaRadiansPerSecond);
@@ -298,15 +294,14 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
         return shootAngle - Constants.Shooter.HOOD_FUEL_EXIT_ANGLE_OFFSET_RADIANS + shootAngleOffset.get();
     }
 
-    private ShooterState calculateShooterState(
-            ShotTarget target, Vector<N3> robotRelativeShotVector, boolean isBlocked) {
+    private ShooterState calculateShooterState(ShotTarget target, Vector<N3> robotRelativeShotVector) {
         if (shootingEnabled) {
             if (shootOverride.get()) {
                 double hoodAngle = shooterOverride.isPresent()
                         ? shooterOverride.get().hoodAngleRadians()
                         : hoodAngleDashboardOverride.get();
                 return new ShooterState(
-                        isBlocked ? Constants.Shooter.HOOD_MAX_POSITION_RADIANS : hoodAngle,
+                        hoodAngle,
                         shooterOverride.isPresent()
                                 ? shooterOverride.get().flywheelVelocityMps()
                                 : shootVelocityDashboardOverride.get(),
@@ -321,7 +316,7 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
                 }
 
                 return new ShooterState(
-                        isBlocked ? Constants.Shooter.HOOD_MAX_POSITION_RADIANS : hoodAngle,
+                        hoodAngle,
                         target.shotCalculator.fuelToFlywheelVelocity(
                                 useFixedShooting ? FIXED_FUEL_VELOCITY : robotRelativeShotVector.norm()),
                         shooterFeedforward);
@@ -353,7 +348,7 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
         return Units.degreesToRadians(12); // TODO: add actual trig calc based on distance to target and radius
     }
 
-    private boolean isOnTarget(ShotTarget target, ShotCalculation shotCalculation, boolean isBlocked) {
+    private boolean isOnTarget(ShotTarget target, ShotCalculation shotCalculation) {
         boolean overridden = shootOverride.get();
 
         boolean shooterOnTarget;
@@ -367,14 +362,9 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
                     target.shotCalculator.fuelToFlywheelVelocity(shotCalculation.allowableVelocityMagnitudeMaxMps()));
         }
 
-        return !isBlocked
-                && RobotContainer.turret.atGoal(
-                        overridden ? Units.degreesToRadians(12) : calculateAllowableTurretError())
-                && shooterOnTarget
-                && !(RobotContainer.intake.isNearStartPosition()
-                        || RobotContainer.intake.getTargetState() == IntakeState.STARTING)
-                && RobotContainer.turret.getPositionStatus() == PositionStatus.KNOWN
-                && RobotContainer.shooter.getPositionStatus() == PositionStatus.KNOWN;
+        double allowableDriveTrainSpinError = overridden ? Units.degreesToRadians(12) : calculateAllowableTurretError();
+
+        return RobotContainer.drivetrainSpinTargetState.atGoal(allowableDriveTrainSpinError) && shooterOnTarget;
     }
 
     private void updateFeeders(boolean onTarget) {
@@ -421,17 +411,12 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
             Vector<N3> robotRelativeShotVector =
                     new Vector<>(robotPose.getRotation().unaryMinus().toMatrix().times(shotResult.shotVector));
 
-            RobotContainer.turret.setTarget(calculateTurretState(
-                    shotResult.shotVector, robotRelativeShotVector, robotRelativeSpeeds, robotRelativeAcceleration));
+            spinTarget = calculateTurretState(
+                    shotResult.shotVector, robotRelativeShotVector, robotRelativeSpeeds, robotRelativeAcceleration);
 
-            boolean isBlocked = calculateIsHoodBlocked(
-                    robotPose, robotRelativeSpeeds, RobotContainer.model.shooterModel.getShooterHoodPosition());
-            Logger.recordOutput("ShootOrchestrator/IsBlocked", isBlocked);
+            RobotContainer.shooter.setTargetState(calculateShooterState(shotTarget, robotRelativeShotVector));
 
-            RobotContainer.shooter.setTargetState(
-                    calculateShooterState(shotTarget, robotRelativeShotVector, isBlocked));
-
-            boolean onTarget = isOnTarget(shotTarget, shotResult.shotCalculation(), isBlocked);
+            boolean onTarget = isOnTarget(shotTarget, shotResult.shotCalculation());
             Logger.recordOutput("ShootOrchestrator/OnTarget", onTarget);
             lastOnTarget = onTarget;
 
@@ -460,6 +445,10 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
 
     public boolean isOnTarget() {
         return lastOnTarget;
+    }
+
+    public DrivetrainSpinTargetState getSpinTarget() {
+        return spinTarget;
     }
 
     private record ShotCalculationResult(Vector<N3> shotVector, ShotCalculation shotCalculation) {}

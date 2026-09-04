@@ -337,6 +337,16 @@ public final class Drivetrain extends ManagedSubsystemBase {
 
     @Override
     public void periodicManaged() {
+
+        if (RobotContainer.shootOrchestrator.isShootingEnabled()) {
+            double spinOutput = Constants.Swerve.spinController.calculate(
+                    RobotContainer.poseSensorFusion
+                            .getEstimatedPosition()
+                            .getRotation()
+                            .getRadians(),
+                    RobotContainer.shootOrchestrator.getSpinTarget().positionRadians());
+        }
+
         driveInternal();
 
         for (SwerveModule module : modules) {

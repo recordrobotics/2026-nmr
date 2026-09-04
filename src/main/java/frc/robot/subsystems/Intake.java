@@ -273,24 +273,15 @@ public final class Intake extends KillableSubsystem implements PoweredSubsystem,
             }
         }
 
-        if (
-        // want to go to starting config but not there yet, wait for turret to stow
-        (targetState == IntakeState.STARTING && !isNearStartPosition() && RobotContainer.turret.isStowed())) {
-            setState(targetState); // refresh state
-        }
-
-        if (!isForceDisabled()
-                && !runExtendHoming
-                && !(SysIdManager.getProvider() instanceof SysIdArm)
-                && !(SysIdManager.getProvider() instanceof Turret.SysId)) setArmControl();
+        if (!isForceDisabled() && !runExtendHoming && !(SysIdManager.getProvider() instanceof SysIdArm))
+            setArmControl();
         if (!(SysIdManager.getProvider() instanceof SysIdWheel)) setWheelControl();
 
         Logger.recordOutput("Intake/EncoderResetDelta", encodersResetDelta);
     }
 
     private void setArmTarget(IntakeState state) {
-        if (state == IntakeState.STARTING
-                && (isNearStartPosition() || RobotContainer.turret == null || RobotContainer.turret.isStowed())) {
+        if (state == IntakeState.STARTING && (isNearStartPosition())) {
             armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_UP_POSITION_RADIANS);
         }
     }
@@ -311,10 +302,8 @@ public final class Intake extends KillableSubsystem implements PoweredSubsystem,
             hasStartedMovingDown = false;
         }
 
-        if (!isForceDisabled()
-                && !runExtendHoming
-                && !(SysIdManager.getProvider() instanceof SysIdArm)
-                && !(SysIdManager.getProvider() instanceof Turret.SysId)) setArmControl();
+        if (!isForceDisabled() && !runExtendHoming && !(SysIdManager.getProvider() instanceof SysIdArm))
+            setArmControl();
 
         if (!(SysIdManager.getProvider() instanceof SysIdWheel)) setWheelControl();
     }
