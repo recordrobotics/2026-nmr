@@ -56,10 +56,9 @@ public final class RobotModel extends ManagedSubsystemBase {
     private static FuelManager fuelManager;
 
     public final IntakeModel intakeModel = new IntakeModel();
-    public final ShooterModel shooterModel = new ShooterModel();
 
     @AutoLogLevel(level = Level.REAL)
-    public Pose3d[] mechanismPoses = new Pose3d[intakeModel.getPoseCount() + shooterModel.getPoseCount()];
+    public Pose3d[] mechanismPoses = new Pose3d[intakeModel.getPoseCount()];
 
     public RobotModel() {
         periodicManaged();
@@ -76,7 +75,7 @@ public final class RobotModel extends ManagedSubsystemBase {
 
     @Override
     public void periodicManaged() {
-        updatePoses(intakeModel, shooterModel);
+        updatePoses(intakeModel);
         if (Constants.RobotState.getMode() != Mode.REAL) {
             fuelManager.update();
         }
@@ -203,69 +202,6 @@ public final class RobotModel extends ManagedSubsystemBase {
                         currentPoint.length * Math.cos(armAngle + currentPoint.angleOffset)
                                 - HOPPER_TO_AXLE_DISTANCE_METERS);
             }
-        }
-    }
-
-    public static class ShooterModel implements MechanismModel {
-        public static final int POSE_COUNT = 2;
-        private static final Translation3d TURRET_ORIGIN = new Translation3d(0.12715, 0.12715, 0);
-        private static final Translation3d HOOD_LOCAL_ORIGIN = new Translation3d(0.2105, 0, 0.4556);
-
-        private double turretAngleRadians;
-        private double hoodAngleRadians;
-
-        public void updateTurret(double newTurretAngleRadians) {
-            turretAngleRadians = newTurretAngleRadians;
-        }
-
-        public void updateHood(double newHoodAngleRadians) {
-            hoodAngleRadians = newHoodAngleRadians;
-        }
-
-        @Override
-        public int getPoseCount() {
-            return POSE_COUNT;
-        }
-
-        @Override
-        public void updatePoses(Pose3d[] poses, int i) {
-            poses[i] = Pose3d.kZero.rotateAround(TURRET_ORIGIN, new Rotation3d(0, 0, turretAngleRadians));
-            poses[i + 1] = poses[i].transformBy(new Transform3d(
-                    Translation3d.kZero.rotateAround(HOOD_LOCAL_ORIGIN, new Rotation3d(0, -hoodAngleRadians, 0)),
-                    new Rotation3d(0, -hoodAngleRadians, 0)));
-        }
-
-        public Translation3d getShooterFuelReleasePosition() {
-            Translation3d shooterBallStart = new Translation3d(0.127000, 0.127000, 0.358781);
-            Translation3d shooterOrigin = new Translation3d(0.210586, 0.239469, 0.455638)
-                    .rotateAround(
-                            shooterBallStart,
-                            new Rotation3d(Rotation2d.fromRotations(RobotContainer.turret.getPositionRotations())));
-            Translation3d axisOfRotation = new Translation3d(0, 1, 0)
-                    .rotateBy(new Rotation3d(Rotation2d.fromRotations(RobotContainer.turret.getPositionRotations())));
-            return SimpleMath.rotateAroundWithRadius(
-                            new Pose3d(shooterBallStart, Rotation3d.kZero),
-                            shooterOrigin,
-                            axisOfRotation,
-                            0.113106,
-                            Math.PI - RobotContainer.shooter.getHoodAngle() - Math.PI / 4)
-                    .getTranslation();
-        }
-
-        public Translation3d getShooterHoodPosition() {
-            Translation3d shooterHoodStart = new Translation3d(0.024704, 0.127000, 0.526709);
-            Translation3d shooterBallStart = new Translation3d(0.127000, 0.127000, 0.358781);
-            Translation3d shooterOrigin = new Translation3d(0.210586, 0.239469, 0.455638);
-            return shooterHoodStart
-                    .rotateAround(
-                            shooterOrigin,
-                            new Rotation3d(
-                                    0,
-                                    Constants.Shooter.HOOD_MAX_POSITION_RADIANS - RobotContainer.shooter.getHoodAngle(),
-                                    0))
-                    .rotateAround(
-                            shooterBallStart,
-                            new Rotation3d(Rotation2d.fromRotations(RobotContainer.turret.getPositionRotations())));
         }
     }
 

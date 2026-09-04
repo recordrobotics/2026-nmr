@@ -214,8 +214,6 @@ public final class Shooter extends KillableSubsystem implements PoweredSubsystem
 
         hoodDisconnectedAlert.set(!inputs.hoodConnected);
 
-        RobotContainer.model.shooterModel.updateHood(getHoodAngle());
-
         checkHoodBeyondLimit();
 
         if (overrideKnown) {

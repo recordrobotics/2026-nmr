@@ -157,8 +157,6 @@ public final class Turret extends KillableSubsystem implements PoweredSubsystem,
 
         setControl();
 
-        RobotContainer.model.shooterModel.updateTurret(Units.rotationsToRadians(getPositionRotations()));
-
         Logger.recordOutput("Turret/TargetPositionRotations", targetPositionRotations);
         Logger.recordOutput("Turret/TargetVelocityRotationsPerSecond", targetVelocityRotationsPerSecond);
         Logger.recordOutput(
