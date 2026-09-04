@@ -3,7 +3,6 @@ package frc.robot.subsystems.shootorchestrator;
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Vector;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -29,7 +28,6 @@ import frc.robot.subsystems.shootorchestrator.ShotCalculator.ShotCalculation;
 import frc.robot.utils.DriverStationUtils;
 import frc.robot.utils.ManagedSubsystemBase;
 import frc.robot.utils.PositionedSubsystem.PositionStatus;
-import frc.robot.utils.SimpleMath;
 import frc.robot.utils.field.FieldUtils;
 import frc.robot.utils.wrappers.SafeAlert;
 import java.util.Optional;
@@ -331,24 +329,6 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
         }
     }
 
-    private boolean calculateIsHoodBlocked(
-            Pose3d robotPose, ChassisSpeeds robotRelativeSpeeds, Translation3d hoodPosition) {
-        double timeUntilHoodDown =
-                RobotContainer.shooter.getTimeUntilHoodAt(Constants.Shooter.HOOD_MAX_POSITION_RADIANS)
-                        + 0.1 /* latency compensation */;
-
-        Pose2d robotPoseWhenDown =
-                SimpleMath.integrateChassisSpeeds(robotPose.toPose2d(), robotRelativeSpeeds, timeUntilHoodDown);
-        Translation3d hoodPoseWhenDown = new Pose3d(robotPoseWhenDown)
-                .transformBy(new Transform3d(hoodPosition, Rotation3d.kZero))
-                .getTranslation();
-        Translation3d hoodPoseCurrent = robotPose
-                .transformBy(new Transform3d(hoodPosition, Rotation3d.kZero))
-                .getTranslation();
-
-        return FieldUtils.isBlocked(hoodPoseCurrent.toTranslation2d(), hoodPoseWhenDown.toTranslation2d());
-    }
-
     private double calculateAllowableTurretError() {
         return Units.degreesToRadians(12); // TODO: add actual trig calc based on distance to target and radius
     }
@@ -411,7 +391,7 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
             ShotTarget shotTarget = target.get();
 
             Pose3d robotPose = RobotContainer.poseSensorFusion.getEstimatedPosition3d();
-            Translation3d fuelReleaseOffset = RobotContainer.model.shooterModel.getShooterFuelReleasePosition();
+            Translation3d fuelReleaseOffset = new Translation3d(0.170346, 0.0, 0.534694);
             ChassisSpeeds robotRelativeSpeeds = RobotContainer.drivetrain.getChassisSpeeds();
             ChassisSpeeds robotRelativeAcceleration = RobotContainer.drivetrain.getChassisAcceleration();
 
@@ -424,8 +404,7 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
             RobotContainer.turret.setTarget(calculateTurretState(
                     shotResult.shotVector, robotRelativeShotVector, robotRelativeSpeeds, robotRelativeAcceleration));
 
-            boolean isBlocked = calculateIsHoodBlocked(
-                    robotPose, robotRelativeSpeeds, RobotContainer.model.shooterModel.getShooterHoodPosition());
+            boolean isBlocked = false;
             Logger.recordOutput("ShootOrchestrator/IsBlocked", isBlocked);
 
             RobotContainer.shooter.setTargetState(
