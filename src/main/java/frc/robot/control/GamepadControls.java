@@ -210,13 +210,8 @@ public class GamepadControls implements AbstractControl {
     }
 
     @Override
-    public boolean isShooterPassPressed() {
+    public boolean isShootButtonPressed() {
         return gamepad.rightTriggerAxis() > 0.75;
-    }
-
-    @Override
-    public boolean isShooterDisableShootPressed() {
-        return gamepad.inputDiamondUp();
     }
 
     @Override

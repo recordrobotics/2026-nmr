@@ -1,7 +1,6 @@
 package frc.robot.subsystems.shootorchestrator;
 
 import com.pathplanner.lib.util.FlippingUtil;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,15 +22,14 @@ import frc.robot.subsystems.Feeder.FeederState;
 import frc.robot.subsystems.Indexer.IndexerState;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Shooter.ShooterState;
-import frc.robot.subsystems.Turret.TurretState;
 import frc.robot.subsystems.shootorchestrator.ShotCalculator.ShotCalculation;
 import frc.robot.utils.DriverStationUtils;
 import frc.robot.utils.ManagedSubsystemBase;
 import frc.robot.utils.PositionedSubsystem.PositionStatus;
 import frc.robot.utils.field.FieldUtils;
+import frc.robot.utils.modifiers.RotationOverrideControlModifier;
 import frc.robot.utils.wrappers.SafeAlert;
 import java.util.Optional;
-import java.util.OptionalDouble;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
@@ -92,8 +90,6 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
     private boolean shootingEnabled = false;
     private boolean fixedMode = false;
     private boolean useFixedShooting = false;
-
-    private OptionalDouble lastShotYaw = OptionalDouble.empty();
 
     private double lastShotTimeOfFlight = 0;
 
@@ -264,31 +260,13 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
                 shotCalculation);
     }
 
-    private TurretState calculateTurretState(
-            Vector<N3> fieldShotVector,
-            Vector<N3> robotRelativeShotVector,
-            ChassisSpeeds robotRelativeSpeeds,
-            ChassisSpeeds robotRelativeAcceleration) {
-        double shotYaw = Math.atan2(robotRelativeShotVector.get(1), robotRelativeShotVector.get(0));
-
-        // Keep yaw derivative in field coordinates due to the bad way its computed instead of using actual derivative
+    private double calculateDrivetrainSpinAngleFieldRelative(Vector<N3> fieldShotVector) {
         double fieldShotYaw = Math.atan2(fieldShotVector.get(1), fieldShotVector.get(0));
-        double shotYawVelocity = lastShotYaw.isPresent()
-                ? MathUtil.inputModulus(fieldShotYaw - lastShotYaw.getAsDouble(), -Math.PI, Math.PI) / 0.02
-                : 0;
-        lastShotYaw = OptionalDouble.of(fieldShotYaw);
 
-        if (RobotContainer.intake.isNearStartPosition()
-                || RobotContainer.intake.getTargetState() == IntakeState.STARTING) {
-            double turretPos = Units.rotationsToRadians(RobotContainer.turret.getPositionRotations());
-            return new TurretState(Math.copySign(Constants.Turret.STARTING_POSITION_RADIANS, turretPos), 0, 0);
-        } else if (useFixedShooting) {
-            return new TurretState(FIXED_TURRET_ANGLE_RADIANS, 0, 0);
+        if (useFixedShooting) {
+            return FIXED_TURRET_ANGLE_RADIANS; // TODO maybe just don't override the angle and let driver control?
         } else {
-            return new TurretState(
-                    shotYaw,
-                    shotYawVelocity - robotRelativeSpeeds.omegaRadiansPerSecond,
-                    -robotRelativeAcceleration.omegaRadiansPerSecond);
+            return fieldShotYaw;
         }
     }
 
@@ -393,7 +371,6 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
             Pose3d robotPose = RobotContainer.poseSensorFusion.getEstimatedPosition3d();
             Translation3d fuelReleaseOffset = new Translation3d(0.170346, 0.0, 0.534694);
             ChassisSpeeds robotRelativeSpeeds = RobotContainer.drivetrain.getChassisSpeeds();
-            ChassisSpeeds robotRelativeAcceleration = RobotContainer.drivetrain.getChassisAcceleration();
 
             ShotCalculationResult shotResult =
                     calculateShot(shotTarget, robotPose, robotRelativeSpeeds, fuelReleaseOffset);
@@ -401,8 +378,10 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
             Vector<N3> robotRelativeShotVector =
                     new Vector<>(robotPose.getRotation().unaryMinus().toMatrix().times(shotResult.shotVector));
 
-            RobotContainer.turret.setTarget(calculateTurretState(
-                    shotResult.shotVector, robotRelativeShotVector, robotRelativeSpeeds, robotRelativeAcceleration));
+            if (shootingEnabled) {
+                RotationOverrideControlModifier.getDefault()
+                        .drive(calculateDrivetrainSpinAngleFieldRelative(shotResult.shotVector));
+            }
 
             boolean isBlocked = false;
             Logger.recordOutput("ShootOrchestrator/IsBlocked", isBlocked);
