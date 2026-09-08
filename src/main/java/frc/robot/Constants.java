@@ -161,7 +161,6 @@ public final class Constants {
 
     public static final class Vision {
 
-        public static final String TURRET_NAME = "limelight-trt";
         public static final String LEFT_BACK_NAME = "left-back";
         public static final String RIGHT_FRONT_NAME = "limelight-fr";
         public static final String RIGHT_BACK_NAME = "right-back";
@@ -186,9 +185,6 @@ public final class Constants {
                         Units.degreesToRadians(-0.827613033167),
                         Units.degreesToRadians(25.5207428597),
                         Units.degreesToRadians(-126.219878553)));
-        public static final Transform3d MECHANISM_TO_CAMERA_TURRET = new Transform3d(
-                new Translation3d(0.183918, 0, 0.355131 + 0.192215),
-                new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(30), Units.degreesToRadians(0)));
         public static final Transform3d ROBOT_TO_CAMERA_INTAKE_LEFT = new Transform3d(
                 new Translation3d(Meters.of(-0.338901), Meters.of(-0.277466), Meters.of(0.443145)),
                 new Rotation3d(
@@ -403,8 +399,9 @@ public final class Constants {
         /** The max speed the robot can travel */
         public static final double MAX_MODULE_SPEED = 4.5; // TODO: measure
 
-        // Offset rotation origin for testing turret feedforward
-        public static final Translation2d TURRET_OFFSET = Translation2d.kZero; // new Translation2d(0.127, 0.127);
+        // Offset rotation origin for testing feedforward
+        public static final Translation2d DRIVETRAIN_SPIN_CENTER =
+                Translation2d.kZero; // new Translation2d(0.127, 0.127);
 
         public static final RobotConfig PP_DEFAULT_CONFIG = new RobotConfig(
                 Constants.Frame.ROBOT_MASS_KG,
@@ -417,10 +414,10 @@ public final class Constants {
                         Constants.Swerve.DRIVE_GEAR_RATIO,
                         Constants.Swerve.DRIVE_SUPPLY_CURRENT_LIMIT.in(Amps),
                         1),
-                FRONT_LEFT_WHEEL_LOCATION.minus(TURRET_OFFSET),
-                FRONT_RIGHT_WHEEL_LOCATION.minus(TURRET_OFFSET),
-                BACK_LEFT_WHEEL_LOCATION.minus(TURRET_OFFSET),
-                BACK_RIGHT_WHEEL_LOCATION.minus(TURRET_OFFSET));
+                FRONT_LEFT_WHEEL_LOCATION.minus(DRIVETRAIN_SPIN_CENTER),
+                FRONT_RIGHT_WHEEL_LOCATION.minus(DRIVETRAIN_SPIN_CENTER),
+                BACK_LEFT_WHEEL_LOCATION.minus(DRIVETRAIN_SPIN_CENTER),
+                BACK_RIGHT_WHEEL_LOCATION.minus(DRIVETRAIN_SPIN_CENTER));
 
         public static final PPHolonomicDriveController PP_DRIVE_CONTROLLER = new PPHolonomicDriveController(
                 new PIDConstants(3.0, 0.0, 0.15), // Translation PID constants
@@ -521,91 +518,20 @@ public final class Constants {
         private Intake() {}
     }
 
-    public static final class Turret {
-        public static final double KP = 50;
-        public static final double KD = 3.811;
-        public static final double KS = 0.3;
-        public static final double KV = 2.1;
-        public static final double KA_MM = 0.01;
-        public static final double KA = 0.25;
-        public static final double KVP = 0.2;
-        public static double FF_MUL = 0.72;
-        public static double LOOKAHEAD_TIME = 0.1;
-
-        public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(40);
-        public static final Current SUPPLY_LOWER_CURRENT_LIMIT = Amps.of(40);
-        public static final Time SUPPLY_LOWER_CURRENT_LIMIT_TIME = Seconds.of(1.0);
-        public static final Current STATOR_CURRENT_LIMIT = Amps.of(90);
-
-        public static final double MMEXPO_KV = 1.931;
-        public static final double MMEXPO_KA = 1.1;
-
-        public static final double GEAR_RATIO = 15.5428571429;
-
-        public static final double ROTATION_LIMIT_INSET_ROTATIONS = 0.002;
-        public static final double ROTATION_MAX_POSITION_MOTOR_ROTATIONS = 0.6921 - ROTATION_LIMIT_INSET_ROTATIONS;
-        public static final double ROTATION_MIN_POSITION_MOTOR_ROTATIONS = -0.56665 + ROTATION_LIMIT_INSET_ROTATIONS;
-
-        public static final double FRONT_LEFT_MAGNET_MOTOR_ROTATIONS_CW = -0.044678;
-        public static final double FRONT_LEFT_MAGNET_MOTOR_ROTATIONS_CCW = -0.060547;
-
-        public static final double BACK_LEFT_MAGNET_MOTOR_ROTATIONS_CW = 0.206299;
-        public static final double BACK_LEFT_MAGNET_MOTOR_ROTATIONS_CCW = 0.191406;
-
-        public static final double BACK_RIGHT_MAGNET_MOTOR_ROTATIONS_CW = 0.453125;
-        public static final double BACK_RIGHT_MAGNET_MOTOR_ROTATIONS_CCW = 0.437012;
-
-        public static final double TURRET_SPRING_HIGH_START_POS = 0.376709;
-        public static final double TURRET_SPRING_HIGH_START_NEG = -0.355957;
-        public static final double TURRET_SPRING_LOW_START_POS = 0.376709;
-        public static final double TURRET_SPRING_LOW_START_NEG = -0.355957;
-        public static double TURRET_SPRING_HIGH_VOLTS = 1.11;
-        public static double TURRET_SPRING_LOW_VOLTS = 1.11;
-
-        public static final double STARTING_POSITION_RADIANS = Units.degreesToRadians(90.0);
-
-        public static final double MAGNETIC_LIMIT_SWITCH_TRIGGER_ANGLE_RAD = Units.degreesToRadians(5);
-        public static final double MAGNETIC_LIMIT_SWITCH_DETRIGGER_ANGLE_RAD = Units.degreesToRadians(10);
-        public static final double TURRET_MAGNET_OFFSET_ANGLE_RAD = Units.degreesToRadians(27.7335249689);
-
-        public static final double FRONT_LEFT_LIMIT_SWITCH_POSITION_RADIANS = Units.degreesToRadians(45.0);
-        public static final double BACK_LEFT_LIMIT_SWITCH_POSITION_RADIANS = Units.degreesToRadians(135.0);
-        public static final double BACK_RIGHT_LIMIT_SWITCH_POSITION_RADIANS = Units.degreesToRadians(225.0);
-
-        private Turret() {}
-    }
-
     public static final class Shooter {
-        public static final double HOOD_KP = 31.295;
-        public static final double HOOD_KD = 2.1075;
-        public static final double HOOD_KS = 0.12011;
-        public static final double HOOD_KV = 2.7761;
-        public static final double HOOD_KA = 0.013839;
-        public static final double HOOD_KG = 0.084491;
-        public static final double HOOD_GRAVITY_POSITION_OFFSET_ROTATIONS = 0.4676;
 
         public static final double FLYWHEEL_KP = 0.04;
         public static final double FLYWHEEL_KS = 0.10324;
         public static final double FLYWHEEL_KV = 0.35945;
         public static final double FLYWHEEL_KA = 0.01;
 
-        public static final Current HOOD_SUPPLY_CURRENT_LIMIT = Amps.of(20);
-        public static final Current HOOD_SUPPLY_LOWER_CURRENT_LIMIT = Amps.of(10);
-        public static final Time HOOD_SUPPLY_LOWER_CURRENT_LIMIT_TIME = Seconds.of(1.0);
-        public static final Current HOOD_STATOR_CURRENT_LIMIT = Amps.of(40);
-
         public static final Current FLYWHEEL_SUPPLY_CURRENT_LIMIT = Amps.of(70);
         public static final Current FLYWHEEL_SUPPLY_LOWER_CURRENT_LIMIT = Amps.of(40);
         public static final Time FLYWHEEL_SUPPLY_LOWER_CURRENT_LIMIT_TIME = Seconds.of(1.0);
         public static final Current FLYWHEEL_STATOR_CURRENT_LIMIT = Amps.of(100);
 
-        public static final double HOOD_MMEXPO_KV = HOOD_KV;
-        public static final double HOOD_MMEXPO_KA = 0.3;
-
         public static final double FLYWHEEL_MAX_ACCELERATION = 500;
         public static final double FLYWHEEL_MAX_JERK = 0;
-
-        public static final double HOOD_GEAR_RATIO = 35.0476190476;
 
         public static final double FLYWHEEL_GEAR_RATIO = 1;
 
@@ -614,10 +540,13 @@ public final class Constants {
         public static final double FLYWHEEL_METERS_PER_ROTATION =
                 FLYWHEEL_WHEEL_DIAMETER.in(Meter) * Math.PI / FLYWHEEL_GEAR_RATIO;
 
-        public static final double HOOD_STARTING_POSITION_RADIANS = Units.degreesToRadians(68.906250);
-        public static final double HOOD_MAX_POSITION_RADIANS = HOOD_STARTING_POSITION_RADIANS;
-        public static final double HOOD_MIN_POSITION_RADIANS = Units.degreesToRadians(35.871753);
-        public static final double HOOD_FUEL_EXIT_ANGLE_OFFSET_RADIANS = Units.degreesToRadians(4);
+        private static final double HOOD_ACTUAL_ANGLE_RADIANS_DONT_USE = Units.degreesToRadians(
+                60); // if this was 0 then it would represent the hood ending when it is going straight forward
+        private static final double HOOD_FUEL_EXIT_ANGLE_OFFSET_RADIANS =
+                Units.degreesToRadians(4); // when shot, fuel ends up going this much higher than the hood was aimed
+        public static final double BALL_EXIT_ANGLE_RADIANS = HOOD_ACTUAL_ANGLE_RADIANS_DONT_USE
+                + HOOD_FUEL_EXIT_ANGLE_OFFSET_RADIANS; // if this was 0 then it would represent the fuel exiting
+        // straight forward
 
         private Shooter() {}
     }

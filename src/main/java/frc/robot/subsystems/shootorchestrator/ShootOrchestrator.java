@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -25,7 +24,6 @@ import frc.robot.subsystems.Shooter.ShooterState;
 import frc.robot.subsystems.shootorchestrator.ShotCalculator.ShotCalculation;
 import frc.robot.utils.DriverStationUtils;
 import frc.robot.utils.ManagedSubsystemBase;
-import frc.robot.utils.PositionedSubsystem.PositionStatus;
 import frc.robot.utils.field.FieldUtils;
 import frc.robot.utils.modifiers.RotationOverrideControlModifier;
 import frc.robot.utils.wrappers.SafeAlert;
@@ -44,18 +42,12 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
     private static final double TOP_BEAM_TIME_TO_BALL_HIT = 0.04;
 
     private static final ShotCalculation FIXED_SHOT_CALCULATION = hubCalculator.calculateShot(2.944349, 0);
-    private static final double FIXED_TURRET_ANGLE_RADIANS = Units.degreesToRadians(90);
-    private static final double FIXED_HOOD_ANGLE_RADIANS =
-            FIXED_SHOT_CALCULATION.shootAngleRadians() - Constants.Shooter.HOOD_FUEL_EXIT_ANGLE_OFFSET_RADIANS;
     private static final double FIXED_FUEL_VELOCITY = FIXED_SHOT_CALCULATION.fuelVelocityMagnitudeMps();
 
     private static final LoggedNetworkNumber shotFeedforward = new LoggedNetworkNumber("SHOTFEED", 1.224808013371447);
-    private static final LoggedNetworkNumber hoodAngleDashboardOverride =
-            new LoggedNetworkNumber("HOOD_ANGLE", Constants.Shooter.HOOD_MAX_POSITION_RADIANS);
     private static final LoggedNetworkNumber shootVelocityDashboardOverride =
             new LoggedNetworkNumber("SHOOT_VELOCITY", 0);
     private static final LoggedNetworkBoolean shootOverride = new LoggedNetworkBoolean("SHOOT_OVERRIDE", false);
-    private static final LoggedNetworkNumber shootAngleOffset = new LoggedNetworkNumber("SHOOT_ANGLE_OFFSET", 0);
 
     private static final LoggedDashboardChooser<FeedForwardSource> feedForwardSourceChooser =
             new LoggedDashboardChooser<>("FeedForwardSource");
@@ -263,52 +255,28 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
     private double calculateDrivetrainSpinAngleFieldRelative(Vector<N3> fieldShotVector) {
         double fieldShotYaw = Math.atan2(fieldShotVector.get(1), fieldShotVector.get(0));
 
-        if (useFixedShooting) {
-            return FIXED_TURRET_ANGLE_RADIANS; // TODO maybe just don't override the angle and let driver control?
-        } else {
-            return fieldShotYaw;
-        }
-    }
-
-    private double shootAngleToHoodAngle(double shootAngle) {
-        return shootAngle - Constants.Shooter.HOOD_FUEL_EXIT_ANGLE_OFFSET_RADIANS + shootAngleOffset.get();
+        return fieldShotYaw;
     }
 
     private ShooterState calculateShooterState(
             ShotTarget target, Vector<N3> robotRelativeShotVector, boolean isBlocked) {
         if (shootingEnabled) {
             if (shootOverride.get()) {
-                double hoodAngle = shooterOverride.isPresent()
-                        ? shooterOverride.get().hoodAngleRadians()
-                        : hoodAngleDashboardOverride.get();
                 return new ShooterState(
-                        isBlocked ? Constants.Shooter.HOOD_MAX_POSITION_RADIANS : hoodAngle,
                         shooterOverride.isPresent()
                                 ? shooterOverride.get().flywheelVelocityMps()
                                 : shootVelocityDashboardOverride.get(),
                         shooterFeedforward);
             } else {
-                double hoodAngle = shootAngleToHoodAngle(Math.atan2(
-                        robotRelativeShotVector.get(2),
-                        Math.hypot(robotRelativeShotVector.get(0), robotRelativeShotVector.get(1))));
-
-                if (useFixedShooting) {
-                    hoodAngle = FIXED_HOOD_ANGLE_RADIANS;
-                }
 
                 return new ShooterState(
-                        isBlocked ? Constants.Shooter.HOOD_MAX_POSITION_RADIANS : hoodAngle,
                         target.shotCalculator.fuelToFlywheelVelocity(
                                 useFixedShooting ? FIXED_FUEL_VELOCITY : robotRelativeShotVector.norm()),
                         shooterFeedforward);
             }
         } else {
-            return new ShooterState(Constants.Shooter.HOOD_MAX_POSITION_RADIANS, 0, 0);
+            return new ShooterState(0, 0);
         }
-    }
-
-    private double calculateAllowableTurretError() {
-        return Units.degreesToRadians(12); // TODO: add actual trig calc based on distance to target and radius
     }
 
     private boolean isOnTarget(ShotTarget target, ShotCalculation shotCalculation, boolean isBlocked) {
@@ -316,23 +284,17 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
 
         boolean shooterOnTarget;
         if (overridden) {
-            shooterOnTarget = RobotContainer.shooter.isAtTargetState(Units.degreesToRadians(5), 10);
+            shooterOnTarget = RobotContainer.shooter.isAtTargetState(10.0);
         } else {
             shooterOnTarget = RobotContainer.shooter.isAtTargetState(
-                    shotCalculation.allowableShootAngleMinRadians(),
-                    shotCalculation.allowableShootAngleMaxRadians(),
                     target.shotCalculator.fuelToFlywheelVelocity(shotCalculation.allowableVelocityMagnitudeMinMps()),
                     target.shotCalculator.fuelToFlywheelVelocity(shotCalculation.allowableVelocityMagnitudeMaxMps()));
         }
 
         return !isBlocked
-                && RobotContainer.turret.atGoal(
-                        overridden ? Units.degreesToRadians(12) : calculateAllowableTurretError())
                 && shooterOnTarget
                 && !(RobotContainer.intake.isNearStartPosition()
-                        || RobotContainer.intake.getTargetState() == IntakeState.STARTING)
-                && RobotContainer.turret.getPositionStatus() == PositionStatus.KNOWN
-                && RobotContainer.shooter.getPositionStatus() == PositionStatus.KNOWN;
+                        || RobotContainer.intake.getTargetState() == IntakeState.STARTING);
     }
 
     private void updateFeeders(boolean onTarget) {

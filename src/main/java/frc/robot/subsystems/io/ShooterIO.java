@@ -16,26 +16,13 @@ public interface ShooterIO {
         public double flywheelVelocityMps = 0;
         public double flywheelVoltage = 0;
         public Current flywheelCurrentDraw = Amps.zero();
-
-        public boolean hoodConnected = false;
-        public double hoodPositionRotations = 0;
-        public double hoodVelocityRotationsPerSecond = 0;
-        public double hoodVoltage = 0;
-        public Current hoodCurrentDraw = Amps.zero();
-        public boolean hoodRotorFault = false;
     }
 
     default void updateInputs(ShooterIOInputs inputs) {}
 
     default void applyFlywheelTalonFXConfig(TalonFXConfiguration configuration) {}
 
-    default void applyHoodTalonFXConfig(TalonFXConfiguration configuration) {}
-
     default void setFlywheelControl(ControlRequest request) {}
-
-    default void setHoodControl(ControlRequest request) {}
-
-    default void setHoodPositionRotations(double newValue) {}
 
     default void setFlywheelPositionMeters(double newValue) {}
 

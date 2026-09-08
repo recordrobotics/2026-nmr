@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.Constants.RobotState.Mode;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Turret.RobotToMechanismUpdate;
 import frc.robot.subsystems.io.real.ImuPigeon2;
 import frc.robot.subsystems.io.sim.ImuSimPigeon2;
 import frc.robot.utils.AutoLogLevel;
@@ -27,7 +26,6 @@ import frc.robot.utils.ConsoleLogger;
 import frc.robot.utils.DriverStationUtils;
 import frc.robot.utils.IndependentSwervePoseEstimator;
 import frc.robot.utils.ManagedSubsystemBase;
-import frc.robot.utils.PositionedSubsystem.PositionStatus;
 import frc.robot.utils.camera.Cameras;
 import frc.robot.utils.camera.GenericCamera;
 import frc.robot.utils.camera.PhysicalCamera;
@@ -93,8 +91,6 @@ public final class PoseSensorFusion extends ManagedSubsystemBase {
     }
 
     private static final LoggedNetworkBoolean filterTagsToggle = new LoggedNetworkBoolean("Camera/FilterTags", false);
-    private static final LoggedNetworkBoolean prioritizeTurretToggle =
-            new LoggedNetworkBoolean("Camera/PrioritizeTurret", true);
 
     /**
      * The IMU sensor used for orientation and acceleration data
@@ -109,14 +105,6 @@ public final class PoseSensorFusion extends ManagedSubsystemBase {
      * The independent swerve pose estimator used for better odometry when no vision is available
      */
     private IndependentSwervePoseEstimator independentPoseEstimator;
-
-    private final PoseEstimationCamera turretCamera = Cameras.createLimelightPoseEstimationCamera(
-                    Constants.Vision.TURRET_NAME,
-                    PhysicalCamera.LIMELIGHT_4,
-                    Constants.Vision.MECHANISM_TO_CAMERA_TURRET)
-            .setUnconstrainedMaxDistance(0)
-            .setDynamicPositionMode(DynamicPositionMode.MECHANISM_TO_CAMERA)
-            .setForceUnconstrainedWhenDisabled(true);
 
     /**
      * The cameras used for vision measurements
@@ -136,8 +124,7 @@ public final class PoseSensorFusion extends ManagedSubsystemBase {
                             Constants.Vision.RIGHT_BACK_NAME,
                             PhysicalCamera.SVPRO_GLOBAL_SHUTTER,
                             Constants.Vision.ROBOT_TO_CAMERA_RIGHT_BACK)
-                    .setForceUnconstrained(true),
-            turretCamera);
+                    .setForceUnconstrained(true));
 
     /**
      * The deferred pose estimations to be added at the end of the calculation phase
@@ -173,8 +160,6 @@ public final class PoseSensorFusion extends ManagedSubsystemBase {
     private int targetTXTYId = -1;
 
     private Rotation2d lastRawNavAngle = Rotation2d.kZero;
-
-    private double lastTurretVisionTime = 0;
 
     /**
      * Creates a new PoseSensorFusion subsystem
@@ -300,38 +285,14 @@ public final class PoseSensorFusion extends ManagedSubsystemBase {
         lastRawNavAngle = updateNav;
         updatePositions = positions;
 
-        if (RobotContainer.turret.getPositionStatus() == PositionStatus.KNOWN) {
-            RobotToMechanismUpdate robotToMechanismUpdate = RobotContainer.turret.getRobotToMechanism();
-            turretCamera.updateRobotToMechanism(
-                    robotToMechanismUpdate.robotToMechanism(), robotToMechanismUpdate.timestamp());
-        }
-
-        cameras.stream().forEach(GenericCamera::periodic);
+        cameras.forEach(GenericCamera::periodic);
 
         /* perform any multi-camera logic like txty selection (currently manual) */
 
         RTCMode rtcMode = rtcModeChooser.get();
         Pose2d currentEstimate = getEstimatedPosition();
 
-        if (prioritizeTurretToggle.get() && turretCamera.hasVision()) {
-            lastTurretVisionTime = Timer.getTimestamp();
-        }
-
-        if (prioritizeTurretToggle.get() && Timer.getTimestamp() - lastTurretVisionTime < 0.1) {
-            cameras.stream().forEach(camera -> {
-                if (camera != turretCamera) {
-                    camera.setIgnore(true);
-                }
-            });
-        } else {
-            cameras.stream().forEach(camera -> {
-                if (camera != turretCamera) {
-                    camera.setIgnore(false);
-                }
-            });
-        }
-
-        cameras.stream().forEach(camera -> {
+        cameras.forEach(camera -> {
             if (rtcMode != null && rtcMode != RTCMode.OFF && rtcMode != RTCMode.APPLY) {
                 camera.setComputeRobotToCamera(true, new Pose3d(rtcMode.getPose()));
             } else if (camera.isComputingRobotToCamera()) {

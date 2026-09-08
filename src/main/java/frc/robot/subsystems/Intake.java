@@ -273,10 +273,8 @@ public final class Intake extends KillableSubsystem implements PoweredSubsystem,
             }
         }
 
-        if (!isForceDisabled()
-                && !runExtendHoming
-                && !(SysIdManager.getProvider() instanceof SysIdArm)
-                && !(SysIdManager.getProvider() instanceof Turret.SysId)) setArmControl();
+        if (!isForceDisabled() && !runExtendHoming && !(SysIdManager.getProvider() instanceof SysIdArm))
+            setArmControl();
         if (!(SysIdManager.getProvider() instanceof SysIdWheel)) setWheelControl();
 
         Logger.recordOutput("Intake/EncoderResetDelta", encodersResetDelta);
@@ -284,14 +282,13 @@ public final class Intake extends KillableSubsystem implements PoweredSubsystem,
 
     private void setArmTarget(IntakeState state) {
         switch (state) {
-                case INTAKE, OUT ->
-                    armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_DOWN_POSITION_RADIANS);
-                case EJECT ->
-                    armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_EJECT_POSITION_RADIANS);
-                case RETRACTED ->
-                    armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_RETRACTED_POSITION_RADIANS);
-                case STARTING -> 
-                    armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_STARTING_POSITION_RADIANS);
+            case INTAKE, OUT ->
+                armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_DOWN_POSITION_RADIANS);
+            case EJECT -> armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_EJECT_POSITION_RADIANS);
+            case RETRACTED ->
+                armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_RETRACTED_POSITION_RADIANS);
+            case STARTING ->
+                armTargetRotations = Units.radiansToRotations(Constants.Intake.ARM_STARTING_POSITION_RADIANS);
         }
     }
 
@@ -311,10 +308,8 @@ public final class Intake extends KillableSubsystem implements PoweredSubsystem,
             hasStartedMovingDown = false;
         }
 
-        if (!isForceDisabled()
-                && !runExtendHoming
-                && !(SysIdManager.getProvider() instanceof SysIdArm)
-                && !(SysIdManager.getProvider() instanceof Turret.SysId)) setArmControl();
+        if (!isForceDisabled() && !runExtendHoming && !(SysIdManager.getProvider() instanceof SysIdArm))
+            setArmControl();
 
         if (!(SysIdManager.getProvider() instanceof SysIdWheel)) setWheelControl();
     }

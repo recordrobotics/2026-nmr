@@ -27,12 +27,10 @@ import frc.robot.subsystems.io.real.FeederReal;
 import frc.robot.subsystems.io.real.IndexerReal;
 import frc.robot.subsystems.io.real.IntakeReal;
 import frc.robot.subsystems.io.real.ShooterReal;
-import frc.robot.subsystems.io.real.TurretReal;
 import frc.robot.subsystems.io.sim.FeederSim;
 import frc.robot.subsystems.io.sim.IndexerSim;
 import frc.robot.subsystems.io.sim.IntakeSim;
 import frc.robot.subsystems.io.sim.ShooterSim;
-import frc.robot.subsystems.io.sim.TurretSim;
 import frc.robot.subsystems.led.LedManager;
 import frc.robot.subsystems.shootorchestrator.ShootOrchestrator;
 import frc.robot.utils.AutoPath;
@@ -98,7 +96,6 @@ public final class RobotContainer {
     public static PoseSensorFusion poseSensorFusion;
     public static PowerDistributionPanel pdp;
     public static Intake intake;
-    public static Turret turret;
     public static Shooter shooter;
     public static Indexer indexer;
     public static Feeder feeder;
@@ -168,7 +165,6 @@ public final class RobotContainer {
 
         if (Constants.RobotState.getMode() == Mode.REAL) {
             intake = new Intake(new IntakeReal());
-            turret = new Turret(new TurretReal());
             shooter = new Shooter(new ShooterReal());
             indexer = new Indexer(new IndexerReal());
             feeder = new Feeder(new FeederReal());
@@ -204,7 +200,6 @@ public final class RobotContainer {
             }
 
             intake = new Intake(new IntakeSim(ROBOT_PERIODIC, drivetrain.getSwerveDriveSimulation()));
-            turret = new Turret(new TurretSim(ROBOT_PERIODIC));
             shooter = new Shooter(new ShooterSim(ROBOT_PERIODIC));
             indexer = new Indexer(new IndexerSim(ROBOT_PERIODIC));
             feeder = new Feeder(new FeederSim(ROBOT_PERIODIC));
@@ -244,7 +239,7 @@ public final class RobotContainer {
                             .ignoringDisable(true));
 
             // Register all powered subsystems with the simulation battery
-            registerPoweredSubsystems(intake, turret, shooter, indexer, feeder);
+            registerPoweredSubsystems(intake, shooter, indexer, feeder);
             SimulatedBatteryFactory.modify(SimulatedBattery.ROBORIO_BATTERY);
         }
     }
@@ -419,7 +414,7 @@ public final class RobotContainer {
          * When button is released all commands are canceled
          */
         new Trigger(() -> getControl().isKillTriggered())
-                .whileTrue(CommandUtils.setForceDisabledForAllCommand(true, 2, intake, shooter, feeder, indexer, turret)
+                .whileTrue(CommandUtils.setForceDisabledForAllCommand(true, 2, intake, shooter, feeder, indexer)
                         .repeatedly())
                 .onFalse(Commands.runOnce(() -> CommandScheduler.getInstance().cancelAll()));
 
@@ -569,7 +564,6 @@ public final class RobotContainer {
         poseSensorFusion.close();
         intake.close();
         shooter.close();
-        turret.close();
         indexer.close();
         feeder.close();
     }

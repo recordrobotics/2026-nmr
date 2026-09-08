@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.*;
 import com.google.common.primitives.ImmutableIntArray;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -1158,17 +1157,12 @@ public final class RobotModel extends ManagedSubsystemBase {
                                         () -> {
                                             shootingFuel = true;
                                             fuel.rotateAround(
-                                                    () -> shooterOrigin.rotateAround(
-                                                            shooterBallStart,
-                                                            new Rotation3d(
-                                                                    Rotation2d.fromRotations(
-                                                                            RobotContainer.turret
-                                                                                    .getPositionRotations()))),
-                                                    () -> new Translation3d(0, 1, 0)
-                                                            .rotateBy(new Rotation3d(Rotation2d.fromRotations(
-                                                                    RobotContainer.turret.getPositionRotations()))),
+                                                    () -> shooterOrigin,
+                                                    () -> new Translation3d(0, 1, 0),
                                                     0.113106,
-                                                    () -> Math.PI - RobotContainer.shooter.getHoodAngle() - Math.PI / 4,
+                                                    () -> Math.PI
+                                                            - Constants.Shooter.BALL_EXIT_ANGLE_RADIANS
+                                                            - Math.PI / 4,
                                                     () -> RobotContainer.shooter.getFlywheelVelocityMps()
                                                             / Constants.Shooter.FLYWHEEL_WHEEL_DIAMETER.in(Meter)
                                                             * 2,
@@ -1192,13 +1186,9 @@ public final class RobotModel extends ManagedSubsystemBase {
                                                                         .rotateBy(
                                                                                 new Rotation3d(
                                                                                         0,
-                                                                                        -RobotContainer.shooter
-                                                                                                        .getHoodAngle()
-                                                                                                - Constants.Shooter
-                                                                                                        .HOOD_FUEL_EXIT_ANGLE_OFFSET_RADIANS,
-                                                                                        Units.rotationsToRadians(
-                                                                                                RobotContainer.turret
-                                                                                                        .getPositionRotations()))));
+                                                                                        -Constants.Shooter
+                                                                                                .BALL_EXIT_ANGLE_RADIANS,
+                                                                                        0.0)));
                                                     });
                                         });
                             });

@@ -27,9 +27,6 @@ public class TalonFXOrchestra extends SubsystemBase {
         public static final int INTAKE_ARM_RIGHT = 1;
         public static final int INTAKE_WHEEL = 1;
 
-        public static final int TURRET = 2;
-
-        public static final int HOOD = 2;
         public static final int FLYWHEEL_LEFT = 1;
         public static final int FLYWHEEL_RIGHT = 1;
 
