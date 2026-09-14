@@ -19,7 +19,6 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Feeder.FeederState;
 import frc.robot.subsystems.Indexer.IndexerState;
-import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Shooter.ShooterState;
 import frc.robot.subsystems.shootorchestrator.ShotCalculator.ShotCalculation;
 import frc.robot.utils.DriverStationUtils;
@@ -292,9 +291,7 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
         }
 
         return !isBlocked
-                && shooterOnTarget
-                && !(RobotContainer.intake.isNearStartPosition()
-                        || RobotContainer.intake.getTargetState() == IntakeState.STARTING);
+                && shooterOnTarget;
     }
 
     private void updateFeeders(boolean onTarget) {
