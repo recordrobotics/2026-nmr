@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -83,6 +84,8 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
     private boolean useFixedShooting = false;
 
     private double lastShotTimeOfFlight = 0;
+
+    private double drivetrainSpinTargetAngleFieldRelativeRadians;
 
     private double timeAtBallHit = 0;
     private double shooterFeedforward = 0;
@@ -251,14 +254,13 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
                 shotCalculation);
     }
 
-    private double calculateDrivetrainSpinAngleFieldRelative(Vector<N3> fieldShotVector) {
+    private double calculateDrivetrainSpinAngleFieldRelativeRadians(Vector<N3> fieldShotVector) {
         double fieldShotYaw = Math.atan2(fieldShotVector.get(1), fieldShotVector.get(0));
 
         return fieldShotYaw;
     }
 
-    private ShooterState calculateShooterState(
-            ShotTarget target, Vector<N3> robotRelativeShotVector) {
+    private ShooterState calculateShooterState(ShotTarget target, Vector<N3> robotRelativeShotVector) {
         if (shootingEnabled) {
             if (shootOverride.get()) {
                 return new ShooterState(
@@ -278,6 +280,10 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
         }
     }
 
+    private double calculateAllowableDrivetrainSpinErrorRadians() {
+        return Units.degreesToRadians(12); // TODO [shared] add actual trig calc based on distance to target and radius
+    }
+
     private boolean isOnTarget(ShotTarget target, ShotCalculation shotCalculation) {
         boolean overridden = shootOverride.get();
 
@@ -290,7 +296,18 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
                     target.shotCalculator.fuelToFlywheelVelocity(shotCalculation.allowableVelocityMagnitudeMaxMps()));
         }
 
-        return shooterOnTarget; // TODO add is drivetrain spin on target check
+        double allowableDrivetrainSpinErrorRadians =
+                overridden ? Units.degreesToRadians(12) : calculateAllowableDrivetrainSpinErrorRadians();
+        boolean drivetrainSpinOnTarget = Math.abs(Math.IEEEremainder(
+                        drivetrainSpinTargetAngleFieldRelativeRadians
+                                - RobotContainer.poseSensorFusion
+                                        .getEstimatedPosition()
+                                        .getRotation()
+                                        .getRadians(),
+                        2 * Math.PI))
+                < allowableDrivetrainSpinErrorRadians;
+
+        return shooterOnTarget && drivetrainSpinOnTarget;
     }
 
     private void updateFeeders(boolean onTarget) {
@@ -337,12 +354,12 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
                     new Vector<>(robotPose.getRotation().unaryMinus().toMatrix().times(shotResult.shotVector));
 
             if (shootingEnabled) {
-                RotationOverrideControlModifier.getDefault()
-                        .drive(calculateDrivetrainSpinAngleFieldRelative(shotResult.shotVector));
+                drivetrainSpinTargetAngleFieldRelativeRadians =
+                        calculateDrivetrainSpinAngleFieldRelativeRadians(shotResult.shotVector);
+                RotationOverrideControlModifier.getDefault().drive(drivetrainSpinTargetAngleFieldRelativeRadians);
             }
 
-            RobotContainer.shooter.setTargetState(
-                    calculateShooterState(shotTarget, robotRelativeShotVector));
+            RobotContainer.shooter.setTargetState(calculateShooterState(shotTarget, robotRelativeShotVector));
 
             boolean onTarget = isOnTarget(shotTarget, shotResult.shotCalculation());
             Logger.recordOutput("ShootOrchestrator/OnTarget", onTarget);
