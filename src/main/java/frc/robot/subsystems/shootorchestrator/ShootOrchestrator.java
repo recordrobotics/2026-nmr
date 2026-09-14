@@ -258,7 +258,7 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
     }
 
     private ShooterState calculateShooterState(
-            ShotTarget target, Vector<N3> robotRelativeShotVector, boolean isBlocked) {
+            ShotTarget target, Vector<N3> robotRelativeShotVector) {
         if (shootingEnabled) {
             if (shootOverride.get()) {
                 return new ShooterState(
@@ -278,7 +278,7 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
         }
     }
 
-    private boolean isOnTarget(ShotTarget target, ShotCalculation shotCalculation, boolean isBlocked) {
+    private boolean isOnTarget(ShotTarget target, ShotCalculation shotCalculation) {
         boolean overridden = shootOverride.get();
 
         boolean shooterOnTarget;
@@ -290,8 +290,7 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
                     target.shotCalculator.fuelToFlywheelVelocity(shotCalculation.allowableVelocityMagnitudeMaxMps()));
         }
 
-        return !isBlocked
-                && shooterOnTarget;
+        return shooterOnTarget; // TODO add is drivetrain spin on target check
     }
 
     private void updateFeeders(boolean onTarget) {
@@ -342,13 +341,10 @@ public class ShootOrchestrator extends ManagedSubsystemBase {
                         .drive(calculateDrivetrainSpinAngleFieldRelative(shotResult.shotVector));
             }
 
-            boolean isBlocked = false;
-            Logger.recordOutput("ShootOrchestrator/IsBlocked", isBlocked);
-
             RobotContainer.shooter.setTargetState(
-                    calculateShooterState(shotTarget, robotRelativeShotVector, isBlocked));
+                    calculateShooterState(shotTarget, robotRelativeShotVector));
 
-            boolean onTarget = isOnTarget(shotTarget, shotResult.shotCalculation(), isBlocked);
+            boolean onTarget = isOnTarget(shotTarget, shotResult.shotCalculation());
             Logger.recordOutput("ShootOrchestrator/OnTarget", onTarget);
             lastOnTarget = onTarget;
 
