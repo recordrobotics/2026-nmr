@@ -514,7 +514,6 @@ public final class RobotContainer {
 
     public static void resetEncoders() {
         PositionedSubsystem.PositionedSubsystemManager.getInstance().resetAll();
-        model.intakeModel.resetHopperExtension();
 
         noEncoderResetAlert.set(false);
         Elastic.sendNotification(

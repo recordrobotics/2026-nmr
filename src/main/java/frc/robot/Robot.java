@@ -297,8 +297,6 @@ public final class Robot extends LoggedRobot {
             OpponentRobot.resetAndEnableAllOthers();
         }
 
-        RobotContainer.model.intakeModel.resetHopperExtension();
-
         // schedule the autonomous command
         if (autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(autonomousCommand);

@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -150,26 +149,13 @@ public final class RobotModel extends ManagedSubsystemBase {
     }
 
     public static class IntakeModel implements MechanismModel {
-        public static final int POSE_COUNT = 2;
+        public static final int POSE_COUNT = 1;
         private static final Translation3d SHAFT_ORIGIN = new Translation3d(-0.285662, 0, 0.274755);
-        private static final ArmGeometryPoint[] ARM_GEOMETRY = new ArmGeometryPoint[] {
-            new ArmGeometryPoint(Units.degreesToRadians(53.532698), Units.degreesToRadians(-51.8490194205), 0.314003),
-            new ArmGeometryPoint(Units.degreesToRadians(17.329479), Units.degreesToRadians(-19.7844139869), 0.356156),
-            new ArmGeometryPoint(Units.degreesToRadians(0), Units.degreesToRadians(-1.19101124384), 0.352317)
-        };
-        private static final double HOPPER_TO_AXLE_DISTANCE_METERS = 0.054722;
 
         private double angleRadians;
-        private double hopperExtensionMeters;
 
         public void update(double newAngleRadians) {
             angleRadians = newAngleRadians;
-            hopperExtensionMeters = Math.max(
-                    hopperExtensionMeters, ArmGeometryPoint.calculateHopperExtension(angleRadians, ARM_GEOMETRY));
-        }
-
-        public void resetHopperExtension() {
-            hopperExtensionMeters = 0;
         }
 
         @Override
@@ -179,28 +165,7 @@ public final class RobotModel extends ManagedSubsystemBase {
 
         @Override
         public void updatePoses(Pose3d[] poses, int i) {
-            poses[i] = Pose3d.kZero.rotateAround(SHAFT_ORIGIN, new Rotation3d(0, angleRadians, 0));
-            poses[i + 1] = new Pose3d(-hopperExtensionMeters, 0, 0, Rotation3d.kZero);
-        }
-
-        private record ArmGeometryPoint(double lowestArmAngleRadians, double angleOffset, double length) {
-            private static ArmGeometryPoint findCurrentPoint(double armAngle, ArmGeometryPoint[] geometry) {
-                for (ArmGeometryPoint point : geometry) {
-                    if (armAngle >= point.lowestArmAngleRadians) {
-                        return point;
-                    }
-                }
-                return geometry[
-                        geometry.length - 1]; // if we are below the lowest point, just use the lowest point's geometry
-            }
-
-            private static double calculateHopperExtension(double armAngle, ArmGeometryPoint[] geometry) {
-                ArmGeometryPoint currentPoint = findCurrentPoint(armAngle, geometry);
-                return Math.max(
-                        0,
-                        currentPoint.length * Math.cos(armAngle + currentPoint.angleOffset)
-                                - HOPPER_TO_AXLE_DISTANCE_METERS);
-            }
+            poses[i] = new Pose3d(SHAFT_ORIGIN, new Rotation3d(0, angleRadians, 0));
         }
     }
 
