@@ -5,14 +5,14 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.MagnetHealthValue;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
+import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.io.real.SwerveModuleReal;
 import frc.robot.utils.ModuleConstants;
@@ -22,6 +22,8 @@ import org.ironmaple.simulation.motorsims.SimulatedBattery;
 import org.ironmaple.simulation.motorsims.SimulatedMotorController;
 
 public class SwerveModuleSim extends SwerveModuleReal {
+
+    private final SimDouble absoluteTurningMotorEncoderPosition;
 
     public static class TalonFXMotorControllerSim implements SimulatedMotorController {
         public final int id;
@@ -68,9 +70,9 @@ public class SwerveModuleSim extends SwerveModuleReal {
         driveMotor.getSimState().setMotorType(MotorType.KrakenX60);
         turningMotor.getSimState().setMotorType(MotorType.KrakenX44);
 
-        absoluteTurningMotorEncoder.getSimState().Orientation = ChassisReference.CounterClockwise_Positive;
-        absoluteTurningMotorEncoder.getSimState().setMagnetHealth(MagnetHealthValue.Magnet_Green);
-        absoluteTurningMotorEncoder.getSimState().SensorOffset = m.turningEncoderOffset();
+        SimDeviceSim absoluteTurningMotorEncoderSim =
+                new SimDeviceSim("DutyCycle:DutyCycleEncoder", m.absoluteTurningMotorEncoderChannel());
+        absoluteTurningMotorEncoderPosition = absoluteTurningMotorEncoderSim.getDouble("Position");
         moduleSimulation.useDriveMotorController(new TalonFXMotorControllerSim(driveMotor));
         moduleSimulation.useSteerMotorController(new TalonFXMotorControllerSim(turningMotor));
 
@@ -86,12 +88,6 @@ public class SwerveModuleSim extends SwerveModuleReal {
 
     @Override
     public void simulationPeriodic() {
-        absoluteTurningMotorEncoder.getSimState().setSupplyVoltage(RobotController.getBatteryVoltage());
-        absoluteTurningMotorEncoder
-                .getSimState()
-                .setRawPosition(turningMotor.getPosition().getValueAsDouble());
-        absoluteTurningMotorEncoder
-                .getSimState()
-                .setVelocity(turningMotor.getVelocity().getValueAsDouble());
+        absoluteTurningMotorEncoderPosition.set(turningMotor.getPosition().getValueAsDouble());
     }
 }

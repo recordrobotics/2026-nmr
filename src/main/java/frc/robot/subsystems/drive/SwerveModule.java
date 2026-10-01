@@ -1,7 +1,6 @@
 package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix6.configs.AudioConfigs;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -12,7 +11,6 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -130,13 +128,6 @@ public final class SwerveModule {
                         .withStatorCurrentLimitEnable(true))
                 .withAudio(new AudioConfigs().withAllowMusicDurDisable(true)));
 
-        CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
-        encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        encoderConfig.MagnetSensor.MagnetOffset = m.turningEncoderOffset();
-        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
-
-        io.applyTurningEncoderConfig(encoderConfig);
-
         // Corrects for offset in absolute wheel position
         updateInputs();
 
@@ -160,27 +151,8 @@ public final class SwerveModule {
         final String prefix = name + " encoder ";
 
         if (inputs.encoderConnected) {
-            switch (inputs.encoderMagnetHealth) {
-                case Magnet_Invalid -> {
-                    absEncoderErrorAlert.setText(prefix + "invalid magnet health");
-                    absEncoderErrorAlert.set(true);
-                    absEncoderWarningAlert.set(false);
-                }
-                case Magnet_Red -> {
-                    absEncoderWarningAlert.setText(prefix + "magnet health red");
-                    absEncoderWarningAlert.set(true);
-                    absEncoderErrorAlert.set(false);
-                }
-                case Magnet_Orange -> {
-                    absEncoderWarningAlert.setText(prefix + "magnet health orange");
-                    absEncoderWarningAlert.set(true);
-                    absEncoderErrorAlert.set(false);
-                }
-                default -> {
-                    absEncoderWarningAlert.set(false);
-                    absEncoderErrorAlert.set(false);
-                }
-            }
+            absEncoderWarningAlert.set(false);
+            absEncoderErrorAlert.set(false);
         } else {
             absEncoderErrorAlert.setText(prefix + "disconnected");
             absEncoderErrorAlert.set(true);

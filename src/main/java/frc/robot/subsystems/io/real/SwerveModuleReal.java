@@ -4,18 +4,16 @@ import static edu.wpi.first.units.Units.Hertz;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.MagnetHealthValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.io.SwerveModuleIO;
 import frc.robot.utils.ModuleConstants;
@@ -24,7 +22,7 @@ public class SwerveModuleReal implements SwerveModuleIO {
 
     protected final TalonFX driveMotor;
     protected final TalonFX turningMotor;
-    protected final CANcoder absoluteTurningMotorEncoder;
+    protected final DutyCycleEncoder absoluteTurningMotorEncoder;
 
     private final StatusSignal<Angle> drivePositionSignal;
     private final StatusSignal<AngularVelocity> driveVelocitySignal;
@@ -37,15 +35,15 @@ public class SwerveModuleReal implements SwerveModuleIO {
     private final StatusSignal<Voltage> turnVoltageSignal;
     private final StatusSignal<Current> turnCurrentSignal;
 
-    private final StatusSignal<Angle> encoderPositionSignal;
-    private final StatusSignal<MagnetHealthValue> encoderMagnetHealthSignal;
+    private final ModuleConstants moduleConstants;
 
     public SwerveModuleReal(ModuleConstants m, int driveTrack, int turnTrack) {
         driveMotor = new TalonFX(m.driveMotorChannel());
         turningMotor = new TalonFX(m.turningMotorChannel());
-        absoluteTurningMotorEncoder = new CANcoder(m.absoluteTurningMotorEncoderChannel());
+        absoluteTurningMotorEncoder = new DutyCycleEncoder(m.absoluteTurningMotorEncoderChannel());
+        moduleConstants = m;
 
-        ParentDevice.optimizeBusUtilizationForAll(driveMotor, turningMotor, absoluteTurningMotorEncoder);
+        ParentDevice.optimizeBusUtilizationForAll(driveMotor, turningMotor);
 
         drivePositionSignal = driveMotor.getPosition();
         driveVelocitySignal = driveMotor.getVelocity();
@@ -58,17 +56,13 @@ public class SwerveModuleReal implements SwerveModuleIO {
         turnVoltageSignal = turningMotor.getMotorVoltage();
         turnCurrentSignal = turningMotor.getSupplyCurrent();
 
-        encoderPositionSignal = absoluteTurningMotorEncoder.getAbsolutePosition();
-        encoderMagnetHealthSignal = absoluteTurningMotorEncoder.getMagnetHealth();
-
         BaseStatusSignal.setUpdateFrequencyForAll(
                 Hertz.of(50),
                 drivePositionSignal,
                 driveVelocitySignal,
                 driveAccelerationSignal,
                 turnPositionSignal,
-                turnVelocitySignal,
-                encoderPositionSignal);
+                turnVelocitySignal);
 
         RobotContainer.allStatusSignalsToRefresh.addAll(
                 drivePositionSignal,
@@ -79,9 +73,7 @@ public class SwerveModuleReal implements SwerveModuleIO {
                 turnPositionSignal,
                 turnVelocitySignal,
                 turnVoltageSignal,
-                turnCurrentSignal,
-                encoderPositionSignal,
-                encoderMagnetHealthSignal);
+                turnCurrentSignal);
 
         RobotContainer.orchestra.add(driveMotor, driveTrack);
         RobotContainer.orchestra.add(turningMotor, turnTrack);
@@ -95,11 +87,6 @@ public class SwerveModuleReal implements SwerveModuleIO {
     @Override
     public void applyTurnTalonFXConfig(TalonFXConfiguration configuration) {
         turningMotor.getConfigurator().apply(configuration);
-    }
-
-    @Override
-    public void applyTurningEncoderConfig(CANcoderConfiguration configuration) {
-        absoluteTurningMotorEncoder.getConfigurator().apply(configuration);
     }
 
     @Override
@@ -145,11 +132,9 @@ public class SwerveModuleReal implements SwerveModuleIO {
         inputs.turnMotorVoltage = turnVoltageSignal.getValueAsDouble();
         inputs.turnMotorCurrentDraw = turnCurrentSignal.getValue();
 
-        inputs.encoderConnected = encoderPositionSignal
-                .getStatus()
-                .isOK(); /* check signal status instead of calling isConnected() to reduce bus wait time */
-        inputs.encoderPositionRotations = encoderPositionSignal.getValueAsDouble();
-        inputs.encoderMagnetHealth = encoderMagnetHealthSignal.getValue();
+        inputs.encoderConnected = absoluteTurningMotorEncoder.isConnected();
+        inputs.encoderPositionRotations =
+                (absoluteTurningMotorEncoder.get() - moduleConstants.turningEncoderOffset() + 1) % 1;
     }
 
     @Override

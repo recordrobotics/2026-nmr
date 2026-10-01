@@ -2,10 +2,8 @@ package frc.robot.subsystems.io;
 
 import static edu.wpi.first.units.Units.Amps;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
-import com.ctre.phoenix6.signals.MagnetHealthValue;
 import edu.wpi.first.units.measure.Current;
 import org.littletonrobotics.junction.AutoLog;
 
@@ -29,7 +27,6 @@ public interface SwerveModuleIO extends AutoCloseable {
 
         public boolean encoderConnected = false;
         public double encoderPositionRotations = 0;
-        public MagnetHealthValue encoderMagnetHealth = MagnetHealthValue.Magnet_Invalid;
     }
 
     default void updateInputs(SwerveModuleIOInputs inputs) {}
@@ -37,8 +34,6 @@ public interface SwerveModuleIO extends AutoCloseable {
     default void applyDriveTalonFXConfig(TalonFXConfiguration configuration) {}
 
     default void applyTurnTalonFXConfig(TalonFXConfiguration configuration) {}
-
-    default void applyTurningEncoderConfig(CANcoderConfiguration configuration) {}
 
     default void setTurnControl(ControlRequest request) {}
 
