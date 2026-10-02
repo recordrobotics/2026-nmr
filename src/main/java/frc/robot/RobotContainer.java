@@ -23,14 +23,9 @@ import frc.robot.control.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.drive.*;
-import frc.robot.subsystems.io.real.FeederReal;
-import frc.robot.subsystems.io.real.IndexerReal;
-import frc.robot.subsystems.io.real.IntakeReal;
-import frc.robot.subsystems.io.real.ShooterReal;
-import frc.robot.subsystems.io.sim.FeederSim;
-import frc.robot.subsystems.io.sim.IndexerSim;
-import frc.robot.subsystems.io.sim.IntakeSim;
-import frc.robot.subsystems.io.sim.ShooterSim;
+import frc.robot.subsystems.io.real.*;
+import frc.robot.subsystems.io.sim.*;
+import frc.robot.subsystems.io.stub.*;
 import frc.robot.subsystems.led.LedManager;
 import frc.robot.subsystems.shootorchestrator.ShootOrchestrator;
 import frc.robot.utils.AutoPath;
@@ -164,10 +159,10 @@ public final class RobotContainer {
         }
 
         if (Constants.RobotState.getMode() == Mode.REAL) {
-            intake = new Intake(new IntakeReal());
-            shooter = new Shooter(new ShooterReal());
-            indexer = new Indexer(new IndexerReal());
-            feeder = new Feeder(new FeederReal());
+            intake = new Intake(new IntakeStub());
+            shooter = new Shooter(new ShooterStub());
+            indexer = new Indexer(new IndexerStub());
+            feeder = new Feeder(new FeederStub());
         } else {
             if (Constants.Vision.VISION_SIMULATION_MODE.isPhotonSim()) {
                 visionSim = new VisionSystemSim("main");
@@ -199,10 +194,10 @@ public final class RobotContainer {
                 }
             }
 
-            intake = new Intake(new IntakeSim(ROBOT_PERIODIC, drivetrain.getSwerveDriveSimulation()));
-            shooter = new Shooter(new ShooterSim(ROBOT_PERIODIC));
-            indexer = new Indexer(new IndexerSim(ROBOT_PERIODIC));
-            feeder = new Feeder(new FeederSim(ROBOT_PERIODIC));
+            intake = new Intake(new IntakeStub(ROBOT_PERIODIC, drivetrain.getSwerveDriveSimulation()));
+            shooter = new Shooter(new ShooterStub(ROBOT_PERIODIC));
+            indexer = new Indexer(new IndexerStub(ROBOT_PERIODIC));
+            feeder = new Feeder(new FeederStub(ROBOT_PERIODIC));
         }
 
         poseSensorFusion = new PoseSensorFusion(getStartingLocation().getPose());

@@ -59,6 +59,7 @@ public final class RobotModel extends ManagedSubsystemBase {
     public Pose3d[] mechanismPoses = new Pose3d[intakeModel.getPoseCount()];
 
     public RobotModel() {
+        getFuelManager(); // make sure it's initialized
         periodicManaged();
     }
 
@@ -1084,7 +1085,8 @@ public final class RobotModel extends ManagedSubsystemBase {
                 lastGravityTime = currentTime;
 
                 for (int i = 0; i < INTAKE_NODES.length; i++) {
-                    if (!RobotContainer.intake.getSimIO().isExtendingHopperSpaceAvailable()) {
+                    if (RobotContainer.intake.getSimIO() == null
+                            || !RobotContainer.intake.getSimIO().isExtendingHopperSpaceAvailable()) {
                         forwardPropagateFrom(
                                 INTAKE_NODES[i], ManagedFuelNode::intakeNextNodes, new ArrayList<>(), true);
                         backPropagateFrom(
@@ -1097,7 +1099,9 @@ public final class RobotModel extends ManagedSubsystemBase {
                 }
             }
 
-            if (RobotContainer.indexer.getSimIO().isOuttaking()
+            if (RobotContainer.indexer.getSimIO() != null
+                    && RobotContainer.feeder.getSimIO() != null
+                    && RobotContainer.indexer.getSimIO().isOuttaking()
                     && RobotContainer.feeder.getSimIO().isOuttaking()
                     && currentTime - lastShootTime >= 1.0 / SHOOT_BPS) {
                 lastShootTime = currentTime;
