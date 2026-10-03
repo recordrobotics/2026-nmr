@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.io.SwerveModuleIO;
 import frc.robot.subsystems.io.SwerveModuleIOInputsAutoLogged;
@@ -49,6 +50,8 @@ public final class SwerveModule {
 
     private final String name;
 
+    private final int encoderChannel;
+
     private final SafeAlert absEncoderErrorAlert;
     private final SafeAlert absEncoderWarningAlert;
 
@@ -64,6 +67,7 @@ public final class SwerveModule {
     public SwerveModule(String name, ModuleConstants m, SwerveModuleIO io) {
         this.io = io;
         this.name = name;
+        this.encoderChannel = m.absoluteTurningMotorEncoderChannel();
 
         TalonFXConfiguration driveConfig = new TalonFXConfiguration();
 
@@ -244,6 +248,8 @@ public final class SwerveModule {
         }
 
         io.setDriveControl(driveRequest.withVelocity(actualTargetDriveVelocity).withFeedForward(targetFeedforward));
+
+        SmartDashboard.putNumber("Encoder " + encoderChannel, inputs.encoderPositionRotations);
 
         if (!(SysIdManager.getProvider() instanceof Drivetrain.SysIdTurn)) {
             io.setTurnControl(turnRequest.withPosition(targetTurnPosition));
